@@ -1,7 +1,7 @@
 {
   "platform": "static",
   "build": {
-    "buildCommand": "yarn install --frozen-lockfile && yarn generate",
+    "buildCommand": "yarn install --frozen-lockfile && NODE_ENV=production yarn generate",
     "outputDirectory": ".output/public"
   },
   "envs": {

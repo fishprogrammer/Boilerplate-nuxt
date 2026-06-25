@@ -5,7 +5,7 @@ services:
       context: .
       target: runner
       args:
-        NUXT_PUBLIC_API_BASE_URL: ${NUXT_PUBLIC_API_BASE_URL:-}
+        NUXT_PUBLIC_API_BASE_URL: ${NUXT_PUBLIC_API_BASE_URL:-https://api.store.a4j.ir}
         NUXT_PUBLIC_API_TIMEOUT: ${NUXT_PUBLIC_API_TIMEOUT:-30000}
         NUXT_PUBLIC_APP_TITLE: ${NUXT_PUBLIC_APP_TITLE:-My App}
         NUXT_PUBLIC_APP_NAME: ${NUXT_PUBLIC_APP_NAME:-My App}

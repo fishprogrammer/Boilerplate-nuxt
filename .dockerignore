@@ -1,0 +1,42 @@
+# Dependencies (installed fresh inside container)
+node_modules
+
+# Nuxt build output
+.nuxt
+.output
+.data
+dist
+
+# Environment — never bake secrets into image
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+yarn-error.log*
+
+# Editor and OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker itself
+Dockerfile*
+docker-compose*.yml
+nginx.conf
+.dockerignore
+
+# Docs (not needed in image)
+doc
+docs
+*.md
+!README.md
+
+# Test / CI artifacts
+coverage
