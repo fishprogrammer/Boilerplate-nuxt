@@ -7,19 +7,36 @@
  */
 import { execSync } from 'node:child_process'
 import { cpSync, existsSync, rmSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { injectEntryCss } from './inject-entry-css.mjs'
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+const nuxtBin = join(root, 'node_modules', 'nuxt', 'bin', 'nuxt.mjs')
+
+if (!existsSync(nuxtBin)) {
+  throw new Error('[liara-build] nuxt not found. Run `yarn install` first.')
+}
 
 process.env.NODE_ENV = 'production'
 
-execSync('nuxt generate', { stdio: 'inherit' })
+execSync(`node "${nuxtBin}" generate`, {
+  stdio: 'inherit',
+  cwd: root,
+  env: process.env,
+})
 
-if (!existsSync('.output/public/index.html')) {
+if (!existsSync(join(root, '.output/public/index.html'))) {
   throw new Error('[liara-build] .output/public/index.html missing after nuxt generate')
 }
 
-rmSync('dist', { recursive: true, force: true })
-cpSync('.output/public', 'dist', { recursive: true })
+injectEntryCss(join(root, '.output/public'))
 
-if (!existsSync('dist/index.html')) {
+const distDir = join(root, 'dist')
+rmSync(distDir, { recursive: true, force: true })
+cpSync(join(root, '.output/public'), distDir, { recursive: true })
+
+if (!existsSync(join(distDir, 'index.html'))) {
   throw new Error('[liara-build] dist/index.html missing after copy')
 }
 

@@ -132,7 +132,11 @@ export default defineNuxtConfig({
     workbox: {
       mode: 'production',
       cleanupOutdatedCaches: true,
-      globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+      // Do not precache generated route HTML files: Workbox may fetch them over http://
+      // during install and break the service worker on HTTPS static hosts.
+      globPatterns: ['**/*.{js,css,ico,png,svg,woff,woff2,webmanifest}'],
+      navigateFallback: '/index.html',
+      navigateFallbackDenylist: [/^\/_nuxt\//, /^\/api\//],
       additionalManifestEntries: [
         { url: '/version.json', revision: appVersion },
         { url: '/index.html', revision: appVersion },
