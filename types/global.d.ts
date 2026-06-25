@@ -1,5 +1,7 @@
 /// <reference types="@vite-pwa/nuxt" />
 /// <reference types="nuxt" />
+/// <reference path="../.nuxt/nuxt.d.ts" />
+/// <reference path="./tailwindcss-vite.d.ts" />
 
 declare module 'virtual:pwa-register' {
   export interface RegisterSWOptions {

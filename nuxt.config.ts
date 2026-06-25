@@ -12,6 +12,11 @@ export default defineNuxtConfig({
 
   modules: ['@pinia/nuxt', '@vite-pwa/nuxt'],
 
+  typescript: {
+    strict: true,
+    typeCheck: true,
+  },
+
   css: ['~/assets/css/style.css', '~/assets/fonts/index.css'],
 
   imports: {

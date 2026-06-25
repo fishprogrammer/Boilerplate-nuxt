@@ -1,4 +1,5 @@
 node_modules
+node_modules.bak*
 .nuxt
 .output
 .data
@@ -19,4 +20,6 @@ Thumbs.db
 
 # IDE
 .idea
-.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
