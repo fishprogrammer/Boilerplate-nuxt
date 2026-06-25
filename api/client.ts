@@ -15,7 +15,7 @@ import {
 } from '~/utils/auth-storage'
 import { appConfig } from '~/config/app'
 
-// Base URL from appConfig — defaults to https://api.a4j.ir (see config/app.ts).
+// Base URL from appConfig — defaults to https://api.store.a4j.ir (see config/app.ts).
 const BASE_URL = appConfig.api.baseUrl.replace(/\/+$/, '')
 
 interface RetryAxiosRequestConfig extends InternalAxiosRequestConfig {

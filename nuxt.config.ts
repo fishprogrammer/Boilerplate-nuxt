@@ -47,12 +47,12 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || '',
-      apiProxyTarget: process.env.NUXT_PUBLIC_API_PROXY_TARGET || 'https://api.a4j.ir',
+      apiProxyTarget: process.env.NUXT_PUBLIC_API_PROXY_TARGET || 'https://api.store.a4j.ir',
       apiTimeout: process.env.NUXT_PUBLIC_API_TIMEOUT || '30000',
       appTitle: process.env.NUXT_PUBLIC_APP_TITLE || 'My App',
       appName: process.env.NUXT_PUBLIC_APP_NAME || 'My App',
       appDescription: process.env.NUXT_PUBLIC_APP_DESCRIPTION || 'An admin dashboard',
-      appVersion: process.env.NUXT_PUBLIC_APP_VERSION || '1.0.0',
+      appVersion: process.env.NUXT_PUBLIC_APP_VERSION || '1.0.1',
       appThemeColor: process.env.NUXT_PUBLIC_APP_THEME_COLOR || '#00B894',
       appBgColor: process.env.NUXT_PUBLIC_APP_BG_COLOR || '#f4f5f6',
       appStoragePrefix: process.env.NUXT_PUBLIC_APP_STORAGE_PREFIX || 'app',
@@ -101,7 +101,7 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       '/api': {
-        target: process.env.NUXT_PUBLIC_API_PROXY_TARGET || 'https://api.a4j.ir',
+        target: process.env.NUXT_PUBLIC_API_PROXY_TARGET || 'https://api.store.a4j.ir',
         changeOrigin: true,
         secure: true,
       },

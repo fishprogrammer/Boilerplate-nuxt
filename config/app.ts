@@ -1,4 +1,4 @@
-const PRODUCTION_API_BASE_URL = 'https://api.a4j.ir'
+const PRODUCTION_API_BASE_URL = 'https://api.store.a4j.ir'
 
 function resolvePublicUrlFromEnv(): string {
   return String(
@@ -38,7 +38,7 @@ export const appConfig = {
     import.meta.env.NUXT_PUBLIC_APP_TITLE ||
     'My App',
   description: import.meta.env.NUXT_PUBLIC_APP_DESCRIPTION || '',
-  version: import.meta.env.NUXT_PUBLIC_APP_VERSION || '1.0.0',
+  version: import.meta.env.NUXT_PUBLIC_APP_VERSION || '1.0.1',
   themeColor: import.meta.env.NUXT_PUBLIC_APP_THEME_COLOR || '#00B894',
   bgColor: import.meta.env.NUXT_PUBLIC_APP_BG_COLOR || '#f4f5f6',
   storagePrefix: import.meta.env.NUXT_PUBLIC_APP_STORAGE_PREFIX || 'app',
