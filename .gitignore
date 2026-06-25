@@ -7,6 +7,9 @@ dist
 .env.*
 !.env.example
 
+# Generated at build/dev from app.version.json
+public/version.json
+
 # Logs
 *.log
 

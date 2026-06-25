@@ -1,4 +1,8 @@
 import tailwindcss from '@tailwindcss/vite'
+import { readAppVersion } from './config/read-app-version'
+import { writeVersionJson } from './config/write-version-json'
+
+const appVersion = readAppVersion()
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -52,7 +56,7 @@ export default defineNuxtConfig({
       appTitle: process.env.NUXT_PUBLIC_APP_TITLE || 'My App',
       appName: process.env.NUXT_PUBLIC_APP_NAME || 'My App',
       appDescription: process.env.NUXT_PUBLIC_APP_DESCRIPTION || 'An admin dashboard',
-      appVersion: process.env.NUXT_PUBLIC_APP_VERSION || '1.0.1',
+      appVersion,
       appThemeColor: process.env.NUXT_PUBLIC_APP_THEME_COLOR || '#00B894',
       appBgColor: process.env.NUXT_PUBLIC_APP_BG_COLOR || '#f4f5f6',
       appStoragePrefix: process.env.NUXT_PUBLIC_APP_STORAGE_PREFIX || 'app',
@@ -69,6 +73,12 @@ export default defineNuxtConfig({
   },
 
   hooks: {
+    ready() {
+      writeVersionJson('public/version.json')
+    },
+    'build:done'() {
+      writeVersionJson('.output/public/version.json')
+    },
     'vite:extendConfig'(config) {
       const rollupInput = config.build?.rollupOptions?.input
 
@@ -117,7 +127,15 @@ export default defineNuxtConfig({
       mode: 'production',
       cleanupOutdatedCaches: true,
       globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+      additionalManifestEntries: [
+        { url: '/version.json', revision: appVersion },
+        { url: '/index.html', revision: appVersion },
+      ],
       runtimeCaching: [
+        {
+          urlPattern: /^\/version\.json$/,
+          handler: 'NetworkOnly',
+        },
         {
           urlPattern: /^https:\/\/api\./,
           handler: 'NetworkFirst',

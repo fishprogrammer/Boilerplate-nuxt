@@ -84,7 +84,7 @@ yarn dev
 | `NUXT_PUBLIC_APP_TITLE` | عنوان `<title>` |
 | `NUXT_PUBLIC_APP_NAME` | نام PWA |
 | `NUXT_PUBLIC_APP_DESCRIPTION` | توضیح meta |
-| `NUXT_PUBLIC_APP_VERSION` | نسخه |
+| `app.version.json` | **نسخه اپ** — فقط این فایل را برای bump نسخه ویرایش کنید |
 | `NUXT_PUBLIC_APP_THEME_COLOR` | رنگ برند |
 | `NUXT_PUBLIC_APP_BG_COLOR` | رنگ پس‌زمینه PWA |
 | `NUXT_PUBLIC_APP_STORAGE_PREFIX` | پیشوند localStorage |
@@ -181,6 +181,7 @@ docker build -t boilerplate-nuxt .
 - **SSR خاموش است** (`ssr: false`) — خروجی SPA/client-only است.
 - قبل از deploy: `yarn type-check` و `yarn build`
 - `NUXT_PUBLIC_APP_PUBLIC_URL` را برای callback درگاه پرداخت تنظیم کنید.
+- نسخه را فقط در `app.version.json` تغییر دهید؛ build فایل `/version.json` را می‌سازد.
 - متغیرهای `NUXT_PUBLIC_*` در زمان **build** bake می‌شوند؛ برای Docker از `ARG`/`ENV` در `Dockerfile` استفاده شده.
 
 ## لایسنس

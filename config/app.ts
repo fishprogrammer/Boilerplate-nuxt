@@ -1,3 +1,5 @@
+import { APP_VERSION } from './version'
+
 const PRODUCTION_API_BASE_URL = 'https://api.store.a4j.ir'
 
 function resolvePublicUrlFromEnv(): string {
@@ -38,7 +40,8 @@ export const appConfig = {
     import.meta.env.NUXT_PUBLIC_APP_TITLE ||
     'My App',
   description: import.meta.env.NUXT_PUBLIC_APP_DESCRIPTION || '',
-  version: import.meta.env.NUXT_PUBLIC_APP_VERSION || '1.0.1',
+  /** Semantic version — edit only `app.version.json`. */
+  version: APP_VERSION,
   themeColor: import.meta.env.NUXT_PUBLIC_APP_THEME_COLOR || '#00B894',
   bgColor: import.meta.env.NUXT_PUBLIC_APP_BG_COLOR || '#f4f5f6',
   storagePrefix: import.meta.env.NUXT_PUBLIC_APP_STORAGE_PREFIX || 'app',
