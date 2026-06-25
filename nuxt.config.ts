@@ -109,6 +109,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    preset: 'static',
     devProxy: {
       '/api': {
         target: process.env.NUXT_PUBLIC_API_PROXY_TARGET || 'https://api.store.a4j.ir',

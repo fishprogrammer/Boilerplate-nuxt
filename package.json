@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "nuxt dev",
-    "build": "nuxt build",
+    "build": "node scripts/liara-build.mjs",
+    "build:nuxt": "nuxt build",
     "generate": "nuxt generate",
     "build:liara": "node scripts/liara-build.mjs",
     "preview": "nuxt preview",

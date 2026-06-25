@@ -174,13 +174,14 @@ definePageMeta({
 
 | تنظیم | مقدار |
 |-------|--------|
-| build | `yarn build:liara` → `nuxt generate` |
-| خروجی static | `.output/public` |
-| fallback Vue platform | کپی خودکار به `dist/` |
+| build | `yarn build` → `nuxt generate` + کپی به `dist/` |
+| خروجی static | `.output/public` (و `dist/` برای Vue platform) |
 
 ```bash
 liara deploy
 ```
+
+**مهم:** Liara Vue platform فقط `yarn build` را اجرا می‌کند؛ اسکریپت `build` در `package.json` برای همین تنظیم شده است.
 
 بعد از deploy: `https://your-app.liara.run/version.json` باید نسخه `app.version.json` را برگرداند.
 
