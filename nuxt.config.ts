@@ -8,7 +8,7 @@ const appVersion = readAppVersion()
 export default defineNuxtConfig({
   compatibilityDate: '2025-06-01',
   ssr: false,
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV !== 'production' },
 
   modules: ['@pinia/nuxt', '@vite-pwa/nuxt'],
 

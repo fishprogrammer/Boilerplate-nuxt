@@ -1,10 +1,11 @@
 {
   "platform": "static",
   "build": {
-    "buildCommand": "yarn install --frozen-lockfile && NODE_ENV=production yarn generate",
+    "buildCommand": "yarn build:liara",
     "outputDirectory": ".output/public"
   },
   "envs": {
+    "NODE_ENV": "production",
     "NUXT_PUBLIC_API_BASE_URL": "https://api.store.a4j.ir"
   }
 }

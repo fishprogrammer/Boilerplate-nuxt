@@ -168,6 +168,24 @@ definePageMeta({
 | `/system-settings`, `/system-health` | سیستم |
 | `/media` | رسانه |
 
+## Liara
+
+در پنل Liara نوع اپ را **Static** بگذارید (نه Vue). `liara.json` برای Nuxt تنظیم شده:
+
+| تنظیم | مقدار |
+|-------|--------|
+| build | `yarn build:liara` → `nuxt generate` |
+| خروجی static | `.output/public` |
+| fallback Vue platform | کپی خودکار به `dist/` |
+
+```bash
+liara deploy
+```
+
+بعد از deploy: `https://your-app.liara.run/version.json` باید نسخه `app.version.json` را برگرداند.
+
+> اگر اپ روی **Vue platform** مانده، اسکریپت `build:liara` خروجی را به `dist/` هم می‌کشد تا خطای `app/dist not found` رفع شود. ترجیحاً platform را **Static** کنید.
+
 ## Docker
 
 ```bash
@@ -179,7 +197,7 @@ docker build -t boilerplate-nuxt .
 ## Deploy و نکات production
 
 - **SSR خاموش است** (`ssr: false`) — خروجی SPA/client-only است.
-- قبل از deploy: `yarn type-check` و `yarn build`
+- قبل از deploy: `yarn type-check` و `yarn build:liara` (یا `yarn generate`)
 - `NUXT_PUBLIC_APP_PUBLIC_URL` را برای callback درگاه پرداخت تنظیم کنید.
 - نسخه را فقط در `app.version.json` تغییر دهید؛ build فایل `/version.json` را می‌سازد.
 - متغیرهای `NUXT_PUBLIC_*` در زمان **build** bake می‌شوند؛ برای Docker از `ARG`/`ENV` در `Dockerfile` استفاده شده.
