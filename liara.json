@@ -5,7 +5,6 @@
     "outputDirectory": ".output/public"
   },
   "envs": {
-    "NODE_ENV": "production",
     "NUXT_PUBLIC_API_BASE_URL": "https://api.store.a4j.ir"
   }
 }
