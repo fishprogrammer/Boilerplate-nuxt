@@ -1,0 +1,210 @@
+/* vue3-persian-datetime-picker — theme-aware input & calendar popup */
+
+.vpd-wrapper {
+  z-index: 9999 !important;
+}
+
+.vpd-input-group .vpd-clear-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 0;
+  line-height: 1;
+  color: var(--color-text-muted);
+  opacity: 0.75;
+}
+
+.vpd-input-group .vpd-clear-btn:not(:has(svg))::before {
+  content: '';
+  display: block;
+  width: 0.875rem;
+  height: 0.875rem;
+  background-color: currentColor;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='black'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='black'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/%3E%3C/svg%3E");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.vpd-input-group .vpd-clear-btn:hover {
+  opacity: 1;
+  color: var(--color-text-secondary);
+}
+
+.vpd-input-group .vpd-clear-btn svg {
+  display: block;
+}
+
+.profile-date-picker .vpd-input-group input,
+.profile-date-picker-input,
+.vpd-input-group input {
+  color: var(--color-text-primary) !important;
+  background-color: var(--color-surface) !important;
+  border-color: var(--color-border) !important;
+}
+
+.profile-date-picker .vpd-input-group input::placeholder,
+.vpd-input-group input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.profile-date-picker .vpd-input-group,
+.vpd-input-group {
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+/* Calendar popup (teleported under html; inherits wrong text color in dark) */
+.dark .vpd-wrapper .vpd-content {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.dark .vpd-wrapper .vpd-week {
+  color: var(--color-text-muted);
+}
+
+.dark .vpd-wrapper .vpd-day:not([disabled='true']) {
+  color: var(--color-text-primary);
+}
+
+.dark .vpd-wrapper .vpd-day:not([disabled='true']):hover,
+.dark .vpd-wrapper .vpd-day:not([disabled='true']).vpd-selected,
+.dark .vpd-wrapper .vpd-day:not([disabled='true']).vpd-range-between,
+.dark .vpd-wrapper .vpd-day:not([disabled='true']).vpd-range-hover {
+  color: #ffffff;
+}
+
+.dark .vpd-wrapper .vpd-day[disabled='true'] .vpd-day-text {
+  color: var(--color-text-muted);
+}
+
+.dark .vpd-wrapper .vpd-month-label > span:not(:hover),
+.dark .vpd-wrapper .vpd-year-label > span:not(:hover) {
+  color: var(--color-text-primary) !important;
+}
+
+.dark .vpd-wrapper .vpd-controls .vpd-next svg path,
+.dark .vpd-wrapper .vpd-controls .vpd-prev svg path {
+  fill: var(--color-text-primary) !important;
+}
+
+.dark .vpd-wrapper .vpd-controls .vpd-next[disabled] svg path,
+.dark .vpd-wrapper .vpd-controls .vpd-prev[disabled] svg path {
+  fill: var(--color-text-muted) !important;
+}
+
+.dark .vpd-wrapper .vpd-addon-list {
+  background-color: var(--color-surface);
+  border-bottom-color: var(--color-border);
+}
+
+.dark .vpd-wrapper .vpd-addon-list-item {
+  color: var(--color-text-secondary);
+  border-color: var(--color-surface);
+}
+
+.dark .vpd-wrapper .vpd-addon-list-item:hover,
+.dark .vpd-wrapper .vpd-addon-list-item.vpd-selected {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.dark .vpd-wrapper .vpd-actions button {
+  color: var(--color-text-secondary);
+}
+
+.dark .vpd-wrapper .vpd-actions button:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.dark .vpd-wrapper .vpd-close-addon {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-hover);
+}
+
+.dark .vpd-wrapper .vpd-clear-btn {
+  color: var(--color-text-secondary);
+}
+
+/* Datetime time picker — prevent oversized hour/minute UI from overflowing */
+.vpd-wrapper[data-type='datetime'] .vpd-content,
+.vpd-wrapper[data-type='datetime'] .vpd-addon-list.vpd-time {
+  overflow-x: hidden;
+}
+
+/* Month navigation — prev/next on sides, month label centered */
+.vpd-wrapper .vpd-controls {
+  display: grid;
+  grid-template-columns: 50px minmax(0, 1fr) 50px;
+  align-items: center;
+  height: 50px;
+  line-height: normal;
+  text-align: center;
+}
+
+.vpd-wrapper .vpd-controls .vpd-next,
+.vpd-wrapper .vpd-controls .vpd-prev {
+  float: none !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  line-height: 1;
+  margin: 0;
+}
+
+/* LTR: prev left, month center, next right */
+.vpd-wrapper .vpd-controls .vpd-prev {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: center;
+}
+
+.vpd-wrapper .vpd-controls .vpd-next {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: center;
+}
+
+.vpd-wrapper .vpd-controls > *:last-child {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vpd-wrapper .vpd-controls .vpd-month-label {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  width: 100% !important;
+  max-width: 100%;
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  height: auto;
+}
+
+.vpd-wrapper .vpd-controls .vpd-month-label > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vpd-wrapper .vpd-controls .vpd-arrow {
+  display: block;
+}

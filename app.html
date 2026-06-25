@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html {{ HTML_ATTRS }}>
+  <head {{ HEAD_ATTRS }}>
+    <script>
+      (function () {
+        var prefix = "%NUXT_PUBLIC_APP_STORAGE_PREFIX%";
+        if (!prefix || prefix.indexOf("%") === 0) prefix = "app";
+        var stored = localStorage.getItem(prefix + "-theme");
+        var isDark = stored === "dark";
+        var root = document.documentElement;
+        root.classList.toggle("dark", isDark);
+        root.style.colorScheme = isDark ? "dark" : "light";
+        var themeColor = isDark ? "#212121" : "%NUXT_PUBLIC_APP_THEME_COLOR%";
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", themeColor);
+        var apple = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+        if (apple) apple.setAttribute("content", isDark ? "black-translucent" : "default");
+      })();
+    </script>
+    {{ HEAD }}
+  </head>
+  <body {{ BODY_ATTRS }}>
+    {{ APP }}
+  </body>
+</html>

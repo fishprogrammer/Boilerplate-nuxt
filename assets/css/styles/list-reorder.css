@@ -1,0 +1,32 @@
+/* Shared drag-reorder UX (pointer lists + native HTML5 drag) */
+
+body.list-reorder-dragging {
+  user-select: none;
+  cursor: grabbing;
+}
+
+body.list-reorder-dragging .list-reorder-handle {
+  cursor: grabbing !important;
+}
+
+.list-reorder-row--dragging {
+  transform: rotate(-1deg);
+  box-shadow: 0 4px 12px -6px rgb(0 0 0 / 0.15);
+  cursor: grabbing;
+  z-index: 10;
+}
+
+.list-reorder-row--native-dragging {
+  opacity: 0.72;
+}
+
+.list-reorder-drop-line {
+  pointer-events: none;
+  position: absolute;
+  top: -0.25rem;
+  right: 0.5rem;
+  left: 0.5rem;
+  height: 2px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-primary) 70%, transparent);
+}
