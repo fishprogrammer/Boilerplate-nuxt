@@ -1,0 +1,11 @@
+{
+  "platform": "static",
+  "build": {
+    "buildCommand": "yarn install --frozen-lockfile && yarn generate",
+    "outputDirectory": ".output/public"
+  },
+  "envs": {
+    "NUXT_PUBLIC_API_BASE_URL": "https://api.store.a4j.ir",
+    "NUXT_PUBLIC_APP_VERSION": "1.0.1"
+  }
+}

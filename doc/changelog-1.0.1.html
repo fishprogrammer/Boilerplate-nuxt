@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog 1.0.1 — Boilerplate Nuxt</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f5f6;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --muted: #5c6670;
+      --border: #e2e5e8;
+      --brand: #00b894;
+      --added: #059669;
+      --changed: #d97706;
+      --fixed: #2563eb;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111418;
+        --card: #1a1f24;
+        --text: #e8eaed;
+        --muted: #9aa3ad;
+        --border: #2a3139;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Tahoma, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+    }
+    header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h1 {
+      margin: 0 0 0.35rem;
+      font-size: 1.75rem;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .badge {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--brand) 15%, transparent);
+      color: var(--brand);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem 1.35rem;
+      margin-bottom: 1.25rem;
+    }
+    h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1.15rem;
+    }
+    h2 span {
+      font-weight: 400;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    ul {
+      margin: 0;
+      padding-right: 1.25rem;
+    }
+    li { margin: 0.35rem 0; }
+    .tag {
+      display: inline-block;
+      min-width: 3.2rem;
+      text-align: center;
+      padding: 0.05rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-left: 0.35rem;
+      vertical-align: middle;
+    }
+    .tag.added { background: color-mix(in srgb, var(--added) 18%, transparent); color: var(--added); }
+    .tag.changed { background: color-mix(in srgb, var(--changed) 18%, transparent); color: var(--changed); }
+    .tag.fixed { background: color-mix(in srgb, var(--fixed) 18%, transparent); color: var(--fixed); }
+    code {
+      font-family: Consolas, monospace;
+      font-size: 0.88em;
+      background: color-mix(in srgb, var(--border) 60%, transparent);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      direction: ltr;
+      unicode-bidi: embed;
+    }
+    footer {
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Boilerplate Nuxt — Changelog</h1>
+      <p class="meta">نسخه فعلی: <strong>1.0.1</strong> · تاریخ: ۱۴۰۵/۰۴/۰۴ · Nuxt 3 SPA</p>
+      <span class="badge">doc/changelog-1.0.1.html</span>
+    </header>
+
+    <section>
+      <h2>نسخه 1.0.1 <span>— آخرین انتشار</span></h2>
+      <ul>
+        <li><span class="tag changed">تغییر</span> آدرس پیش‌فرض API به <code>https://api.store.a4j.ir</code> در <code>config/app.ts</code>، <code>nuxt.config.ts</code>، Docker و env</li>
+        <li><span class="tag added">جدید</span> فایل <code>README.md</code> با راهنمای Nuxt، env، ساختار پروژه و deploy</li>
+        <li><span class="tag changed">تغییر</span> bump نسخه به 1.0.1 در <code>package.json</code>، <code>.env.example</code> و Docker</li>
+        <li><span class="tag fixed">بهبود</span> هم‌راستاسازی صفحه <code>/payments/admin/settings</code> با AmountInput و URL پیشنهادی بازگشت پرداخت</li>
+        <li><span class="tag fixed">بهبود</span> هم‌راستاسازی صفحه <code>/system-health</code> با health parser، diagnostics و UI تفصیلی</li>
+        <li><span class="tag added">جدید</span> <code>api/utils/health-response.ts</code> و تایپ‌های گسترده health</li>
+        <li><span class="tag added">جدید</span> <code>getAppPublicOrigin()</code> و <code>buildSuggestedPaymentReturnUrl()</code> برای callback پرداخت</li>
+        <li><span class="tag added">جدید</span> مسیرهای <code>WALLET_DEPOSIT_SUCCESS</code> و <code>WALLET_DEPOSIT_FAILURE</code> در routes</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>نسخه 1.0.0 <span>— انتشار اولیه</span></h2>
+      <ul>
+        <li><span class="tag added">جدید</span> boilerplate Nuxt 3 (SPA، RTL فارسی، Tailwind 4، Pinia، PWA)</li>
+        <li><span class="tag added">جدید</span> احراز هویت: login، OTP، register، JWT session</li>
+        <li><span class="tag added">جدید</span> کاربران، نقش‌ها و permissions</li>
+        <li><span class="tag added">جدید</span> کیف پول: deposit، manage، تراکنش‌ها</li>
+        <li><span class="tag added">جدید</span> پرداخت: settings، gateways، manual deposit</li>
+        <li><span class="tag added">جدید</span> تیکت‌ها (کاربر، صف، admin، مهمان)</li>
+        <li><span class="tag added">جدید</span> اعلان‌ها، وبلاگ، رسانه، system-settings</li>
+        <li><span class="tag added">جدید</span> Docker و docker-compose برای deploy</li>
+      </ul>
+    </section>
+
+    <footer>
+      Boilerplate Nuxt · FishProgrammers · GitHub: fishprogrammer/Boilerplate-nuxt
+    </footer>
+  </div>
+</body>
+</html>
