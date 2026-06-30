@@ -82,10 +82,16 @@
 <script setup lang="ts">
 definePageMeta({
   name: 'Index',
-  layout: 'dashboard'
+  layout: 'dashboard',
+  public: true,
 })
 
 import PwaInstallBanner from '~/components/PwaInstallBanner.vue'
+
+const isAuthenticated = await hasAuthenticatedSession()
+if (!isAuthenticated) {
+  await navigateTo('/fa/')
+}
 
 const stats = [
   {

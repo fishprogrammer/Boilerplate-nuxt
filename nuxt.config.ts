@@ -8,6 +8,18 @@ const appVersion = readAppVersion()
 export default defineNuxtConfig({
   compatibilityDate: '2025-06-01',
   ssr: false,
+
+  routeRules: {
+    '/': { prerender: true },
+    '/fa/**': { prerender: true },
+    '/en/**': { prerender: true },
+    '/panel/**': { ssr: false },
+    '/admin/**': { ssr: false },
+    '/login': { ssr: false },
+    '/register': { ssr: false },
+    '/verify': { ssr: false },
+  },
+
   devtools: { enabled: process.env.NODE_ENV !== 'production' },
 
   modules: ['@pinia/nuxt', '@vite-pwa/nuxt'],
@@ -67,7 +79,12 @@ export default defineNuxtConfig({
       appStoragePrefix: process.env.NUXT_PUBLIC_APP_STORAGE_PREFIX || 'app',
       guestTicketTypeId: process.env.NUXT_PUBLIC_GUEST_TICKET_TYPE_ID || '',
       guestDepartmentId: process.env.NUXT_PUBLIC_GUEST_DEPARTMENT_ID || '',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://store.a4j.ir',
+      catalogApiLive: process.env.NUXT_PUBLIC_CATALOG_API_LIVE || 'false',
+      commerceApiLive: process.env.NUXT_PUBLIC_COMMERCE_API_LIVE || 'false',
+      licensingApiLive: process.env.NUXT_PUBLIC_LICENSING_API_LIVE || 'false',
     },
+    revalidateSecret: process.env.NUXT_REVALIDATE_SECRET || 'change-me-in-production',
   },
 
   vite: {

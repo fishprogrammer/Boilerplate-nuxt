@@ -83,6 +83,37 @@ export const API_ENDPOINTS = {
     MY_SALE_ORDERS: '/api/finance/my-sale-orders/',
     mySaleOrderById: (id: string) => `/api/finance/my-sale-orders/${id}/`,
   },
+  CATALOG: {
+    PRODUCTS: '/api/catalog/products/',
+    productBySlug: (slug: string) => `/api/catalog/products/${slug}/`,
+    CATEGORIES: '/api/catalog/categories/',
+    categoryBySlug: (slug: string) => `/api/catalog/categories/${slug}/`,
+    ADMIN: {
+      PRODUCTS: '/api/catalog/admin/products/',
+      productById: (id: string) => `/api/catalog/admin/products/${id}/`,
+      CATEGORIES: '/api/catalog/admin/categories/',
+      releases: (id: string) => `/api/catalog/admin/products/${id}/releases/`,
+    },
+  },
+  COMMERCE: {
+    COUPONS_VALIDATE: '/api/commerce/coupons/validate/',
+    ORDERS: '/api/commerce/orders/',
+    orderById: (id: string) => `/api/commerce/orders/${id}/`,
+    ADMIN: {
+      COUPONS: '/api/commerce/admin/coupons/',
+      couponById: (id: string) => `/api/commerce/admin/coupons/${id}/`,
+    },
+  },
+  LICENSING: {
+    LICENSES: '/api/licensing/licenses/',
+    licenseById: (id: string) => `/api/licensing/licenses/${id}/`,
+    deactivate: (id: string) => `/api/licensing/licenses/${id}/deactivate/`,
+    revealKey: (id: string) => `/api/licensing/licenses/${id}/reveal-key/`,
+    DOWNLOADS: '/api/licensing/downloads/',
+    ADMIN: {
+      INSTALLATIONS: '/api/licensing/admin/installations/',
+    },
+  },
   TICKETS: {
     LIST: '/api/tickets/',
     QUEUE: '/api/tickets/queue/',

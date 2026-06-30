@@ -1,0 +1,16 @@
+{
+  "nav": {
+    "shop": "Shop",
+    "blog": "Blog",
+    "panel": "Customer panel"
+  },
+  "shop": {
+    "title": "Shop",
+    "free": "Free",
+    "buy": "Buy"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong"
+  }
+}

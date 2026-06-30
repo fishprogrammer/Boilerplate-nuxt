@@ -1,7 +1,12 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   const isGuestPage = to.meta.guest === true
   const isStandalone = to.meta.standalone === true
+  const isPublicPage = to.meta.public === true
   const isAuthenticated = await hasAuthenticatedSession()
+
+  if (isPublicPage) {
+    return
+  }
 
   if (!isAuthenticated && !isGuestPage && !isStandalone) {
     return navigateTo('/login')
