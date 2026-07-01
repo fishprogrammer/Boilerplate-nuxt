@@ -3,7 +3,7 @@
     <img
       :src="activeImage.url || '/logo.png'"
       :alt="activeImage.alt || name"
-      class="aspect-[16/10] w-full object-cover"
+      class="aspect-16/10 w-full object-cover"
       width="800"
       height="500"
     />

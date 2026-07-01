@@ -1,0 +1,14 @@
+---
+description: Git commits must only show FishProgrammers — never Cursor co-author
+alwaysApply: true
+---
+
+# Git commit author (mandatory)
+
+When creating git commits in this repository:
+
+1. **Author must be only `FishProgrammers`** — never add `Co-authored-by: Cursor <cursoragent@cursor.com>` or any Cursor/agent co-author trailer.
+2. **Do not append co-author lines** to commit messages, even if the IDE suggests it.
+3. Commit messages: title + optional body only — no agent attribution footers.
+
+The user wants GitHub to show a single committer: **FishProgrammers**.

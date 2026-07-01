@@ -1,9 +1,9 @@
 <template>
   <article class="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
     <NuxtLink :to="productUrl" class="block">
-      <div class="relative aspect-[16/10] bg-app-bg">
+      <div class="relative aspect-16/10 bg-app-bg">
         <span
-          class="absolute start-3 top-3 rounded-full px-2 py-0.5 text-xs font-semibold"
+          class="absolute inset-s-3 top-3 rounded-full px-2 py-0.5 text-xs font-semibold"
           :class="badgeClass"
         >
           {{ pricingBadge }}
