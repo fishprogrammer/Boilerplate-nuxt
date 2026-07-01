@@ -17,6 +17,7 @@ export interface BlogCategory extends BlogCategoryBrief {
   sort_order: number
   created_at: number
   updated_at: number
+  seo?: SeoPayload | null
 }
 
 export interface BlogPost {

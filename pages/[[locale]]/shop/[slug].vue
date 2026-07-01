@@ -6,45 +6,52 @@
 
     <article>
       <header class="grid gap-8 lg:grid-cols-2">
-        <div class="overflow-hidden rounded-2xl border border-border bg-surface">
-          <img
-            :src="product.screenshots[0]?.url || '/logo.png'"
-            :alt="product.name"
-            class="h-full w-full object-cover"
-            width="800"
-            height="500"
-          />
-        </div>
+        <ShopProductGallery :screenshots="product.screenshots" :name="product.name" />
         <div>
-          <p class="text-sm text-text-secondary">{{ versionLabel }} {{ product.current_version }}</p>
+          <p v-if="product.current_version" class="text-sm text-text-secondary">
+            {{ versionLabel }} {{ product.current_version }}
+          </p>
           <h1 class="mt-2 text-3xl font-bold text-text-primary">{{ product.name }}</h1>
           <p class="mt-4 text-base text-text-secondary">{{ product.short_description }}</p>
-          <div class="mt-6">
-            <ShopPricingTable :plans="product.plans" :locale="locale" />
+          <div v-if="defaultPlan" class="mt-4 text-2xl font-bold text-primary">{{ heroPrice }}</div>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <NuxtLink :to="buyUrl" class="btn-action-sm">{{ ctaLabel }}</NuxtLink>
+            <NuxtLink :to="supportUrl" class="btn-muted-sm">{{ supportLabel }}</NuxtLink>
           </div>
-          <NuxtLink
-            :to="supportUrl"
-            class="mt-4 inline-flex text-sm text-primary hover:underline"
-          >
-            {{ supportLabel }}
-          </NuxtLink>
+          <ul v-if="defaultPlan?.features?.length" class="mt-6 space-y-2 text-sm text-text-secondary">
+            <li v-for="feature in defaultPlan.features" :key="feature" class="flex gap-2">
+              <span class="text-primary">✓</span>
+              <span>{{ feature }}</span>
+            </li>
+          </ul>
         </div>
       </header>
 
-      <section class="prose mt-10 max-w-none" v-html="product.description_html" />
+      <div v-if="product.video_url" class="mt-10 aspect-video overflow-hidden rounded-2xl border border-border">
+        <iframe
+          :src="product.video_url"
+          class="h-full w-full"
+          title="Product video"
+          loading="lazy"
+          allowfullscreen
+        />
+      </div>
+
+      <section class="prose mt-10 max-w-none" v-html="sanitizedDescription" />
+
+      <section class="mt-10">
+        <h2 class="mb-4 text-2xl font-semibold">{{ plansTitle }}</h2>
+        <ShopPricingTable :plans="product.plans" :locale="locale" />
+      </section>
+
+      <section v-if="product.changelog_summary" class="mt-10 rounded-2xl border border-border bg-surface p-5">
+        <h2 class="mb-2 text-xl font-semibold">{{ changelogTitle }}</h2>
+        <p class="text-sm text-text-secondary">{{ product.changelog_summary }}</p>
+      </section>
 
       <section v-if="product.faqs.length" class="mt-10">
         <h2 class="mb-4 text-2xl font-semibold">{{ faqTitle }}</h2>
-        <div class="space-y-3">
-          <details
-            v-for="faq in product.faqs"
-            :key="faq.question"
-            class="rounded-xl border border-border bg-surface p-4"
-          >
-            <summary class="cursor-pointer font-medium">{{ faq.question }}</summary>
-            <p class="mt-2 text-sm text-text-secondary">{{ faq.answer }}</p>
-          </details>
-        </div>
+        <ShopFaqAccordion :faqs="product.faqs" />
       </section>
 
       <section v-if="product.related_products.length" class="mt-12">
@@ -66,6 +73,8 @@
 
 <script setup lang="ts">
 import { localePath } from '~/utils/locale-path'
+import { formatIRR } from '~/utils/locale'
+import { sanitizeProductHtml } from '~/utils/sanitize-html'
 
 definePageMeta({
   layout: 'public',
@@ -89,6 +98,43 @@ watchEffect(() => {
   }
 })
 
+const defaultPlan = computed(() => {
+  const plans = product.value?.plans ?? []
+  return plans.find((p) => p.is_default) ?? plans[0] ?? null
+})
+
+const sanitizedDescription = computed(() =>
+  sanitizeProductHtml(product.value?.description_html ?? ''),
+)
+
+const heroPrice = computed(() => {
+  const plan = defaultPlan.value
+  if (!plan) return '—'
+  if (plan.pricing_model === 'free' || plan.price === 0) {
+    return locale.value === 'fa' ? 'رایگان' : 'Free'
+  }
+  return formatIRR(plan.price, locale.value)
+})
+
+const ctaLabel = computed(() => {
+  const plan = defaultPlan.value
+  if (!plan) return locale.value === 'fa' ? 'خرید' : 'Buy'
+  if (plan.pricing_model === 'free' || plan.price === 0) {
+    return locale.value === 'fa' ? 'دریافت رایگان' : 'Get free'
+  }
+  return locale.value === 'fa' ? 'خرید' : 'Buy'
+})
+
+const buyUrl = computed(() => {
+  const planId = defaultPlan.value?.id
+  if (!planId) return localePath(locale.value, '/shop')
+  return `/panel/checkout?plan=${encodeURIComponent(planId)}`
+})
+
+const supportUrl = computed(
+  () => `/panel/tickets/new?product=${encodeURIComponent(slug.value)}`,
+)
+
 const breadcrumbs = computed(() => [
   { label: locale.value === 'fa' ? 'خانه' : 'Home', href: localePath(locale.value, '/') },
   { label: locale.value === 'fa' ? 'فروشگاه' : 'Shop', href: localePath(locale.value, '/shop') },
@@ -98,26 +144,26 @@ const breadcrumbs = computed(() => [
   },
 ])
 
-const supportUrl = computed(
-  () => `/tickets/create?product=${encodeURIComponent(slug.value)}`,
-)
-
 const copy = {
   fa: {
     loadingLabel: 'در حال بارگذاری محصول...',
     notFoundLabel: 'محصول یافت نشد.',
     versionLabel: 'نسخه',
-    supportLabel: 'نیاز به پشتیبانی دارید؟ تیکت باز کنید',
+    supportLabel: 'پشتیبانی / تیکت',
     faqTitle: 'سوالات متداول',
     relatedTitle: 'محصولات مرتبط',
+    plansTitle: 'پلن‌ها و قیمت',
+    changelogTitle: 'تغییرات اخیر',
   },
   en: {
     loadingLabel: 'Loading product...',
     notFoundLabel: 'Product not found.',
     versionLabel: 'Version',
-    supportLabel: 'Need support? Open a ticket',
+    supportLabel: 'Support ticket',
     faqTitle: 'FAQ',
     relatedTitle: 'Related products',
+    plansTitle: 'Plans & pricing',
+    changelogTitle: 'Recent changes',
   },
 } as const
 
@@ -128,4 +174,6 @@ const versionLabel = computed(() => t.value.versionLabel)
 const supportLabel = computed(() => t.value.supportLabel)
 const faqTitle = computed(() => t.value.faqTitle)
 const relatedTitle = computed(() => t.value.relatedTitle)
+const plansTitle = computed(() => t.value.plansTitle)
+const changelogTitle = computed(() => t.value.changelogTitle)
 </script>

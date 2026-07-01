@@ -13,7 +13,7 @@ import type {
   UpdateBlogCommentRequest,
   UpdateBlogPostRequest,
 } from '../types/blog.types'
-import { parseBlogPostsListResponse } from '../utils/api-response'
+import { parseBlogPostsListResponse, parseBlogCategoriesListResponse } from '../utils/api-response'
 import type { AppLocale } from '~/utils/locale'
 
 export class BlogService extends BaseService {
@@ -72,6 +72,18 @@ export class BlogService extends BaseService {
     if (params?.is_active !== undefined) query.is_active = params.is_active
     if (params?.ordering) query.ordering = params.ordering
     return this.getRaw(API_ENDPOINTS.BLOG.CATEGORIES, query)
+  }
+
+  async getCategory(id: string): Promise<unknown> {
+    return this.getRaw(API_ENDPOINTS.BLOG.categoryById(id))
+  }
+
+  async getCategoryBySlug(slug: string, locale: AppLocale): Promise<unknown> {
+    const listRaw = await this.listCategories({ locale, page_size: 100 })
+    const parsed = parseBlogCategoriesListResponse(listRaw)
+    const match = parsed?.categories.find((item) => item.slug === slug)
+    if (!match) return null
+    return this.getCategory(match.id)
   }
 
   async createCategory(data: CreateBlogCategoryRequest): Promise<unknown> {

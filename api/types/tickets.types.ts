@@ -25,6 +25,7 @@ export interface Ticket {
   subject: string
   body: string
   product_slug: string | null
+  product?: { id: string; slug: string; name: string } | null
   status: TicketStatus
   priority: TicketPriority
   is_guest: boolean
@@ -156,6 +157,7 @@ export interface CreateTicketRequest {
   subject: string
   body: string
   product_slug?: string | null
+  product?: string | null
   priority?: TicketPriority
   media_ids?: string[]
 }

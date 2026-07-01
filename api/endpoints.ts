@@ -90,10 +90,12 @@ export const API_ENDPOINTS = {
     productBySlug: (slug: string) => `/api/catalog/products/${slug}/`,
     CATEGORIES: '/api/catalog/categories/',
     categoryBySlug: (slug: string) => `/api/catalog/categories/${slug}/`,
+    categoryProducts: (slug: string) => `/api/catalog/categories/${slug}/products/`,
     ADMIN: {
       PRODUCTS: '/api/catalog/admin/products/',
       productById: (id: string) => `/api/catalog/admin/products/${id}/`,
       CATEGORIES: '/api/catalog/admin/categories/',
+      categoryById: (id: string) => `/api/catalog/admin/categories/${id}/`,
       releases: (id: string) => `/api/catalog/admin/products/${id}/releases/`,
     },
   },

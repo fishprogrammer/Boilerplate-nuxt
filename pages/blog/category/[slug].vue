@@ -29,11 +29,11 @@
 
 <script setup lang="ts">
 import { blogService } from '~/api/services/blog.service'
-import { parseBlogPostsListResponse } from '~/api/utils/api-response'
+import { parseBlogPostsListResponse, parseBlogCategoryDetailResponse } from '~/api/utils/api-response'
 import type { BlogPost } from '~/api/types/blog.types'
 import BlogCategoryNav from '~/components/blog/BlogCategoryNav.vue'
 import { formatEpochSeconds } from '~/utils/locale'
-import { absoluteSiteUrl, localeHreflang, localePath } from '~/utils/locale-path'
+import { localePath } from '~/utils/locale-path'
 
 definePageMeta({
   layout: 'public',
@@ -42,14 +42,13 @@ definePageMeta({
 
 const route = useRoute()
 const locale = useAppLocale()
-const config = useRuntimeConfig()
-const siteUrl = String(config.public.siteUrl || 'https://store.a4j.ir')
 const categorySlug = computed(() => String(route.params.slug || ''))
 
 const categoryName = ref('')
 const loadError = ref('')
 const posts = ref<BlogPost[]>([])
 const pending = ref(true)
+const categorySeo = ref<import('~/types/seo').SeoPayload | null>(null)
 
 const pageTitle = computed(() =>
   categoryName.value
@@ -67,41 +66,35 @@ const loadingLabel = computed(() => (locale.value === 'fa' ? 'در حال بار
 const emptyLabel = computed(() => (locale.value === 'fa' ? 'مقاله‌ای یافت نشد.' : 'No posts found.'))
 
 try {
-  const raw = await blogService.listPosts({
-    locale: locale.value,
-    status: 'published',
-    category_slug: categorySlug.value,
-    page_size: 20,
-    ordering: '-published_at',
-  })
-  const parsed = parseBlogPostsListResponse(raw)
+  const [categoryRaw, postsRaw] = await Promise.all([
+    blogService.getCategoryBySlug(categorySlug.value, locale.value),
+    blogService.listPosts({
+      locale: locale.value,
+      status: 'published',
+      category_slug: categorySlug.value,
+      page_size: 20,
+      ordering: '-published_at',
+    }),
+  ])
+  const category = parseBlogCategoryDetailResponse(categoryRaw)
+  if (category) {
+    categoryName.value = category.name
+    categorySeo.value = category.seo ?? null
+  }
+  const parsed = parseBlogPostsListResponse(postsRaw)
   posts.value = parsed?.posts ?? []
-  categoryName.value = posts.value[0]?.category?.name || categorySlug.value
+  if (!categoryName.value) {
+    categoryName.value = posts.value[0]?.category?.name || categorySlug.value
+  }
 } catch (error) {
   loadError.value = error instanceof Error ? error.message : 'Failed to load blog posts'
 } finally {
   pending.value = false
 }
 
-const categoryPath = computed(() => `/blog/category/${categorySlug.value}`)
-
-useSeoFromApi(
-  {
-    title: pageTitle.value,
-    description: subtitle.value,
-    canonical: absoluteSiteUrl(siteUrl, locale.value, categoryPath.value),
-    robots: 'index,follow',
-    og_title: pageTitle.value,
-    og_description: subtitle.value,
-    og_image: `${siteUrl}/logo.png`,
-    hreflang: localeHreflang(siteUrl, categoryPath.value),
-    json_ld: {
-      '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      name: pageTitle.value,
-      url: absoluteSiteUrl(siteUrl, locale.value, categoryPath.value),
-    },
-  },
-  locale.value,
-)
+watchEffect(() => {
+  if (categorySeo.value) {
+    useSeoFromApi(categorySeo.value, locale.value)
+  }
+})
 </script>

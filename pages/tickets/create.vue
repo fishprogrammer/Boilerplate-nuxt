@@ -202,6 +202,7 @@ const priority = ref<TicketPriority>('medium')
 const subject = ref('')
 const body = ref('')
 const productSlug = ref(String(route.query.product || '').trim())
+const productId = ref<string | null>(null)
 const mediaIds = ref<string[]>([])
 const uploadedFiles = ref<Array<{ id: string; name: string }>>([])
 const fileInputRef = ref<HTMLInputElement | null>(null)
@@ -310,6 +311,19 @@ async function onFilesSelected(event: Event) {
   }
 }
 
+async function resolveProductFromQuery() {
+  if (!productSlug.value) return
+  const config = useRuntimeConfig()
+  if (String(config.public.catalogApiLive).toLowerCase() !== 'true') return
+  try {
+    const { getProduct } = useCatalog()
+    const product = await getProduct(productSlug.value, 'fa')
+    if (product?.id) productId.value = product.id
+  } catch {
+    // fallback to product_slug on submit
+  }
+}
+
 async function loadFormData() {
   try {
     const [typesRes, deptRes, eligibilityRes] = await Promise.all([
@@ -347,7 +361,8 @@ async function handleSubmit() {
       target_user: targetType.value === 'user' ? targetUserId.value ?? undefined : undefined,
       subject: subject.value,
       body: body.value,
-      product_slug: productSlug.value || undefined,
+      product: productId.value || undefined,
+      product_slug: productId.value ? undefined : productSlug.value || undefined,
       priority: priority.value,
       media_ids: mediaIds.value,
     })
@@ -372,6 +387,6 @@ async function handleSubmit() {
 }
 
 onMounted(() => {
-  void loadFormData()
+  void Promise.all([loadFormData(), resolveProductFromQuery()])
 })
 </script>

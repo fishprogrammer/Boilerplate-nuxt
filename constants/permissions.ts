@@ -68,6 +68,16 @@ export const PERMISSIONS = {
     CHANGE: 'wallet.change_wallet',
     MANUAL_DEPOSIT: 'wallet.manual_deposit',
   },
+  CATALOG: {
+    VIEW_PRODUCT: 'catalog.view_product',
+    ADD_PRODUCT: 'catalog.add_product',
+    CHANGE_PRODUCT: 'catalog.change_product',
+    DELETE_PRODUCT: 'catalog.delete_product',
+    VIEW_CATEGORY: 'catalog.view_category',
+    ADD_CATEGORY: 'catalog.add_category',
+    CHANGE_CATEGORY: 'catalog.change_category',
+    DELETE_CATEGORY: 'catalog.delete_category',
+  },
 } as const
 
 export const SYSTEM_VIEW_PERMISSIONS = [
@@ -151,6 +161,8 @@ export const ROUTE_ACCESS: Partial<Record<string, RouteAccessRule>> = {
   'ticket-types': { staffOnly: true, anyOf: [PERMISSIONS.TICKETS.CHANGE] },
   'ticket-departments': { staffOnly: true, anyOf: [PERMISSIONS.TICKETS.CHANGE] },
   'ticket-settings': { staffOnly: true, anyOf: [PERMISSIONS.TICKETS.CHANGE] },
+  'catalog-products': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_PRODUCT] },
+  'catalog-categories': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_CATEGORY] },
 }
 
 export type MenuAccessRule = {
@@ -179,6 +191,7 @@ export const MENU_ACCESS: Partial<Record<string, MenuAccessRule>> = {
       PERMISSIONS.BLOG.DELETE_COMMENT,
     ],
   },
+  catalog: { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_PRODUCT, PERMISSIONS.CATALOG.VIEW_CATEGORY] },
   tickets: {},
   wallet: {},
   'system-settings': { staffOnly: true, anyOf: SYSTEM_VIEW_PERMISSIONS },

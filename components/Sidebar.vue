@@ -24,7 +24,12 @@
       <div
         class="flex h-14 shrink-0 items-center justify-between border-b border-border px-4 md:h-16 md:px-5 min-[1124px]:h-18 min-[1124px]:px-6"
       >
-        <div class="flex min-w-0 items-center gap-2 md:gap-3">
+        <NuxtLink
+          :to="homeUrl"
+          class="flex min-w-0 items-center gap-2 rounded-lg transition-opacity hover:opacity-80 md:gap-3"
+          :title="`بازگشت به ${appConfig.name}`"
+          @click="closeSidebarIfMobile"
+        >
           <div class="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg md:size-9 min-[1124px]:size-10">
             <img
               src="/logo.png"
@@ -32,10 +37,10 @@
               class="size-full object-contain p-0.5"
             />
           </div>
-          <h2 class="truncate text-base font-bold dark:text-white  md:text-lg min-[1124px]:text-xl">
+          <h2 class="truncate text-base font-bold dark:text-white md:text-lg min-[1124px]:text-xl">
             {{ appConfig.name }}
           </h2>
-        </div>
+        </NuxtLink>
       </div>
 
       <!-- Menu Items -->
@@ -395,6 +400,10 @@ import { ROLES_SUBMENU_ACCESS, BLOG_SUBMENU_ACCESS, TICKETS_SUBMENU_ACCESS, WALL
 import ConfirmModal from '~/components/ConfirmModal.vue'
 import { appConfig } from '~/config/app'
 import { getLayoutMainElement } from '~/utils/scroll'
+import { localePath } from '~/utils/locale-path'
+
+const locale = useAppLocale()
+const homeUrl = computed(() => localePath(locale.value, '/'))
 
 const SIDEBAR_BREAKPOINT = 1124
 
@@ -405,6 +414,7 @@ const MENU_ACTION_TO_ROUTE: Record<string, string> = {
   tickets: 'tickets',
   wallet: 'wallet',
   blog: 'blog',
+  catalog: 'catalog-products',
   roles: 'roles',
   'system-settings': 'system-settings',
   'system-health': 'system-health',
@@ -492,6 +502,13 @@ const menuItems: MenuItem[] = [
     iconBg: 'bg-pink-100 group-hover:bg-pink-200 dark:bg-pink-950 dark:group-hover:bg-pink-900',
     iconColor: 'text-red-600 group-hover:text-red-700 dark:text-red-400 dark:group-hover:text-red-300',
     action: 'blog',
+  },
+  {
+    label: 'کاتالوگ',
+    icon: 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z',
+    iconBg: 'bg-amber-100 group-hover:bg-amber-200 dark:bg-amber-950 dark:group-hover:bg-amber-900',
+    iconColor: 'text-amber-700 group-hover:text-amber-800 dark:text-amber-400 dark:group-hover:text-amber-300',
+    action: 'catalog',
   },
 ]
 
@@ -788,6 +805,9 @@ const isActive = (item: MenuItem) => {
   if (item.action === 'blog') {
     if (route.path.startsWith('/blog/p/')) return false
     return isBlogSectionRoute()
+  }
+  if (item.action === 'catalog') {
+    return name === 'catalog-products' || name === 'catalog-categories'
   }
   if (item.action === 'system-settings') return name === 'system-settings'
   if (item.action === 'system-health') return name === 'system-health'

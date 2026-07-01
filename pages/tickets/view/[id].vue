@@ -37,13 +37,14 @@
             <span class="rounded-md bg-surface px-2 py-0.5 text-xs text-text-secondary">
               {{ formatTargetType(ticket.target_type) }}
             </span>
-            <span
+            <NuxtLink
               v-if="ticket.product_slug"
-              class="rounded-md bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-800 dark:bg-violet-950/40 dark:text-violet-200 dir-ltr"
-              :title="ticket.product_slug"
+              :to="localePath('fa', `/shop/${ticket.product_slug}`)"
+              class="rounded-md bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-800 hover:underline dark:bg-violet-950/40 dark:text-violet-200 dir-ltr"
+              :title="ticket.product?.name || ticket.product_slug"
             >
-              محصول: {{ ticket.product_slug }}
-            </span>
+              محصول: {{ ticket.product?.name || ticket.product_slug }}
+            </NuxtLink>
             <span
               v-if="ticket.tracking_code"
               class="mr-auto truncate text-xs font-medium text-text-secondary dir-ltr"
@@ -260,6 +261,7 @@ import { showToast } from '~/composables/useToast'
 import { useAuthStore } from '~/stores/auth'
 import { getApiErrorMessage } from '~/utils/api-error'
 import { handleMediaUploadFailure } from '~/utils/media-upload'
+import { localePath } from '~/utils/locale-path'
 import {
   buildTicketThread,
   canShowEscalateAction,

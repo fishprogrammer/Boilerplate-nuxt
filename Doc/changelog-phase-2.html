@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog فاز ۲ — Soft Store Frontend</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f5f6;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --muted: #5c6670;
+      --border: #e2e5e8;
+      --brand: #059669;
+      --added: #059669;
+      --changed: #d97706;
+      --fixed: #2563eb;
+      --api: #7c3aed;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111418;
+        --card: #1a1f24;
+        --text: #e8eaed;
+        --muted: #9aa3ad;
+        --border: #2a3139;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Tahoma, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .wrap { max-width: 820px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+    header { margin-bottom: 2rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+    h1 { margin: 0 0 0.35rem; font-size: 1.75rem; }
+    .meta { color: var(--muted); font-size: 0.92rem; }
+    .badge {
+      display: inline-block;
+      margin-top: 0.75rem;
+      margin-left: 0.35rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--brand) 15%, transparent);
+      color: var(--brand);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .badge.progress { background: color-mix(in srgb, var(--changed) 15%, transparent); color: var(--changed); }
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem 1.35rem;
+      margin-bottom: 1.25rem;
+    }
+    h2 { margin: 0 0 0.35rem; font-size: 1.15rem; }
+    h2 span { font-weight: 400; color: var(--muted); font-size: 0.9rem; }
+    .entry-meta { color: var(--muted); font-size: 0.85rem; margin-bottom: 0.75rem; }
+    h3 { margin: 1rem 0 0.5rem; font-size: 1rem; color: var(--muted); }
+    ul { margin: 0; padding-right: 1.25rem; }
+    li { margin: 0.35rem 0; }
+    .tag {
+      display: inline-block;
+      min-width: 3.2rem;
+      text-align: center;
+      padding: 0.05rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-left: 0.35rem;
+      vertical-align: middle;
+    }
+    .tag.added { background: color-mix(in srgb, var(--added) 18%, transparent); color: var(--added); }
+    .tag.changed { background: color-mix(in srgb, var(--changed) 18%, transparent); color: var(--changed); }
+    .tag.api { background: color-mix(in srgb, var(--api) 18%, transparent); color: var(--api); }
+    code, pre {
+      font-family: Consolas, monospace;
+      font-size: 0.88em;
+      background: color-mix(in srgb, var(--border) 60%, transparent);
+      border-radius: 4px;
+      direction: ltr;
+      unicode-bidi: embed;
+    }
+    code { padding: 0.1rem 0.35rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 0.5rem; }
+    th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: right; }
+    th { background: color-mix(in srgb, var(--border) 40%, transparent); }
+    .nav-links { margin-top: 0.75rem; font-size: 0.9rem; }
+    .nav-links a { margin-left: 0.75rem; }
+    footer { color: var(--muted); font-size: 0.85rem; text-align: center; margin-top: 1.5rem; }
+    a { color: var(--brand); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Soft Store — Changelog فاز ۲</h1>
+      <p class="meta">کاتالوگ / فروشگاه · API زنده با فلگ env · admin catalog</p>
+      <span class="badge progress">🟡 تحویل اولیه فرانت</span>
+      <span class="badge">Doc/changelog-phase-2.html</span>
+      <div class="nav-links">
+        <strong>فازها:</strong>
+        <a href="changelog-phase-0.html">فاز ۰</a>
+        <a href="changelog-phase-1.html">فاز ۱</a>
+        <a href="changelog-phase-2.html">فاز ۲</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>هدف فاز ۲</h2>
+      <p class="meta">فروشگاه عمومی از <code>/api/catalog/*</code>؛ SEO از API؛ تیکت با FK محصول؛ revalidate webhook.</p>
+      <table>
+        <thead><tr><th>#</th><th>معیار خروج</th><th>وضعیت</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>API عمومی products/categories</td><td>BE ✅ · 🟡 FE</td></tr>
+          <tr><td>2</td><td>صفحات shop + SEO (CP-3)</td><td>🟡 FE</td></tr>
+          <tr><td>3</td><td>Admin catalog</td><td>BE ✅ · 🟡 FE (لیست)</td></tr>
+          <tr><td>4</td><td>تیکت → product UUID</td><td>🟡 FE</td></tr>
+          <tr><td>5</td><td>Blog category <code>seo</code></td><td>🟡 FE</td></tr>
+          <tr><td>6</td><td>ISR <code>POST /_revalidate</code></td><td>🟡 FE</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>۱۴۰۴/۰۴/۱۳ <span>— تحویل اولیه فاز ۲ (فرانت)</span></h2>
+      <p class="entry-meta">نسخه <code>1.0.7</code> · Mock تا <code>NUXT_PUBLIC_CATALOG_API_LIVE=true</code></p>
+
+      <h3>Added</h3>
+      <ul>
+        <li><span class="tag added">جدید</span> <code>catalog.service.ts</code> + parsers در <code>api-response.ts</code></li>
+        <li><span class="tag added">جدید</span> <code>useCatalog</code>: فیلترها، <code>listCategoryProducts</code>، متدهای admin</li>
+        <li><span class="tag added">جدید</span> کامپوننت‌ها: <code>CategoryNav</code>، <code>ProductGallery</code>، <code>FaqAccordion</code></li>
+        <li><span class="tag added">جدید</span> Admin: <code>/admin/catalog/products</code>، <code>/admin/catalog/categories</code></li>
+        <li><span class="tag added">جدید</span> دسترسی‌ها: <code>catalog.*</code> در <code>permissions.ts</code></li>
+        <li><span class="tag added">جدید</span> <code>sanitizeProductHtml</code> قبل از <code>v-html</code></li>
+        <li><span class="tag added">جدید</span> منوی سایدبار «کاتالوگ»</li>
+      </ul>
+
+      <h3>Changed</h3>
+      <ul>
+        <li><span class="tag changed">تغییر</span> Shop index: فیلتر نوع/قیمت/جستجو + nav دسته‌ها</li>
+        <li><span class="tag changed">تغییر</span> Shop category: <code>GET .../categories/{slug}/products/</code></li>
+        <li><span class="tag changed">تغییر</span> جزئیات محصول: گالری، پلن‌ها، FAQ، CTA پشتیبانی → <code>/panel/tickets/new?product=</code></li>
+        <li><span class="tag changed">تغییر</span> لندینگ: محصولات featured با <code>is_featured=true</code> وقتی API زنده است</li>
+        <li><span class="tag changed">تغییر</span> Blog category: SEO از <code>GET /api/blog/categories/{id}/</code></li>
+        <li><span class="tag changed">تغییر</span> تیکت: ارسال <code>product</code> (UUID) + badge لینک به فروشگاه</li>
+        <li><span class="tag changed">تغییر</span> <code>POST /_revalidate</code>: Bearer secret + body <code>{ paths: [] }</code></li>
+      </ul>
+
+      <h3><span class="tag api">API</span> Integration</h3>
+      <table>
+        <thead><tr><th>Endpoint</th><th>Frontend</th></tr></thead>
+        <tbody>
+          <tr><td><code>GET /api/catalog/products/</code></td><td>shop index، لندینگ featured</td></tr>
+          <tr><td><code>GET /api/catalog/products/{slug}/</code></td><td>جزئیات محصول + resolve تیکت</td></tr>
+          <tr><td><code>GET /api/catalog/categories/</code></td><td>CategoryNav</td></tr>
+          <tr><td><code>GET /api/catalog/categories/{slug}/products/</code></td><td>صفحه دسته shop</td></tr>
+          <tr><td><code>GET/POST /api/catalog/admin/*</code></td><td>admin catalog (لیست)</td></tr>
+          <tr><td><code>POST /api/tickets/</code> + <code>product</code></td><td>create ticket</td></tr>
+          <tr><td><code>GET /api/blog/categories/{id}/</code> + seo</td><td>blog category pages</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Out of scope (فاز ۳)</h3>
+      <ul>
+        <li>Checkout واقعی — CTA به <code>/panel/checkout?plan=</code> (placeholder)</li>
+        <li><code>/api/commerce/*</code>، <code>/api/licensing/*</code></li>
+        <li>فرم کامل CRUD محصول admin (فقط لیست در این تحویل)</li>
+      </ul>
+    </section>
+
+    <footer>Soft Store Frontend · فاز ۲ · Doc/changelog-phase-2.html</footer>
+  </div>
+</body>
+</html>

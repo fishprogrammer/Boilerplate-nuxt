@@ -157,6 +157,7 @@ export const mockCategoriesFa: CatalogCategory[] = [
     description: 'افزونه‌های حرفه‌ای برای فروشگاه وردپرس',
     parent_slug: null,
     product_count: 2,
+    locale: 'fa',
     seo: seoFor('fa', '/shop/category/wordpress-plugins', 'افزونه‌های وردپرس', 'فروش افزونه وردپرس'),
   },
   {
@@ -166,12 +167,14 @@ export const mockCategoriesFa: CatalogCategory[] = [
     description: 'نرم‌افزار آماده استقرار با Docker',
     parent_slug: null,
     product_count: 1,
+    locale: 'fa',
     seo: seoFor('fa', '/shop/category/docker-apps', 'اپلیکیشن‌های داکر', 'اپ داکر برای VPS'),
   },
 ]
 
 export const mockCategoriesEn: CatalogCategory[] = mockCategoriesFa.map((c) => ({
   ...c,
+  locale: 'en',
   name: c.slug === 'wordpress-plugins' ? 'WordPress Plugins' : 'Docker Apps',
   description:
     c.slug === 'wordpress-plugins'

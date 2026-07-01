@@ -622,9 +622,13 @@ function isCrmProduct(p: CatalogProductListItem) {
 }
 
 const { listProducts } = useCatalog()
+const catalogLive = String(config.public.catalogApiLive).toLowerCase() === 'true'
 const { data: productsData, pending } = await useAsyncData(
   () => `home-products-${props.locale}`,
-  () => listProducts(props.locale),
+  () =>
+    catalogLive
+      ? listProducts({ locale: props.locale, is_featured: true, page_size: 12 })
+      : listProducts({ locale: props.locale }),
 )
 
 const allProducts = computed<CatalogProductListItem[]>(() => productsData.value?.items ?? [])

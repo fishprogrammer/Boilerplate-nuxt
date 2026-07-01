@@ -1,12 +1,15 @@
+import type { PaginationMeta } from '~/api/types/auth.types'
 import type { SeoPayload } from './seo'
+import type { AppLocale } from '~/utils/locale'
 
 export type ProductType = 'wordpress_plugin' | 'docker_app' | 'desktop' | 'other'
 export type PricingModel = 'free' | 'one_time' | 'subscription'
 export type LicenseType = 'per_domain' | 'per_server' | 'per_user' | 'lifetime'
+export type CatalogProductStatus = 'draft' | 'published'
 
 export interface MediaRef {
   id: string
-  url: string
+  url: string | null
   thumbnail_url: string | null
   alt: string
 }
@@ -64,4 +67,59 @@ export interface CatalogCategory {
   parent_slug: string | null
   product_count: number
   seo: SeoPayload
+  locale: string
+}
+
+export interface ListCatalogProductsParams {
+  locale: AppLocale | string
+  page?: number
+  page_size?: number
+  search?: string
+  category?: string
+  category_slug?: string
+  product_type?: ProductType
+  pricing_model?: PricingModel
+  is_featured?: boolean
+  ordering?: string
+}
+
+export interface CatalogProductsListResult {
+  products: CatalogProductListItem[]
+  pagination: PaginationMeta
+}
+
+export interface CatalogCategoriesListResult {
+  categories: CatalogCategory[]
+  pagination: PaginationMeta
+}
+
+export interface AdminCatalogProductListItem extends CatalogProductListItem {
+  status: CatalogProductStatus
+  updated_at: number
+}
+
+export interface AdminCatalogProductsListResult {
+  products: AdminCatalogProductListItem[]
+  pagination: PaginationMeta
+}
+
+export interface AdminCatalogCategory {
+  id: string
+  slug: string
+  name: string
+  description: string
+  locale: AppLocale
+  parent: string | null
+  is_active: boolean
+  sort_order: number
+  meta_title: string
+  meta_description: string
+  og_image: string | null
+}
+
+export interface CreateCatalogReleaseRequest {
+  version: string
+  artifact: string
+  release_notes: string
+  released_at: number
 }

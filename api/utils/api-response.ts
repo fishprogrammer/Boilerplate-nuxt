@@ -29,6 +29,15 @@ import type {
 } from '../types/inbox.types'
 import type { BlogCategory, BlogCategoryBrief, BlogCategoriesListResult, BlogComment, BlogCommentStatus, BlogCommentsListResult, BlogPost, BlogPostStatus, BlogPostsListResult, CreateBlogPostInput, CreateBlogPostRequest, UpdateBlogPostInput, UpdateBlogPostRequest } from '../types/blog.types'
 import type {
+  AdminCatalogProductListItem,
+  AdminCatalogProductsListResult,
+  CatalogCategoriesListResult,
+  CatalogCategory,
+  CatalogProductDetail,
+  CatalogProductListItem,
+  CatalogProductsListResult,
+} from '~/types/catalog'
+import type {
   Wallet,
   WalletTransaction,
   WalletTransactionStatus,
@@ -665,6 +674,7 @@ function normalizeBlogCategory(raw: Record<string, unknown>): BlogCategory {
     sort_order: Number(raw.sort_order) || 0,
     created_at: Number(raw.created_at) || 0,
     updated_at: Number(raw.updated_at) || 0,
+    seo: normalizeSeoPayload(raw.seo),
   }
 }
 
@@ -704,6 +714,209 @@ export function parseBlogCategoryDetailResponse(response: unknown): BlogCategory
   const payload = getApiPayload(response)
   if (!isBlogCategoryLike(payload)) return null
   return normalizeBlogCategory(payload)
+}
+
+function normalizeCatalogProductListItem(raw: Record<string, unknown>): CatalogProductListItem {
+  const categoryRaw = raw.category
+  let category: CatalogProductListItem['category'] = null
+  if (categoryRaw && typeof categoryRaw === 'object' && !Array.isArray(categoryRaw)) {
+    const c = categoryRaw as Record<string, unknown>
+    category = {
+      slug: String(c.slug || ''),
+      name: String(c.name || ''),
+    }
+  }
+  return {
+    id: String(raw.id || ''),
+    slug: String(raw.slug || ''),
+    name: String(raw.name || ''),
+    short_description: String(raw.short_description || ''),
+    product_type: String(raw.product_type || 'other') as CatalogProductListItem['product_type'],
+    pricing_model: String(raw.pricing_model || 'one_time') as CatalogProductListItem['pricing_model'],
+    price_from: raw.price_from === null || raw.price_from === undefined ? null : Number(raw.price_from),
+    currency: 'IRR',
+    thumbnail_url:
+      raw.thumbnail_url === null || raw.thumbnail_url === undefined || raw.thumbnail_url === ''
+        ? null
+        : String(raw.thumbnail_url),
+    is_featured: raw.is_featured === true,
+    category,
+    locale: String(raw.locale || 'fa'),
+  }
+}
+
+function extractCatalogProducts(root: Record<string, unknown>): unknown[] | null {
+  const data = root.data
+  if (Array.isArray(data)) return data
+  if (data && typeof data === 'object' && !Array.isArray(data)) {
+    const inner = (data as Record<string, unknown>).data
+    if (Array.isArray(inner)) return inner
+  }
+  return null
+}
+
+export function parseCatalogProductsListResponse(response: unknown): CatalogProductsListResult | null {
+  if (!isApiSuccess(response)) return null
+  const root = (response && typeof response === 'object' ? response : {}) as Record<string, unknown>
+  const rawItems = extractCatalogProducts(root)
+  if (!rawItems) return null
+  const products = rawItems
+    .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+    .map((item) => normalizeCatalogProductListItem(item))
+  const pagination = extractPagination(root, products.length)
+  return { products, pagination }
+}
+
+function normalizeCatalogCategory(raw: Record<string, unknown>): CatalogCategory {
+  const seo = normalizeSeoPayload(raw.seo)
+  return {
+    id: String(raw.id || ''),
+    slug: String(raw.slug || ''),
+    name: String(raw.name || ''),
+    description: String(raw.description || ''),
+    parent_slug: raw.parent_slug ? String(raw.parent_slug) : null,
+    product_count: Number(raw.product_count) || 0,
+    seo: seo ?? {
+      title: String(raw.name || ''),
+      description: String(raw.description || ''),
+      canonical: '',
+      robots: 'index,follow',
+      og_title: String(raw.name || ''),
+      og_description: String(raw.description || ''),
+      og_image: null,
+      hreflang: {},
+      json_ld: {},
+    },
+    locale: String(raw.locale || 'fa'),
+  }
+}
+
+export function parseCatalogCategoriesListResponse(response: unknown): CatalogCategoriesListResult | null {
+  if (!isApiSuccess(response)) return null
+  const root = (response && typeof response === 'object' ? response : {}) as Record<string, unknown>
+  const data = root.data
+  const rawItems = Array.isArray(data) ? data : null
+  if (!rawItems) return null
+  const categories = rawItems
+    .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+    .map((item) => normalizeCatalogCategory(item))
+  const pagination = extractPagination(root, categories.length)
+  return { categories, pagination }
+}
+
+export function parseCatalogCategoryDetailResponse(response: unknown): CatalogCategory | null {
+  if (!isApiSuccess(response)) return null
+  const payload = getApiPayload(response)
+  if (!payload || typeof payload !== 'object') return null
+  return normalizeCatalogCategory(payload as Record<string, unknown>)
+}
+
+function normalizePricingPlan(raw: Record<string, unknown>): CatalogProductDetail['plans'][number] {
+  const featuresRaw = raw.features
+  const features = Array.isArray(featuresRaw) ? featuresRaw.map((f) => String(f)) : []
+  return {
+    id: String(raw.id || ''),
+    name: String(raw.name || ''),
+    pricing_model: String(raw.pricing_model || 'one_time') as CatalogProductDetail['plans'][number]['pricing_model'],
+    license_type: String(raw.license_type || 'lifetime') as CatalogProductDetail['plans'][number]['license_type'],
+    price: Number(raw.price) || 0,
+    billing_interval:
+      raw.billing_interval === 'month' || raw.billing_interval === 'year' ? raw.billing_interval : null,
+    max_activations: Number(raw.max_activations) || 1,
+    features,
+    is_default: raw.is_default === true,
+  }
+}
+
+function normalizeMediaRef(raw: unknown): CatalogProductDetail['screenshots'][number] | null {
+  if (!raw || typeof raw !== 'object') return null
+  const item = raw as Record<string, unknown>
+  return {
+    id: String(item.id || ''),
+    url: item.url === null || item.url === undefined || item.url === '' ? null : String(item.url),
+    thumbnail_url:
+      item.thumbnail_url === null || item.thumbnail_url === undefined || item.thumbnail_url === ''
+        ? null
+        : String(item.thumbnail_url),
+    alt: String(item.alt || ''),
+  }
+}
+
+export function parseCatalogProductDetailResponse(response: unknown): CatalogProductDetail | null {
+  if (!isApiSuccess(response)) return null
+  const payload = getApiPayload(response)
+  if (!payload || typeof payload !== 'object') return null
+  const raw = payload as Record<string, unknown>
+  const screenshotsRaw = raw.screenshots
+  const screenshots = Array.isArray(screenshotsRaw)
+    ? screenshotsRaw
+        .map((item) => normalizeMediaRef(item))
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+    : []
+  const plansRaw = raw.plans
+  const plans = Array.isArray(plansRaw)
+    ? plansRaw
+        .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+        .map((item) => normalizePricingPlan(item))
+    : []
+  const faqsRaw = raw.faqs
+  const faqs = Array.isArray(faqsRaw)
+    ? faqsRaw
+        .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+        .map((item) => ({
+          question: String(item.question || ''),
+          answer: String(item.answer || ''),
+        }))
+    : []
+  const relatedRaw = raw.related_products
+  const related_products = Array.isArray(relatedRaw)
+    ? relatedRaw
+        .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+        .map((item) => normalizeCatalogProductListItem(item))
+    : []
+  const seo = normalizeSeoPayload(raw.seo)
+  const base = normalizeCatalogProductListItem(raw)
+  return {
+    ...base,
+    description_html: String(raw.description_html || ''),
+    screenshots,
+    video_url: raw.video_url ? String(raw.video_url) : null,
+    changelog_summary: raw.changelog_summary ? String(raw.changelog_summary) : null,
+    current_version: raw.current_version ? String(raw.current_version) : null,
+    plans,
+    seo: seo ?? {
+      title: base.name,
+      description: base.short_description,
+      canonical: '',
+      robots: 'index,follow',
+      og_title: base.name,
+      og_description: base.short_description,
+      og_image: base.thumbnail_url,
+      hreflang: {},
+      json_ld: {},
+    },
+    faqs,
+    related_products,
+  }
+}
+
+export function parseAdminCatalogProductsListResponse(response: unknown): AdminCatalogProductsListResult | null {
+  const parsed = parseCatalogProductsListResponse(response)
+  if (!parsed) return null
+  const root = (response && typeof response === 'object' ? response : {}) as Record<string, unknown>
+  const rawItems = extractCatalogProducts(root) ?? []
+  const products: AdminCatalogProductListItem[] = parsed.products.map((product, index) => {
+    const raw = rawItems[index]
+    const statusRaw =
+      raw && typeof raw === 'object' ? (raw as Record<string, unknown>).status : undefined
+    return {
+      ...product,
+      status: statusRaw === 'published' ? 'published' : 'draft',
+      updated_at:
+        raw && typeof raw === 'object' ? Number((raw as Record<string, unknown>).updated_at) || 0 : 0,
+    }
+  })
+  return { products, pagination: parsed.pagination }
 }
 
 function normalizeSeoPayload(raw: unknown): import('~/types/seo').SeoPayload | null {
@@ -2388,6 +2601,7 @@ export function buildCreateTicketPayload(input: {
   subject: string
   body: string
   product_slug?: string | null
+  product?: string | null
   priority?: TicketPriority
   media_ids?: string[]
 }): CreateTicketRequest {
@@ -2400,8 +2614,11 @@ export function buildCreateTicketPayload(input: {
     priority: input.priority || 'medium',
   }
 
+  const productId = input.product?.trim()
+  if (productId) payload.product = productId
+
   const productSlug = input.product_slug?.trim()
-  if (productSlug) payload.product_slug = productSlug
+  if (!productId && productSlug) payload.product_slug = productSlug
 
   if (input.target_type === 'department') {
     if (input.current_department) payload.current_department = input.current_department
