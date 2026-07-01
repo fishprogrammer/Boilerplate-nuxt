@@ -16,7 +16,7 @@ const ADMIN_REDIRECTS: Record<string, string> = {
   orders: '/finance/my-invoices',
   licenses: '/finance/my-invoices',
   finance: '/finance/my-invoices',
-  seo: '/system-health',
+  seo: '/admin/seo',
 }
 
 const slugParts = computed(() => {

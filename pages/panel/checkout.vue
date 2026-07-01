@@ -9,6 +9,7 @@ import { getApiErrorMessage } from '~/utils/api-error'
 import { showToast } from '~/composables/useToast'
 import { savePendingCommerceOrder } from '~/utils/commerce'
 import { submitPaymentRedirect } from '~/utils/payments'
+import { trackCommercePurchaseOnce } from '~/utils/ga4-events'
 
 definePageMeta({
   name: 'panel-checkout',
@@ -81,6 +82,19 @@ async function loadCheckoutData() {
       couponCode.value = initialCoupon.value
       await applyCoupon()
     }
+
+    if (selectedPlan.value) {
+      const { trackAddToCart } = useGa4()
+      trackAddToCart({
+        value: displayAmount.value,
+        items: [
+          {
+            item_id: selectedPlan.value.id,
+            item_name: productName.value || selectedPlan.value.name,
+          },
+        ],
+      })
+    }
   } catch (error) {
     loadError.value = getApiErrorMessage(error, 'خطا در بارگذاری اطلاعات تسویه')
   } finally {
@@ -132,6 +146,11 @@ async function submitCheckout() {
 
     if (result.status === 'paid') {
       await authStore.fetchCurrentUser()
+      trackCommercePurchaseOnce({
+        id: result.order_id,
+        final_amount: displayAmount.value,
+        status: 'paid',
+      })
       await router.push({ name: 'panel-order-view', params: { id: result.order_id } })
       return
     }

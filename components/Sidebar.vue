@@ -418,6 +418,7 @@ const MENU_ACTION_TO_ROUTE: Record<string, string> = {
   commerce: 'admin-commerce-coupons',
   licensing: 'admin-licensing-installations',
   finance: 'admin-finance-dashboard',
+  seo: 'admin-seo',
   roles: 'roles',
   'system-settings': 'system-settings',
   'system-health': 'system-health',
@@ -533,6 +534,13 @@ const menuItems: MenuItem[] = [
     iconBg: 'bg-rose-100 group-hover:bg-rose-200 dark:bg-rose-950 dark:group-hover:bg-rose-900',
     iconColor: 'text-rose-700 group-hover:text-rose-800 dark:text-rose-400 dark:group-hover:text-rose-300',
     action: 'finance',
+  },
+  {
+    label: 'SEO',
+    icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+    iconBg: 'bg-cyan-100 group-hover:bg-cyan-200 dark:bg-cyan-950 dark:group-hover:bg-cyan-900',
+    iconColor: 'text-cyan-700 group-hover:text-cyan-800 dark:text-cyan-400 dark:group-hover:text-cyan-300',
+    action: 'seo',
   },
 ]
 
@@ -846,6 +854,9 @@ const isActive = (item: MenuItem) => {
   }
   if (item.action === 'finance') {
     return name === 'admin-finance-dashboard'
+  }
+  if (item.action === 'seo') {
+    return name === 'admin-seo'
   }
   if (item.action === 'system-settings') return name === 'system-settings'
   if (item.action === 'system-health') return name === 'system-health'

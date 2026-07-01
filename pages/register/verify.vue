@@ -372,6 +372,8 @@ const handleSubmit = async () => {
       sessionStorage.removeItem('register_phone_number')
 
       await hydrateUserSession()
+      const { trackSignUp } = useGa4()
+      trackSignUp('otp')
       await router.replace('/panel')
     } else {
       applyApiErrors(response)

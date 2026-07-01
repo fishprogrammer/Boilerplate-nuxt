@@ -87,6 +87,7 @@ import {
   getPendingCommerceOrderId,
   isCommerceTerminalStatus,
 } from '~/utils/commerce'
+import { trackCommercePurchaseOnce } from '~/utils/ga4-events'
 
 definePageMeta({
   name: 'panel-order-view',
@@ -130,6 +131,9 @@ async function loadOrder(pollIfPending = false) {
     }
 
     order.value = detail
+    if (detail?.status === 'paid') {
+      trackCommercePurchaseOnce(detail)
+    }
   } catch (error) {
     loadError.value = getApiErrorMessage(error, 'بارگذاری سفارش ناموفق بود')
   } finally {

@@ -189,6 +189,7 @@ export const ROUTE_ACCESS: Partial<Record<string, RouteAccessRule>> = {
   'admin-licensing-installations': { staffOnly: true, anyOf: [PERMISSIONS.LICENSING.VIEW_LICENSE] },
   'admin-licensing-licenses': { staffOnly: true, anyOf: [PERMISSIONS.LICENSING.VIEW_LICENSE] },
   'admin-finance-dashboard': { staffOnly: true, anyOf: [PERMISSIONS.FINANCE.VIEW_DASHBOARD] },
+  'admin-seo': { staffOnly: true },
 }
 
 export type MenuAccessRule = {
@@ -221,6 +222,7 @@ export const MENU_ACCESS: Partial<Record<string, MenuAccessRule>> = {
   commerce: { staffOnly: true, anyOf: [PERMISSIONS.COMMERCE.VIEW_COUPON, PERMISSIONS.COMMERCE.VIEW_ORDER] },
   licensing: { staffOnly: true, anyOf: [PERMISSIONS.LICENSING.VIEW_LICENSE] },
   finance: { staffOnly: true, anyOf: [PERMISSIONS.FINANCE.VIEW_DASHBOARD] },
+  seo: { staffOnly: true },
   tickets: {},
   wallet: {},
   'system-settings': { staffOnly: true, anyOf: SYSTEM_VIEW_PERMISSIONS },

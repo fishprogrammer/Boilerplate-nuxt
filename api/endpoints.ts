@@ -167,5 +167,22 @@ export const API_ENDPOINTS = {
     events: (id: string) => `/api/tickets/${id}/events/`,
     attachments: (id: string) => `/api/tickets/${id}/attachments/`,
   },
+  SEO: {
+    PUBLIC_SETTINGS: '/api/seo/public-settings/',
+    SETTINGS: '/api/seo/settings/',
+    SITEMAP: '/api/sitemap.xml',
+    SITEMAP_PRODUCTS: '/api/sitemap-products.xml',
+    SITEMAP_BLOG: '/api/sitemap-blog.xml',
+    GSC: {
+      STATUS: '/api/seo/gsc/status/',
+      CONNECT: '/api/seo/gsc/connect/',
+      CALLBACK: '/api/seo/gsc/callback/',
+      ANALYTICS: '/api/seo/gsc/analytics/',
+      QUERIES: '/api/seo/gsc/queries/',
+      PAGES: '/api/seo/gsc/pages/',
+      INDEXING_ISSUES: '/api/seo/gsc/indexing-issues/',
+      SUBMIT_SITEMAP: '/api/seo/gsc/submit-sitemap/',
+    },
+  },
 } as const
 
