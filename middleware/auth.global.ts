@@ -13,7 +13,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   if (isAuthenticated && isGuestPage) {
-    return navigateTo('/')
+    return navigateTo('/panel')
   }
 
   if (isAuthenticated && !isGuestPage && !isStandalone && typeof to.name === 'string') {

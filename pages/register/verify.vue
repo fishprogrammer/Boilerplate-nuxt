@@ -372,7 +372,7 @@ const handleSubmit = async () => {
       sessionStorage.removeItem('register_phone_number')
 
       await hydrateUserSession()
-      await router.replace('/')
+      await router.replace('/panel')
     } else {
       applyApiErrors(response)
     }

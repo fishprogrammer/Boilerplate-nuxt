@@ -15,7 +15,7 @@
         class="rounded-2xl border border-border bg-surface p-5"
       >
         <h2 class="text-xl font-semibold text-text-primary">
-          <NuxtLink :to="`/${locale}/blog/${post.slug || post.id}`" class="hover:text-primary">
+          <NuxtLink :to="localePath(locale, `/blog/${post.slug || post.id}`)" class="hover:text-primary">
             {{ post.title }}
           </NuxtLink>
         </h2>
@@ -27,25 +27,24 @@
 
 <script setup lang="ts">
 import { blogService } from '~/api/services/blog.service'
-import { parseBlogPostsListResponse, parseBlogPostDetailResponse } from '~/api/utils/api-response'
+import { parseBlogPostsListResponse } from '~/api/utils/api-response'
 import type { BlogPost } from '~/api/types/blog.types'
-import { formatEpochSeconds, type AppLocale } from '~/utils/locale'
+import { formatEpochSeconds } from '~/utils/locale'
+import { absoluteSiteUrl, localeHreflang } from '~/utils/locale-path'
 
 definePageMeta({
   layout: 'public',
-  middleware: ['locale'],
   public: true,
 })
 
-const route = useRoute()
-const locale = computed(() => route.params.locale as AppLocale)
+const locale = computed(() => 'en' as const)
+const config = useRuntimeConfig()
+const siteUrl = String(config.public.siteUrl || 'https://store.a4j.ir')
 
-const title = computed(() => (locale.value === 'fa' ? 'وبلاگ' : 'Blog'))
-const subtitle = computed(() =>
-  locale.value === 'fa' ? 'مقالات و راهنماهای Soft Store' : 'Soft Store articles and guides',
-)
-const loadingLabel = computed(() => (locale.value === 'fa' ? 'در حال بارگذاری...' : 'Loading...'))
-const emptyLabel = computed(() => (locale.value === 'fa' ? 'مقاله‌ای یافت نشد.' : 'No posts found.'))
+const title = computed(() => 'Blog')
+const subtitle = computed(() => 'Soft Store articles and guides')
+const loadingLabel = computed(() => 'Loading...')
+const emptyLabel = computed(() => 'No posts found.')
 
 const loadError = ref('')
 const posts = ref<BlogPost[]>([])
@@ -65,22 +64,19 @@ useSeoFromApi(
   {
     title: title.value,
     description: subtitle.value,
-    canonical: `https://store.a4j.ir/${locale.value}/blog`,
+    canonical: absoluteSiteUrl(siteUrl, 'en', '/blog'),
     robots: 'index,follow',
     og_title: title.value,
     og_description: subtitle.value,
-    og_image: 'https://store.a4j.ir/logo.png',
-    hreflang: {
-      fa: 'https://store.a4j.ir/fa/blog',
-      en: 'https://store.a4j.ir/en/blog',
-    },
+    og_image: `${siteUrl}/logo.png`,
+    hreflang: localeHreflang(siteUrl, '/blog'),
     json_ld: {
       '@context': 'https://schema.org',
       '@type': 'Blog',
       name: title.value,
-      url: `https://store.a4j.ir/${locale.value}/blog`,
+      url: absoluteSiteUrl(siteUrl, 'en', '/blog'),
     },
   },
-  locale.value,
+  'en',
 )
 </script>

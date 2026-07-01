@@ -3,7 +3,6 @@ import { apiClient } from '~/api/client'
 import { isApiSuccess } from '~/api/utils/api-response'
 import type { ApiEnvelope, ApiError } from '~/types/api'
 import { ApiClientError } from '~/types/api'
-import { isAppLocale, type AppLocale } from '~/utils/locale'
 
 export type ApiRequestOptions = Omit<AxiosRequestConfig, 'url' | 'headers'> & {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
@@ -14,14 +13,8 @@ function toApiClientError(payload: ApiError): ApiClientError {
   return new ApiClientError(payload)
 }
 
-function resolveAcceptLanguage(locale?: string): AppLocale {
-  if (locale && isAppLocale(locale)) return locale
-  return 'fa'
-}
-
 export function useApi() {
-  const route = useRoute()
-  const locale = computed(() => resolveAcceptLanguage(route.params.locale as string | undefined))
+  const locale = useAppLocale()
 
   async function api<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
     const method = options.method ?? 'GET'

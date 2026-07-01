@@ -19,16 +19,16 @@
 </template>
 
 <script setup lang="ts">
-import { isAppLocale, type AppLocale } from '~/utils/locale'
+import { absoluteSiteUrl, localeHreflang } from '~/utils/locale-path'
 
 definePageMeta({
   layout: 'public',
-  middleware: ['locale'],
   public: true,
 })
 
-const route = useRoute()
-const locale = computed(() => route.params.locale as AppLocale)
+const locale = useAppLocale()
+const config = useRuntimeConfig()
+const siteUrl = String(config.public.siteUrl || 'https://store.a4j.ir')
 const { listProducts, catalogApiLive } = useCatalog()
 
 const { data, pending } = await useAsyncData(
@@ -67,20 +67,17 @@ useSeoFromApi(
   {
     title: t.value.seoTitle,
     description: t.value.seoDescription,
-    canonical: `https://store.a4j.ir/${locale.value}/shop`,
+    canonical: absoluteSiteUrl(siteUrl, locale.value, '/shop'),
     robots: 'index,follow',
     og_title: t.value.seoTitle,
     og_description: t.value.seoDescription,
-    og_image: 'https://store.a4j.ir/logo.png',
-    hreflang: {
-      fa: 'https://store.a4j.ir/fa/shop',
-      en: 'https://store.a4j.ir/en/shop',
-    },
+    og_image: `${siteUrl}/logo.png`,
+    hreflang: localeHreflang(siteUrl, '/shop'),
     json_ld: {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       name: t.value.seoTitle,
-      url: `https://store.a4j.ir/${locale.value}/shop`,
+      url: absoluteSiteUrl(siteUrl, locale.value, '/shop'),
     },
   },
   locale.value,

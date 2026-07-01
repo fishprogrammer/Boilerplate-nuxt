@@ -206,7 +206,7 @@ const handleSubmit = async () => {
       sessionStorage.removeItem('phone_number')
 
       await hydrateUserSession()
-      await router.replace('/')
+      await router.replace('/panel')
     } else {
       authError.value = response.message || 'تایید کد ناموفق بود'
     }

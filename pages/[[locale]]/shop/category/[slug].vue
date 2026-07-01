@@ -19,16 +19,15 @@
 </template>
 
 <script setup lang="ts">
-import { isAppLocale, type AppLocale } from '~/utils/locale'
+import { localePath } from '~/utils/locale-path'
 
 definePageMeta({
   layout: 'public',
-  middleware: ['locale'],
   public: true,
 })
 
 const route = useRoute()
-const locale = computed(() => route.params.locale as AppLocale)
+const locale = useAppLocale()
 const slug = computed(() => String(route.params.slug))
 
 const { getCategory, listProducts } = useCatalog()
@@ -54,9 +53,12 @@ watchEffect(() => {
 })
 
 const breadcrumbs = computed(() => [
-  { label: locale.value === 'fa' ? 'خانه' : 'Home', href: `/${locale.value}` },
-  { label: locale.value === 'fa' ? 'فروشگاه' : 'Shop', href: `/${locale.value}/shop` },
-  { label: category.value?.name ?? slug.value, href: `/${locale.value}/shop/category/${slug.value}` },
+  { label: locale.value === 'fa' ? 'خانه' : 'Home', href: localePath(locale.value, '/') },
+  { label: locale.value === 'fa' ? 'فروشگاه' : 'Shop', href: localePath(locale.value, '/shop') },
+  {
+    label: category.value?.name ?? slug.value,
+    href: localePath(locale.value, `/shop/category/${slug.value}`),
+  },
 ])
 
 const copy = {

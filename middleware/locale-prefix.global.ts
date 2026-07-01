@@ -1,14 +1,12 @@
 import { stripLocalePrefix } from '~/utils/locale-path'
 
 export default defineNuxtRouteMiddleware((to) => {
-  const locale = to.params.locale
-
-  if (locale === 'fa') {
-    const target = stripLocalePrefix(to.path)
-    return navigateTo({ path: target, query: to.query, hash: to.hash }, { redirectCode: 301 })
+  if (to.path === '/fa' || to.path === '/fa/') {
+    return navigateTo('/', { redirectCode: 301 })
   }
 
-  if (typeof locale === 'string' && locale && !isAppLocale(locale)) {
-    return navigateTo('/')
+  if (to.path.startsWith('/fa/')) {
+    const target = stripLocalePrefix(to.path)
+    return navigateTo({ path: target, query: to.query, hash: to.hash }, { redirectCode: 301 })
   }
 })

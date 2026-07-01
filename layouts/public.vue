@@ -2,12 +2,12 @@
   <div class="min-h-screen bg-app-bg text-text-primary" :dir="dir">
     <header class="border-b border-border bg-surface">
       <div class="page-shell flex items-center justify-between gap-4 py-4">
-        <NuxtLink :to="`/${locale}`" class="text-lg font-bold text-primary">
+        <NuxtLink :to="localePath(locale, '/')" class="text-lg font-bold text-primary">
           {{ appName }}
         </NuxtLink>
         <nav class="flex flex-wrap items-center gap-4 text-sm">
-          <NuxtLink :to="`/${locale}/shop`" class="hover:text-primary">{{ t.shop }}</NuxtLink>
-          <NuxtLink :to="`/${locale}/blog`" class="hover:text-primary">{{ t.blog }}</NuxtLink>
+          <NuxtLink :to="localePath(locale, '/shop')" class="hover:text-primary">{{ t.shop }}</NuxtLink>
+          <NuxtLink :to="localePath(locale, '/blog')" class="hover:text-primary">{{ t.blog }}</NuxtLink>
           <NuxtLink :to="localeSwitchUrl" class="hover:text-primary">{{ t.switchLocale }}</NuxtLink>
           <NuxtLink :to="panelUrl" class="rounded-xl bg-primary px-3 py-1.5 text-white hover:opacity-90">
             {{ t.panel }}
@@ -28,22 +28,19 @@
 
 <script setup lang="ts">
 import { appConfig } from '~/config/app'
-import { localeDir, type AppLocale } from '~/utils/locale'
+import { localeDir } from '~/utils/locale'
+import { localePath, switchLocalePath } from '~/utils/locale-path'
 
 const route = useRoute()
-const locale = computed(() => (route.params.locale as AppLocale) || 'fa')
+const locale = useAppLocale()
 const dir = computed(() => localeDir(locale.value))
 
 const appName = appConfig.name
 const appDescription = appConfig.description || (locale.value === 'fa' ? 'فروشگاه نرم‌افزار' : 'Software store')
 
-const localeSwitchUrl = computed(() => {
-  const next = locale.value === 'fa' ? 'en' : 'fa'
-  const path = route.fullPath.replace(`/${locale.value}`, `/${next}`)
-  return path.startsWith(`/${next}`) ? path : `/${next}`
-})
+const localeSwitchUrl = computed(() => switchLocalePath(route.path, locale.value === 'fa' ? 'en' : 'fa'))
 
-const panelUrl = '/profile'
+const panelUrl = '/panel'
 
 const copy = {
   fa: { shop: 'فروشگاه', blog: 'وبلاگ', panel: 'پنل کاربری', switchLocale: 'English' },

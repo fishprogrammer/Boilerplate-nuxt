@@ -6,7 +6,6 @@ definePageMeta({
 const route = useRoute()
 
 const PANEL_REDIRECTS: Record<string, string> = {
-  '': '/',
   wallet: '/wallet',
   tickets: '/tickets',
   inbox: '/notifications',
@@ -25,7 +24,7 @@ const slugParts = computed(() => {
 
 const target = computed(() => {
   const key = slugParts.value.join('/')
-  return PANEL_REDIRECTS[key] ?? '/'
+  return PANEL_REDIRECTS[key] ?? '/panel'
 })
 
 await navigateTo({ path: target.value, query: route.query })

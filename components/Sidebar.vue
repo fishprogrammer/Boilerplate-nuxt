@@ -623,16 +623,26 @@ function isRolesSectionRoute(): boolean {
   )
 }
 
+function isAdminBlogRoute(path: string): boolean {
+  return (
+    path.startsWith('/blog/manage') ||
+    path === '/blog/create' ||
+    path.startsWith('/blog/comments') ||
+    /^\/blog\/[^/]+\/edit$/.test(path)
+  )
+}
+
 function isBlogSectionRoute(): boolean {
   const name = String(route.name || '')
   if (route.path.startsWith('/blog/p/')) return false
+  if (!isAdminBlogRoute(route.path)) return false
   return (
     name === 'blog' ||
     name === 'create-blog' ||
     name === 'edit-blog' ||
     name === 'blog-comments' ||
     name === 'view-blog-comment' ||
-    (route.path.startsWith('/blog') && !route.path.startsWith('/blog/p/'))
+    isAdminBlogRoute(route.path)
   )
 }
 
@@ -776,14 +786,7 @@ const isActive = (item: MenuItem) => {
   if (item.action === 'wallet') return isWalletSectionRoute()
   if (item.action === 'blog') {
     if (route.path.startsWith('/blog/p/')) return false
-    return (
-      name === 'blog' ||
-      name === 'create-blog' ||
-      name === 'edit-blog' ||
-      name === 'blog-comments' ||
-      name === 'view-blog-comment' ||
-      (route.path.startsWith('/blog') && !route.path.startsWith('/blog/p/'))
-    )
+    return isBlogSectionRoute()
   }
   if (item.action === 'system-settings') return name === 'system-settings'
   if (item.action === 'system-health') return name === 'system-health'

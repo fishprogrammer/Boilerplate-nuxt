@@ -3,6 +3,6 @@ export default defineNuxtRouteMiddleware(async () => {
   await auth.fetchCurrentUser()
 
   if (!auth.isStaff) {
-    return navigateTo('/')
+    return navigateTo('/panel')
   }
 })

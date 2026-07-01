@@ -14,7 +14,7 @@ export const ROUTES = {
   REGISTER_VERIFY: '/register/verify',
 
   // Dashboard
-  HOME: '/',
+  HOME: '/panel',
   PROFILE: '/profile',
 
   // Users
@@ -70,7 +70,7 @@ export const ROUTES = {
   GUEST_TICKET_VIEW: '/tickets/guest/view',
 
   // Blog
-  BLOG: '/blog',
+  BLOG: '/blog/manage',
   BLOG_CREATE: '/blog/create',
   BLOG_VIEW: '/blog/p/:id',
   BLOG_EDIT: '/blog/:id/edit',

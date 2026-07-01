@@ -1,5 +1,6 @@
 import type { CatalogCategory, CatalogProductDetail, CatalogProductListItem } from '~/types/catalog'
 import type { SeoPayload } from '~/types/seo'
+import { absoluteSiteUrl, localeHreflang } from '~/utils/locale-path'
 
 const siteUrl = 'https://store.a4j.ir'
 
@@ -9,7 +10,7 @@ function seoFor(
   title: string,
   description: string,
 ): SeoPayload {
-  const canonical = `${siteUrl}/${locale}${path}`
+  const canonical = absoluteSiteUrl(siteUrl, locale as 'fa' | 'en', path)
   return {
     title,
     description,
@@ -18,10 +19,7 @@ function seoFor(
     og_title: title,
     og_description: description,
     og_image: `${siteUrl}/logo.png`,
-    hreflang: {
-      fa: `${siteUrl}/fa${path}`,
-      en: `${siteUrl}/en${path}`,
-    },
+    hreflang: localeHreflang(siteUrl, path),
     json_ld: {
       '@context': 'https://schema.org',
       '@type': 'WebPage',

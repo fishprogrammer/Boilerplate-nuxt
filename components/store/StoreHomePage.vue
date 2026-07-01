@@ -5,13 +5,13 @@
       <p class="mt-4 max-w-2xl text-base text-text-secondary md:text-lg">{{ heroSubtitle }}</p>
       <div class="mt-6 flex flex-wrap gap-3">
         <NuxtLink
-          :to="`/${locale}/shop`"
+          :to="localePath(locale, '/shop')"
           class="rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:opacity-90"
         >
           {{ ctaShop }}
         </NuxtLink>
         <NuxtLink
-          :to="`/${locale}/blog`"
+          :to="localePath(locale, '/blog')"
           class="rounded-xl border border-border bg-surface px-5 py-2.5 text-sm font-medium hover:border-primary"
         >
           {{ ctaBlog }}
@@ -22,7 +22,7 @@
     <section class="mt-12">
       <div class="mb-6 flex items-center justify-between gap-4">
         <h2 class="text-2xl font-semibold text-text-primary">{{ featuredTitle }}</h2>
-        <NuxtLink :to="`/${locale}/shop`" class="text-sm text-primary hover:underline">
+        <NuxtLink :to="localePath(locale, '/shop')" class="text-sm text-primary hover:underline">
           {{ viewAll }}
         </NuxtLink>
       </div>
@@ -41,25 +41,20 @@
 
 <script setup lang="ts">
 import type { CatalogProductListItem } from '~/types/catalog'
-import { isAppLocale, type AppLocale } from '~/utils/locale'
+import type { AppLocale } from '~/utils/locale'
+import { absoluteSiteUrl, localeHreflang, localePath } from '~/utils/locale-path'
 
-definePageMeta({
-  layout: 'public',
-  middleware: ['locale'],
-  public: true,
-})
+const props = defineProps<{
+  locale: AppLocale
+}>()
 
-const route = useRoute()
-const locale = computed(() => route.params.locale as AppLocale)
-
-if (!isAppLocale(locale.value)) {
-  await navigateTo('/fa/')
-}
+const config = useRuntimeConfig()
+const siteUrl = String(config.public.siteUrl || 'https://store.a4j.ir')
 
 const { listProducts } = useCatalog()
 const { data, pending } = await useAsyncData(
-  () => `home-products-${locale.value}`,
-  () => listProducts(locale.value),
+  () => `home-products-${props.locale}`,
+  () => listProducts(props.locale),
 )
 
 const featuredProducts = computed<CatalogProductListItem[]>(
@@ -91,7 +86,7 @@ const copy = {
   },
 } as const
 
-const t = computed(() => copy[locale.value])
+const t = computed(() => copy[props.locale])
 const heroTitle = computed(() => t.value.heroTitle)
 const heroSubtitle = computed(() => t.value.heroSubtitle)
 const ctaShop = computed(() => t.value.ctaShop)
@@ -104,22 +99,19 @@ useSeoFromApi(
   {
     title: t.value.seoTitle,
     description: t.value.seoDescription,
-    canonical: `https://store.a4j.ir/${locale.value}`,
+    canonical: absoluteSiteUrl(siteUrl, props.locale, '/'),
     robots: 'index,follow',
     og_title: t.value.seoTitle,
     og_description: t.value.seoDescription,
-    og_image: 'https://store.a4j.ir/logo.png',
-    hreflang: {
-      fa: 'https://store.a4j.ir/fa',
-      en: 'https://store.a4j.ir/en',
-    },
+    og_image: `${siteUrl}/logo.png`,
+    hreflang: localeHreflang(siteUrl, '/'),
     json_ld: {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       name: 'Soft Store',
-      url: `https://store.a4j.ir/${locale.value}`,
+      url: absoluteSiteUrl(siteUrl, props.locale, '/'),
     },
   },
-  locale.value,
+  props.locale,
 )
 </script>

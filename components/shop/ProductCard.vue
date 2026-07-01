@@ -32,13 +32,14 @@
 <script setup lang="ts">
 import type { CatalogProductListItem } from '~/types/catalog'
 import { formatIRR, type AppLocale } from '~/utils/locale'
+import { localePath } from '~/utils/locale-path'
 
 const props = defineProps<{
   product: CatalogProductListItem
   locale: AppLocale
 }>()
 
-const productUrl = computed(() => `/${props.locale}/shop/${props.product.slug}`)
+const productUrl = computed(() => localePath(props.locale, `/shop/${props.product.slug}`))
 
 const priceLabel = computed(() => {
   if (props.product.pricing_model === 'free' || props.product.price_from === 0) {

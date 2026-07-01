@@ -1,6 +1,7 @@
 ﻿import { BaseService } from '../base.service'
 import { apiClient } from '../client'
 import { API_ENDPOINTS } from '../endpoints'
+import { resolveCaptchaImageUrl } from '~/utils/captcha'
 import type {
   RegisterRequest,
   LoginRequest,
@@ -11,6 +12,7 @@ import type {
   LogoutRequest,
   CaptchaResponse,
   CaptchaRequest,
+  CaptchaPurpose,
   UpdateProfileRequest,
   CreateUserRequest,
   CreateRoleRequest,
@@ -39,8 +41,16 @@ export class AuthService extends BaseService {
   }
 
   async getCaptcha(purpose: string = 'login') {
-    const payload: CaptchaRequest = { purpose: purpose as any }
+    const payload: CaptchaRequest = { purpose: purpose as CaptchaPurpose }
     return this.postRaw<CaptchaResponse>(API_ENDPOINTS.AUTH.CAPTCHA, payload)
+  }
+
+  async getCaptchaImageByUrl(imageUrl: string): Promise<Blob> {
+    const url = resolveCaptchaImageUrl(imageUrl)
+    const response = await apiClient.get<Blob>(url, {
+      responseType: 'blob',
+    })
+    return response.data
   }
 
   async getCaptchaImage(id: string): Promise<Blob> {

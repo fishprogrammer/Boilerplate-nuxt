@@ -15,16 +15,18 @@
 import { blogService } from '~/api/services/blog.service'
 import { parseBlogPostDetailResponse } from '~/api/utils/api-response'
 import type { BlogPost } from '~/api/types/blog.types'
-import { formatEpochSeconds, type AppLocale } from '~/utils/locale'
+import { formatEpochSeconds } from '~/utils/locale'
+import { absoluteSiteUrl, localeHreflang, localePath } from '~/utils/locale-path'
 
 definePageMeta({
   layout: 'public',
-  middleware: ['locale'],
   public: true,
 })
 
 const route = useRoute()
-const locale = computed(() => route.params.locale as AppLocale)
+const locale = useAppLocale()
+const config = useRuntimeConfig()
+const siteUrl = String(config.public.siteUrl || 'https://store.a4j.ir')
 const slugOrId = computed(() => String(route.params.slug))
 
 const post = ref<BlogPost | null>(null)
@@ -48,26 +50,28 @@ try {
 }
 
 const breadcrumbs = computed(() => [
-  { label: locale.value === 'fa' ? 'خانه' : 'Home', href: `/${locale.value}` },
-  { label: locale.value === 'fa' ? 'وبلاگ' : 'Blog', href: `/${locale.value}/blog` },
-  { label: post.value?.title ?? slugOrId.value, href: `/${locale.value}/blog/${slugOrId.value}` },
+  { label: locale.value === 'fa' ? 'خانه' : 'Home', href: localePath(locale.value, '/') },
+  { label: locale.value === 'fa' ? 'وبلاگ' : 'Blog', href: localePath(locale.value, '/blog') },
+  {
+    label: post.value?.title ?? slugOrId.value,
+    href: localePath(locale.value, `/blog/${slugOrId.value}`),
+  },
 ])
 
 watchEffect(() => {
   if (!post.value) return
+
+  const articlePath = `/blog/${post.value.slug || post.value.id}`
   useSeoFromApi(
     {
       title: post.value.title,
       description: post.value.body.slice(0, 160),
-      canonical: `https://store.a4j.ir/${locale.value}/blog/${post.value.slug || post.value.id}`,
+      canonical: absoluteSiteUrl(siteUrl, locale.value, articlePath),
       robots: 'index,follow',
       og_title: post.value.title,
       og_description: post.value.body.slice(0, 160),
-      og_image: 'https://store.a4j.ir/logo.png',
-      hreflang: {
-        fa: `https://store.a4j.ir/fa/blog/${post.value.slug || post.value.id}`,
-        en: `https://store.a4j.ir/en/blog/${post.value.slug || post.value.id}`,
-      },
+      og_image: `${siteUrl}/logo.png`,
+      hreflang: localeHreflang(siteUrl, articlePath),
       json_ld: {
         '@context': 'https://schema.org',
         '@type': 'Article',

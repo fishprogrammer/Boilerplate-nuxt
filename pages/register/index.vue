@@ -10,7 +10,7 @@
         >
           <img src="/logo.png" :alt="`لوگوی ${appConfig.name}`" class="size-full object-contain p-1.5" />
         </div>
-        <h1 class="text-2xl font-bold text-text-primary">ورود به {{ appConfig.name }}</h1>
+        <h1 class="text-2xl font-bold text-text-primary">ثبت‌نام در {{ appConfig.name }}</h1>
         <p class="mt-2 text-sm text-text-secondary">
           شماره موبایل خود را وارد کنید
         </p>
@@ -45,7 +45,7 @@
             <CaptchaWidget
               ref="captchaWidgetRef"
               variant="auth"
-              purpose="login"
+              purpose="register"
               :answer="captchaAnswer"
               :error="captchaError"
               @update:answer="captchaAnswer = $event"
@@ -76,16 +76,16 @@
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             />
           </svg>
-          {{ isLoading ? 'در حال ورود...' : 'ورود' }}
+          {{ isLoading ? 'در حال ارسال...' : 'ثبت‌نام' }}
         </button>
       </form>
 
       <p class="mt-6 text-center text-sm text-text-secondary">
         <NuxtLink
-          to="/register"
+          to="/login"
           class="font-semibold text-text-secondary hover:text-primary dark:text-secondary dark:hover:text-secondary"
         >
-        حساب کاربری ندارید؟ ثبت نام 
+          قبلاً ثبت‌نام کرده‌اید؟ وارد شوید
         </NuxtLink>
       </p>
     </div>
@@ -94,7 +94,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  name: 'Login',
+  name: 'Register',
   layout: 'blank',
   guest: true,
 })
@@ -102,11 +102,9 @@ definePageMeta({
 import { nextTick, ref } from 'vue'
 import { appConfig } from '~/config/app'
 import { authService } from '~/api/services/auth.service'
-import { loginMissingIdMessage, parseLoginStepResponse } from '~/api/utils/api-response'
+import { parseRegisterStepResponse, registerMissingIdMessage } from '~/api/utils/api-response'
 import CaptchaLoadErrorAlert from '~/components/CaptchaLoadErrorAlert.vue'
 import CaptchaWidget from '~/components/tickets/CaptchaWidget.vue'
-import { hydrateUserSession } from '~/composables/useSession'
-import { STORAGE_KEYS } from '~/constants/storage'
 import { extractApiFieldErrors, getApiErrorCode, getApiErrorMessage } from '~/utils/api-error'
 import { CAPTCHA_NOT_LOADED_MESSAGE } from '~/utils/captcha'
 
@@ -169,7 +167,7 @@ function applyApiErrors(source: unknown) {
   }
 
   if (!fieldErrors.phone_number && !captchaFieldError && code !== 'invalid_captcha' && code !== 'captcha_required') {
-    authError.value = getApiErrorMessage(source, 'درخواست ورود با خطا مواجه شد.')
+    authError.value = getApiErrorMessage(source, 'درخواست ثبت‌نام با خطا مواجه شد.')
   }
 }
 
@@ -209,50 +207,37 @@ const handleSubmit = async () => {
       ...(import.meta.dev ? { debug: true } : {}),
     }
 
-    const response = await authService.login(payload)
-    const parsed = parseLoginStepResponse(response)
+    const response = await authService.register(payload)
+    const parsed = parseRegisterStepResponse(response)
 
     if (!parsed.ok) {
       applyApiErrors(response)
       return
     }
 
-    sessionStorage.setItem('phone_number', mobile.value)
+    sessionStorage.setItem('register_phone_number', mobile.value)
 
     if (parsed.debugCode) {
       debugCode.value = parsed.debugCode
-      sessionStorage.setItem('debug_code', parsed.debugCode)
+      sessionStorage.setItem('register_debug_code', parsed.debugCode)
     }
 
-    if (parsed.access) {
-      localStorage.setItem(STORAGE_KEYS.TOKEN, parsed.access)
-      if (parsed.refresh) {
-        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, parsed.refresh)
-      }
-      sessionStorage.removeItem('login_id')
-      sessionStorage.removeItem('debug_code')
-      sessionStorage.removeItem('phone_number')
-      await hydrateUserSession()
-      await router.replace('/panel')
+    if (!parsed.registerId) {
+      authError.value = registerMissingIdMessage(parsed)
       return
     }
 
-    if (!parsed.loginId) {
-      authError.value = loginMissingIdMessage(parsed)
-      return
-    }
-
-    sessionStorage.setItem('login_id', parsed.loginId)
+    sessionStorage.setItem('register_id', parsed.registerId)
     if (parsed.expiresAt) {
-      sessionStorage.setItem('login_expires_at', parsed.expiresAt)
+      sessionStorage.setItem('register_expires_at', parsed.expiresAt)
     } else {
-      sessionStorage.removeItem('login_expires_at')
+      sessionStorage.removeItem('register_expires_at')
     }
 
-    await router.replace({ name: 'Verify' })
+    await router.replace({ name: 'RegisterVerify' })
   } catch (err: unknown) {
     applyApiErrors(err)
-    console.error('Login error:', err)
+    console.error('Register error:', err)
   } finally {
     isLoading.value = false
   }
