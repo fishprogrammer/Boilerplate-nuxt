@@ -199,7 +199,7 @@ import { useRouter } from 'vue-router'
 import { authService } from '~/api/services/auth.service'
 import { buildRegisterVerifyPayload } from '~/api/utils/api-response'
 import { hydrateUserSession } from '~/composables/useSession'
-import { extractApiFieldErrors, getApiResponseMessage } from '~/utils/api-error'
+import { extractApiFieldErrors, getApiErrorMessage } from '~/utils/api-error'
 import { STORAGE_KEYS } from '~/constants/storage'
 import type { ComponentPublicInstance } from 'vue'
 
@@ -324,7 +324,7 @@ function applyApiErrors(source: unknown) {
   }
 
   if (!verifyError.value && !hasProfileError) {
-    authError.value = getApiResponseMessage(source, 'تایید ثبت‌نام ناموفق بود')
+    authError.value = getApiErrorMessage(source, 'تایید ثبت‌نام ناموفق بود')
   }
 }
 

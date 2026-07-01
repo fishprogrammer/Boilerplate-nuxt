@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Type check
+        run: yarn type-check
+
+      - name: Build
+        run: yarn build:nuxt
+
+      - name: Verify API liveness (Phase 0)
+        run: node scripts/verify-api-health.mjs
+        env:
+          API_HEALTH_URL: https://api.store.a4j.ir/api/health/live/

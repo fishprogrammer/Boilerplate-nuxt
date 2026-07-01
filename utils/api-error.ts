@@ -1,4 +1,7 @@
-﻿export const API_FIELD_LABELS: Record<string, string> = {
+﻿import { getKnownApiErrorMessage } from '~/constants/api-error-codes'
+import { ApiClientError } from '~/types/api'
+
+export const API_FIELD_LABELS: Record<string, string> = {
   username: 'نام کاربری',
   email: 'ایمیل',
   password: 'رمز عبور',
@@ -138,6 +141,8 @@ export function getApiResponseMessage(err: unknown, fallback = ''): string {
 }
 
 export function getApiErrorCode(err: unknown): string {
+  if (err instanceof ApiClientError) return err.code
+
   const payload = getErrorPayload(err)
   if (!payload) return ''
   if (typeof payload.code === 'string') return payload.code
@@ -149,6 +154,10 @@ export function getApiErrorMessage(
   fallback = 'خطایی رخ داد',
 ): string {
   if (isNetworkError(err)) return NETWORK_ERROR_MESSAGE
+
+  const code = getApiErrorCode(err)
+  const knownMessage = code ? getKnownApiErrorMessage(code) : null
+  if (knownMessage) return knownMessage
 
   const payload = getErrorPayload(err)
   const fieldErrors = formatApiFieldErrors(payload?.errors)

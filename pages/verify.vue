@@ -113,6 +113,7 @@ import { authService } from '~/api/services/auth.service'
 import { buildVerifyOtpPayload } from '~/api/utils/api-response'
 import { hydrateUserSession } from '~/composables/useSession'
 import { STORAGE_KEYS } from '~/constants/storage'
+import { getApiErrorMessage } from '~/utils/api-error'
 
 const router = useRouter()
 
@@ -208,15 +209,10 @@ const handleSubmit = async () => {
       await hydrateUserSession()
       await router.replace('/panel')
     } else {
-      authError.value = response.message || 'تایید کد ناموفق بود'
+      authError.value = getApiErrorMessage(response, 'تایید کد ناموفق بود')
     }
-  } catch (err: any) {
-    if (err.errors && typeof err.errors === 'object' && Object.keys(err.errors).length > 0) {
-      const errorMessages = Object.values(err.errors).filter((msg): msg is string => typeof msg === 'string')
-      authError.value = errorMessages.join(' | ') || err?.message || 'خطا در تایید کد'
-    } else {
-      authError.value = err?.message || 'خطا در تایید کد'
-    }
+  } catch (err: unknown) {
+    authError.value = getApiErrorMessage(err, 'خطا در تایید کد')
     console.error('Verify error:', err)
   } finally {
     isLoading.value = false
@@ -248,8 +244,8 @@ const resendOtp = async () => {
     }, 1000)
 
     otpInputs.value[0]?.focus()
-  } catch (err: any) {
-    authError.value = err?.message || 'خطا در ارسال دوباره کد'
+  } catch (err: unknown) {
+    authError.value = getApiErrorMessage(err, 'خطا در ارسال دوباره کد')
     console.error('Resend error:', err)
   } finally {
     isResending.value = false
