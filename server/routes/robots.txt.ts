@@ -7,9 +7,7 @@ Allow: /
 Disallow: /panel/
 Disallow: /admin/
 Disallow: /api/
-Disallow: /login
-Disallow: /register
-Disallow: /verify
+Disallow: /auth/
 
 Sitemap: ${siteUrl}/sitemap.xml
 `

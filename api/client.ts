@@ -46,6 +46,7 @@ function isLoginPath(pathname: string): boolean {
 }
 
 function redirectToLogin() {
+  if (!import.meta.client) return
   if (isAuthSessionTransitioning() || isLoginPath(window.location.pathname)) return
   clearAuthTokens()
   window.location.href = LOGIN_PATH

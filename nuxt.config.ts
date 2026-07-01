@@ -3,22 +3,51 @@ import { readAppVersion } from './config/read-app-version'
 import { writeVersionJson } from './config/write-version-json'
 
 const appVersion = readAppVersion()
+const apiProxyTarget = (process.env.NUXT_PUBLIC_API_PROXY_TARGET || 'https://api.store.a4j.ir').replace(
+  /\/+$/,
+  '',
+)
+const appTitle = process.env.NUXT_PUBLIC_APP_TITLE || 'Soft Store'
+const appDescription =
+  process.env.NUXT_PUBLIC_APP_DESCRIPTION || 'فروشگاه نرم‌افزار و افزونه‌های وردپرس'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-06-01',
-  ssr: false,
+  ssr: true,
 
   routeRules: {
     '/': { prerender: true },
-    '/shop/**': { prerender: true },
-    '/blog': { prerender: true },
+    '/fa/**': { prerender: true },
     '/en/**': { prerender: true },
+    '/blog': { prerender: true },
+    '/blog/**': { prerender: true },
+    '/en/blog/**': { prerender: true },
+    '/api/**': { proxy: `${apiProxyTarget}/api/**` },
     '/panel/**': { ssr: false },
     '/admin/**': { ssr: false },
     '/login': { ssr: false },
     '/register': { ssr: false },
+    '/register/**': { ssr: false },
     '/verify': { ssr: false },
+    '/wallet/**': { ssr: false },
+    '/tickets/**': { ssr: false },
+    '/users/**': { ssr: false },
+    '/roles/**': { ssr: false },
+    '/permissions': { ssr: false },
+    '/media': { ssr: false },
+    '/notifications/**': { ssr: false },
+    '/finance/**': { ssr: false },
+    '/payments/**': { ssr: false },
+    '/system-settings': { ssr: false },
+    '/system-health': { ssr: false },
+    '/profile': { ssr: false },
+    '/blog/manage/**': { ssr: false },
+    '/blog/create': { ssr: false },
+    '/blog/**/edit': { ssr: false },
+    '/blog/comments/**': { ssr: false },
+    '/blog/categories/**': { ssr: false },
+    '/blog/p/**': { ssr: false },
   },
 
   devtools: { enabled: process.env.NODE_ENV !== 'production' },
@@ -43,14 +72,14 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'fa', dir: 'rtl' },
-      title: 'My App',
+      title: appTitle,
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
         { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
-        { name: 'application-name', content: 'My App' },
-        { name: 'description', content: 'An admin dashboard' },
+        { name: 'application-name', content: appTitle },
+        { name: 'description', content: appDescription },
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/logo.png' },
@@ -68,19 +97,22 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || '',
-      apiProxyTarget: process.env.NUXT_PUBLIC_API_PROXY_TARGET || 'https://api.store.a4j.ir',
+      apiBaseUrl:
+        process.env.NUXT_PUBLIC_API_BASE_URL ||
+        process.env.NUXT_PUBLIC_API_BASE ||
+        '/api',
+      apiProxyTarget,
       apiTimeout: process.env.NUXT_PUBLIC_API_TIMEOUT || '30000',
-      appTitle: process.env.NUXT_PUBLIC_APP_TITLE || 'My App',
-      appName: process.env.NUXT_PUBLIC_APP_NAME || 'My App',
-      appDescription: process.env.NUXT_PUBLIC_APP_DESCRIPTION || 'An admin dashboard',
+      appTitle,
+      appName: process.env.NUXT_PUBLIC_APP_NAME || appTitle,
+      appDescription,
       appVersion,
       appThemeColor: process.env.NUXT_PUBLIC_APP_THEME_COLOR || '#00B894',
       appBgColor: process.env.NUXT_PUBLIC_APP_BG_COLOR || '#f4f5f6',
       appStoragePrefix: process.env.NUXT_PUBLIC_APP_STORAGE_PREFIX || 'app',
       guestTicketTypeId: process.env.NUXT_PUBLIC_GUEST_TICKET_TYPE_ID || '',
       guestDepartmentId: process.env.NUXT_PUBLIC_GUEST_DEPARTMENT_ID || '',
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://store.a4j.ir',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://boilerplate-store.liara.run',
       catalogApiLive: process.env.NUXT_PUBLIC_CATALOG_API_LIVE || 'false',
       commerceApiLive: process.env.NUXT_PUBLIC_COMMERCE_API_LIVE || 'false',
       licensingApiLive: process.env.NUXT_PUBLIC_LICENSING_API_LIVE || 'false',
@@ -135,6 +167,24 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'static',
+    devProxy: {
+      '/api': { target: apiProxyTarget, changeOrigin: true },
+    },
+    prerender: {
+      routes: [
+        '/robots.txt',
+        '/sitemap.xml',
+        '/sitemap-products.xml',
+        '/sitemap-blog.xml',
+        '/admin',
+        '/admin/',
+        '/fa/shop',
+        '/en/shop',
+        '/fa/blog',
+        '/en/blog',
+      ],
+      crawlLinks: true,
+    },
   },
 
   pwa: {
@@ -149,7 +199,7 @@ export default defineNuxtConfig({
       // during install and break the service worker on HTTPS static hosts.
       globPatterns: ['**/*.{js,css,ico,png,svg,woff,woff2,webmanifest}'],
       navigateFallback: '/index.html',
-      navigateFallbackDenylist: [/^\/_nuxt\//, /^\/api\//],
+      navigateFallbackDenylist: [/^\/_nuxt\//, /^\/api\//, /^\/sitemap/, /^\/robots\.txt$/],
       additionalManifestEntries: [
         { url: '/version.json', revision: appVersion },
         { url: '/index.html', revision: appVersion },
@@ -209,9 +259,9 @@ export default defineNuxtConfig({
       'apple-touch-icon.png',
     ],
     manifest: {
-      name: 'My App',
-      short_name: 'My App',
-      description: 'An admin dashboard',
+      name: appTitle,
+      short_name: appTitle,
+      description: appDescription,
       theme_color: '#00B894',
       background_color: '#ffffff',
       display: 'standalone',

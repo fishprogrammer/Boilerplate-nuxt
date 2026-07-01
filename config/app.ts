@@ -23,24 +23,28 @@ export function getAppPublicOriginSource(): 'env' | 'browser' {
 }
 
 function resolveApiBaseUrl(): string {
-  const fromEnv = String(import.meta.env.NUXT_PUBLIC_API_BASE_URL || '').trim()
-  if (fromEnv) return fromEnv.replace(/\/+$/, '')
+  const fromEnv = String(
+    import.meta.env.NUXT_PUBLIC_API_BASE_URL || import.meta.env.NUXT_PUBLIC_API_BASE || '',
+  ).trim()
+  if (fromEnv) {
+    return fromEnv.replace(/\/+$/, '')
+  }
 
-  // Local dev: same-origin /api → Nitro devProxy (avoids browser CORS).
+  // Dev / same-origin proxy via Nitro `/api` route
   if (import.meta.dev) {
-    return ''
+    return '/api'
   }
 
   return PRODUCTION_API_BASE_URL.replace(/\/+$/, '')
 }
 
 export const appConfig = {
-  title: import.meta.env.NUXT_PUBLIC_APP_TITLE || 'My App',
+  title: import.meta.env.NUXT_PUBLIC_APP_TITLE || 'Soft Store',
   name:
     import.meta.env.NUXT_PUBLIC_APP_NAME ||
     import.meta.env.NUXT_PUBLIC_APP_TITLE ||
-    'My App',
-  description: import.meta.env.NUXT_PUBLIC_APP_DESCRIPTION || '',
+    'Soft Store',
+  description: import.meta.env.NUXT_PUBLIC_APP_DESCRIPTION || 'فروشگاه نرم‌افزار و افزونه‌های وردپرس',
   /** Semantic version — edit only `app.version.json`. */
   version: APP_VERSION,
   themeColor: import.meta.env.NUXT_PUBLIC_APP_THEME_COLOR || '#00B894',

@@ -5,6 +5,14 @@
     "outputDirectory": ".output/public"
   },
   "envs": {
-    "NUXT_PUBLIC_API_BASE_URL": "https://api.store.a4j.ir"
+    "NUXT_PUBLIC_API_BASE_URL": "https://api.store.a4j.ir",
+    "NUXT_PUBLIC_SITE_URL": "https://boilerplate-store.liara.run",
+    "NUXT_PUBLIC_APP_TITLE": "Soft Store",
+    "NUXT_PUBLIC_APP_NAME": "Soft Store",
+    "NUXT_PUBLIC_APP_DESCRIPTION": "فروشگاه نرم‌افزار و افزونه‌های وردپرس",
+    "NUXT_PUBLIC_CATALOG_API_LIVE": "true",
+    "NUXT_PUBLIC_COMMERCE_API_LIVE": "true",
+    "NUXT_PUBLIC_LICENSING_API_LIVE": "true",
+    "NUXT_PUBLIC_FINANCE_API_LIVE": "true"
   }
 }

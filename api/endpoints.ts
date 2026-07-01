@@ -52,6 +52,7 @@ export const API_ENDPOINTS = {
   BLOG: {
     POSTS: '/api/blog/posts/',
     postById: (id: string) => `/api/blog/posts/${id}/`,
+    postBySlug: (slug: string) => `/api/blog/posts/by-slug/${slug}/`,
     CATEGORIES: '/api/blog/categories/',
     categoryById: (id: string) => `/api/blog/categories/${id}/`,
     COMMENTS: '/api/blog/comments/',

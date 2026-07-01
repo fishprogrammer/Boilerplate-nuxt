@@ -50,7 +50,13 @@
             منوی اصلی
           </p>
           <ul class="space-y-1">
-            <li v-for="(item, index) in visiblePrimaryMenuItems" :key="index">
+            <li v-for="(item, index) in visiblePrimaryMenuItems" :key="item.action || index">
+              <div
+                v-if="item.action === 'catalog' && showBlogCatalogDivider"
+                class="my-2 border-t border-border/70"
+                role="separator"
+                aria-hidden="true"
+              />
               <template v-if="item.action === 'roles' && visibleRolesSubmenuItems.length > 0">
                 <button
                   type="button"
@@ -564,6 +570,12 @@ const secondaryMenuItems: MenuItem[] = [
 
 const visiblePrimaryMenuItems = computed(() =>
   menuItems.filter((item) => canAccessMenu(item.action)),
+)
+
+const showBlogCatalogDivider = computed(
+  () =>
+    visiblePrimaryMenuItems.value.some((item) => item.action === 'blog') &&
+    visiblePrimaryMenuItems.value.some((item) => item.action === 'catalog'),
 )
 
 const visibleSecondaryMenuItems = computed(() =>

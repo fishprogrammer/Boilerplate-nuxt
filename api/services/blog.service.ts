@@ -13,7 +13,7 @@ import type {
   UpdateBlogCommentRequest,
   UpdateBlogPostRequest,
 } from '../types/blog.types'
-import { parseBlogPostsListResponse, parseBlogCategoriesListResponse } from '../utils/api-response'
+import { parseBlogPostsListResponse, parseBlogCategoriesListResponse, parseBlogPostDetailResponse } from '../utils/api-response'
 import type { AppLocale } from '~/utils/locale'
 
 export class BlogService extends BaseService {
@@ -35,6 +35,16 @@ export class BlogService extends BaseService {
   }
 
   async getPublishedPostBySlug(slug: string, locale: AppLocale): Promise<unknown> {
+    try {
+      const bySlugRaw = await this.getRaw(API_ENDPOINTS.BLOG.postBySlug(slug), { locale })
+      const bySlugParsed = parseBlogPostDetailResponse(bySlugRaw)
+      if (bySlugParsed?.status === 'published' && bySlugParsed.locale === locale) {
+        return bySlugRaw
+      }
+    } catch {
+      // fall through to list filter
+    }
+
     const listRaw = await this.listPosts({
       locale,
       status: 'published',

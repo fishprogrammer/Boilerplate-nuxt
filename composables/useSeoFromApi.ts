@@ -8,14 +8,6 @@ export function useSeoFromApi(seo: SeoPayload, locale: AppLocale = 'fa') {
     href,
   }))
 
-  if (seo.hreflang.fa || seo.hreflang.en) {
-    hreflangLinks.push({
-      rel: 'alternate',
-      hreflang: 'x-default',
-      href: seo.hreflang.fa || seo.canonical,
-    })
-  }
-
   useSeoMeta({
     title: seo.title,
     description: seo.description,
