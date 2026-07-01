@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog فاز ۱ — Soft Store Frontend</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f5f6;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --muted: #5c6670;
+      --border: #e2e5e8;
+      --brand: #059669;
+      --added: #059669;
+      --changed: #d97706;
+      --fixed: #2563eb;
+      --breaking: #dc2626;
+      --api: #7c3aed;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111418;
+        --card: #1a1f24;
+        --text: #e8eaed;
+        --muted: #9aa3ad;
+        --border: #2a3139;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Tahoma, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+    }
+    header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h1 { margin: 0 0 0.35rem; font-size: 1.75rem; }
+    .meta { color: var(--muted); font-size: 0.92rem; }
+    .badge {
+      display: inline-block;
+      margin-top: 0.75rem;
+      margin-left: 0.35rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--brand) 15%, transparent);
+      color: var(--brand);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .badge.done { background: color-mix(in srgb, var(--added) 15%, transparent); color: var(--added); }
+    .badge.progress { background: color-mix(in srgb, var(--changed) 15%, transparent); color: var(--changed); }
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem 1.35rem;
+      margin-bottom: 1.25rem;
+    }
+    h2 { margin: 0 0 0.35rem; font-size: 1.15rem; }
+    h2 span { font-weight: 400; color: var(--muted); font-size: 0.9rem; }
+    .entry-meta { color: var(--muted); font-size: 0.85rem; margin-bottom: 0.75rem; }
+    h3 { margin: 1rem 0 0.5rem; font-size: 1rem; color: var(--muted); }
+    ul { margin: 0; padding-right: 1.25rem; }
+    li { margin: 0.35rem 0; }
+    .tag {
+      display: inline-block;
+      min-width: 3.2rem;
+      text-align: center;
+      padding: 0.05rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-left: 0.35rem;
+      vertical-align: middle;
+    }
+    .tag.added { background: color-mix(in srgb, var(--added) 18%, transparent); color: var(--added); }
+    .tag.changed { background: color-mix(in srgb, var(--changed) 18%, transparent); color: var(--changed); }
+    .tag.fixed { background: color-mix(in srgb, var(--fixed) 18%, transparent); color: var(--fixed); }
+    .tag.api { background: color-mix(in srgb, var(--api) 18%, transparent); color: var(--api); }
+    code, pre {
+      font-family: Consolas, monospace;
+      font-size: 0.88em;
+      background: color-mix(in srgb, var(--border) 60%, transparent);
+      border-radius: 4px;
+      direction: ltr;
+      unicode-bidi: embed;
+    }
+    code { padding: 0.1rem 0.35rem; }
+    pre {
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      margin: 0.5rem 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.6rem;
+      text-align: right;
+    }
+    th { background: color-mix(in srgb, var(--border) 40%, transparent); }
+    td code { font-size: 0.82em; }
+    .nav-links { margin-top: 0.75rem; font-size: 0.9rem; }
+    .nav-links a { margin-left: 0.75rem; }
+    footer {
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    a { color: var(--brand); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Soft Store — Changelog فاز ۱</h1>
+      <p class="meta">Foundation · پنل + blog عمومی · shop mock</p>
+      <span class="badge progress">🟡 در حال انجام</span>
+      <span class="badge">Doc/changelog-phase-1.html</span>
+      <div class="nav-links">
+        <strong>فازها:</strong>
+        <a href="changelog-phase-0.html">فاز ۰</a>
+        <a href="changelog-phase-1.html">فاز ۱</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>هدف فاز ۱</h2>
+      <p class="meta">پنل مشتری و ادمین روی API زنده؛ blog عمومی با SEO؛ shop هنوز mock.</p>
+      <table>
+        <thead><tr><th>#</th><th>معیار خروج</th><th>وضعیت</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>OTP register/login E2E</td><td>🟡 فرانت</td></tr>
+          <tr><td>2</td><td>پنل: wallet, inbox, tickets</td><td>🟡 فرانت</td></tr>
+          <tr><td>3</td><td>ادمین: users, roles, settings, gateways, departments</td><td>🟡 فرانت</td></tr>
+          <tr><td>4</td><td><code>/blog</code>, <code>/en/blog</code> SSR + seo از API</td><td>BE ✅ · 🟡 فرانت</td></tr>
+          <tr><td>5</td><td>shop placeholder mock</td><td>🟡 فرانت</td></tr>
+          <tr><td>6</td><td>robots.txt + meta پیش‌فرض</td><td>🟡 فرانت</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>۱۴۰۴/۰۴/۱۱ <span>— Blog locale + SEO (فرانت)</span></h2>
+      <p class="entry-meta">Breaking: خیر · FE-P1 · مصرف API BE-P1S1</p>
+
+      <h3>Changed</h3>
+      <ul>
+        <li><span class="tag changed">تغییر</span> لیست blog: <code>?locale=fa|en&amp;status=published</code></li>
+        <li><span class="tag changed">تغییر</span> جزئیات: lookup با <code>slug+locale</code> · <code>getPublishedPostBySlug</code></li>
+        <li><span class="tag changed">تغییر</span> SEO مقاله: <code>useSeoFromApi(post.seo)</code> + fallback در <code>utils/blog-seo.ts</code></li>
+        <li><span class="tag added">جدید</span> types: <code>locale</code>, <code>meta_*</code>, <code>og_image</code>, <code>seo</code></li>
+      </ul>
+
+      <h3><span class="tag api">API</span> Integration</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Path</th><th>Frontend</th></tr></thead>
+        <tbody>
+          <tr><td>GET</td><td><code>/api/blog/posts/</code></td><td>فیلتر <code>locale</code> + <code>status=published</code></td></tr>
+          <tr><td>GET</td><td><code>/api/blog/posts/{id}/</code></td><td><code>post.seo</code> → meta + JSON-LD</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>۱۴۰۴/۰۴/۱۱ <span>— Ticket product_slug (فرانت)</span></h2>
+      <p class="entry-meta">Breaking: خیر · FE-P1 · BE-P1S2</p>
+
+      <h3>Added</h3>
+      <ul>
+        <li><span class="tag added">جدید</span> <code>product_slug</code> در create ticket</li>
+        <li><span class="tag added">جدید</span> prefill از <code>?product=</code> در <code>/tickets/create</code></li>
+      </ul>
+
+      <h3><span class="tag api">API</span> Integration</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Path</th><th>Frontend</th></tr></thead>
+        <tbody>
+          <tr><td>POST</td><td><code>/api/tickets/</code></td><td>body اختیاری <code>product_slug</code></td></tr>
+          <tr><td>GET</td><td><code>/api/tickets/{id}/</code></td><td>response شامل <code>product_slug</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>۱۴۰۴/۰۴/۱۱ <span>— Blog locale + SEO object (بک‌اند)</span></h2>
+      <p class="entry-meta">Breaking: خیر (additive) · BE-P1S1-T01–T03</p>
+      <table>
+        <thead><tr><th>Method</th><th>Path</th><th>تغییر</th></tr></thead>
+        <tbody>
+          <tr><td>GET</td><td><code>/api/blog/posts/</code></td><td>+ <code>locale</code> filter؛ anonymous فقط published</td></tr>
+          <tr><td>GET</td><td><code>/api/blog/posts/{id}/</code></td><td>fields جدید + <code>seo</code> read-only</td></tr>
+          <tr><td>POST/PATCH</td><td><code>/api/blog/posts/</code></td><td><code>locale</code>, <code>meta_*</code>, <code>og_image</code></td></tr>
+        </tbody>
+      </table>
+      <p class="meta" style="margin-top:0.75rem"><code>slug</code> unique per locale · Query: <code>?locale=fa&amp;status=published</code></p>
+      <p class="meta">env: <code>STOREFRONT_BASE_URL=https://store.a4j.ir</code></p>
+    </section>
+
+    <section>
+      <h2>۱۴۰۴/۰۴/۱۱ <span>— Ticket product_slug + Payment URLs (بک‌اند)</span></h2>
+      <p class="entry-meta">Breaking: خیر · BE-P1S2</p>
+      <ul>
+        <li><span class="tag api">API</span> POST/GET tickets → <code>product_slug</code> nullable</li>
+        <li><span class="tag changed">تغییر</span> admin payments: help_text <code>frontend_success_url</code></li>
+      </ul>
+      <p class="meta">مثال return URL: <code>https://store.a4j.ir/panel/wallet?order={order_id}&amp;status=success</code></p>
+    </section>
+
+    <section>
+      <h2>تحویل فرانت</h2>
+      <h3>Blog (API آماده)</h3>
+      <pre>GET /api/blog/posts/?locale=fa&amp;status=published
+GET /api/blog/posts/{id}/</pre>
+      <ul>
+        <li>بدون auth برای published</li>
+        <li><code>data[].seo</code> → meta + JSON-LD</li>
+      </ul>
+      <h3>Tickets</h3>
+      <pre>POST /api/tickets/  { ..., "product_slug": "optional" }</pre>
+      <h3>هنوز mock</h3>
+      <p class="meta"><code>catalog</code>, <code>commerce</code>, <code>licensing</code></p>
+    </section>
+
+    <section>
+      <h2>فازهای دیگر</h2>
+      <ul>
+        <li><a href="changelog-phase-0.html">Changelog فاز ۰</a></li>
+      </ul>
+    </section>
+
+    <footer>Boilerplate Nuxt · FishProgrammers</footer>
+  </div>
+</body>
+</html>

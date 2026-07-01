@@ -1,4 +1,6 @@
 ﻿import type { PaginationMeta } from './auth.types'
+import type { SeoPayload } from '~/types/seo'
+import type { AppLocale } from '~/utils/locale'
 
 export type BlogPostStatus = 'draft' | 'published'
 
@@ -8,6 +10,11 @@ export interface BlogPost {
   slug: string
   body: string
   status: BlogPostStatus
+  locale: AppLocale
+  meta_title: string
+  meta_description: string
+  og_image: string | null
+  seo: SeoPayload | null
   created_at: number
   updated_at: number
   published_at: number
@@ -18,6 +25,8 @@ export interface ListBlogPostsParams {
   page?: number
   page_size?: number
   search?: string
+  slug?: string
+  locale?: AppLocale | ''
   status?: BlogPostStatus | ''
   ordering?: string
 }

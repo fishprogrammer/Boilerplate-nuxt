@@ -16,7 +16,8 @@ import { blogService } from '~/api/services/blog.service'
 import { parseBlogPostDetailResponse } from '~/api/utils/api-response'
 import type { BlogPost } from '~/api/types/blog.types'
 import { formatEpochSeconds } from '~/utils/locale'
-import { absoluteSiteUrl, localeHreflang, localePath } from '~/utils/locale-path'
+import { localePath } from '~/utils/locale-path'
+import { resolveBlogPostSeo } from '~/utils/blog-seo'
 
 definePageMeta({
   layout: 'public',
@@ -34,9 +35,11 @@ const loadError = ref('')
 const loadingLabel = computed(() => 'Loading...')
 
 try {
-  const raw = await blogService.getPost(slugOrId.value)
+  const raw =
+    (await blogService.getPublishedPostBySlug(slugOrId.value, 'en')) ??
+    (await blogService.getPost(slugOrId.value))
   const parsed = parseBlogPostDetailResponse(raw)
-  if (!parsed || parsed.status !== 'published') {
+  if (!parsed || parsed.status !== 'published' || parsed.locale !== 'en') {
     loadError.value = 'Post is not published.'
   } else {
     post.value = parsed
@@ -58,26 +61,6 @@ const breadcrumbs = computed(() => [
 
 watchEffect(() => {
   if (!post.value) return
-
-  const articlePath = `/blog/${post.value.slug || post.value.id}`
-  useSeoFromApi(
-    {
-      title: post.value.title,
-      description: post.value.body.slice(0, 160),
-      canonical: absoluteSiteUrl(siteUrl, 'en', articlePath),
-      robots: 'index,follow',
-      og_title: post.value.title,
-      og_description: post.value.body.slice(0, 160),
-      og_image: `${siteUrl}/logo.png`,
-      hreflang: localeHreflang(siteUrl, articlePath),
-      json_ld: {
-        '@context': 'https://schema.org',
-        '@type': 'Article',
-        headline: post.value.title,
-        datePublished: new Date(post.value.published_at * 1000).toISOString(),
-      },
-    },
-    'en',
-  )
+  useSeoFromApi(resolveBlogPostSeo(post.value, 'en', siteUrl), 'en')
 })
 </script>

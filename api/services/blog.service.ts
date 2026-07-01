@@ -10,6 +10,8 @@ import type {
   UpdateBlogCommentRequest,
   UpdateBlogPostRequest,
 } from '../types/blog.types'
+import { parseBlogPostsListResponse } from '../utils/api-response'
+import type { AppLocale } from '~/utils/locale'
 
 export class BlogService extends BaseService {
   async listPosts(params?: ListBlogPostsParams): Promise<unknown> {
@@ -17,6 +19,8 @@ export class BlogService extends BaseService {
     if (params?.page) query.page = params.page
     if (params?.page_size) query.page_size = params.page_size
     if (params?.search) query.search = params.search
+    if (params?.slug) query.slug = params.slug
+    if (params?.locale) query.locale = params.locale
     if (params?.status) query.status = params.status
     if (params?.ordering) query.ordering = params.ordering
     return this.getRaw(API_ENDPOINTS.BLOG.POSTS, query)
@@ -24,6 +28,19 @@ export class BlogService extends BaseService {
 
   async getPost(id: string): Promise<unknown> {
     return this.getRaw(API_ENDPOINTS.BLOG.postById(id))
+  }
+
+  async getPublishedPostBySlug(slug: string, locale: AppLocale): Promise<unknown> {
+    const listRaw = await this.listPosts({
+      locale,
+      status: 'published',
+      slug,
+      page_size: 5,
+    })
+    const parsed = parseBlogPostsListResponse(listRaw)
+    const match = parsed?.posts.find((item) => item.slug === slug)
+    if (!match) return null
+    return this.getPost(match.id)
   }
 
   async createPost(data: CreateBlogPostRequest): Promise<unknown> {

@@ -637,9 +637,45 @@ function isBlogPostLike(value: unknown): value is Record<string, unknown> {
   return typeof item.id === 'string' && typeof item.title === 'string'
 }
 
+function normalizeSeoPayload(raw: unknown): import('~/types/seo').SeoPayload | null {
+  if (!raw || typeof raw !== 'object') return null
+  const item = raw as Record<string, unknown>
+  const hreflangRaw = item.hreflang
+  const hreflang: Record<string, string> = {}
+  if (hreflangRaw && typeof hreflangRaw === 'object' && !Array.isArray(hreflangRaw)) {
+    for (const [key, value] of Object.entries(hreflangRaw)) {
+      if (typeof value === 'string' && value) hreflang[key] = value
+    }
+  }
+
+  const title = String(item.title || '')
+  const canonical = String(item.canonical || '')
+  if (!title && !canonical) return null
+
+  return {
+    title,
+    description: String(item.description || ''),
+    canonical,
+    robots: String(item.robots || 'index,follow'),
+    og_title: String(item.og_title || title),
+    og_description: String(item.og_description || item.description || ''),
+    og_image:
+      item.og_image === null || item.og_image === undefined || item.og_image === ''
+        ? null
+        : String(item.og_image),
+    hreflang,
+    json_ld:
+      item.json_ld && typeof item.json_ld === 'object' && !Array.isArray(item.json_ld)
+        ? (item.json_ld as Record<string, unknown>)
+        : {},
+  }
+}
+
 function normalizeBlogPost(raw: Record<string, unknown>): BlogPost {
   const statusRaw = String(raw.status || 'draft')
   const status: BlogPostStatus = statusRaw === 'published' ? 'published' : 'draft'
+  const localeRaw = String(raw.locale || 'fa')
+  const locale = localeRaw === 'en' ? 'en' : 'fa'
 
   return {
     id: String(raw.id),
@@ -647,6 +683,14 @@ function normalizeBlogPost(raw: Record<string, unknown>): BlogPost {
     slug: String(raw.slug || ''),
     body: String(raw.body || ''),
     status,
+    locale,
+    meta_title: String(raw.meta_title || ''),
+    meta_description: String(raw.meta_description || ''),
+    og_image:
+      raw.og_image === null || raw.og_image === undefined || raw.og_image === ''
+        ? null
+        : String(raw.og_image),
+    seo: normalizeSeoPayload(raw.seo),
     created_at: Number(raw.created_at) || 0,
     updated_at: Number(raw.updated_at) || 0,
     published_at: Number(raw.published_at) || 0,
@@ -1864,6 +1908,7 @@ export function normalizeTicket(raw: Record<string, unknown>): Ticket {
     assigned_to: normalizeCompactUser(raw.assigned_to),
     subject: String(raw.subject || ''),
     body: String(raw.body || ''),
+    product_slug: raw.product_slug ? String(raw.product_slug) : null,
     status: normalizeTicketStatus(raw.status),
     priority: normalizeTicketPriority(raw.priority),
     is_guest: Boolean(raw.is_guest),
@@ -2262,6 +2307,7 @@ export function buildCreateTicketPayload(input: {
   target_user?: number
   subject: string
   body: string
+  product_slug?: string | null
   priority?: TicketPriority
   media_ids?: string[]
 }): CreateTicketRequest {
@@ -2273,6 +2319,9 @@ export function buildCreateTicketPayload(input: {
     body: input.body.trim(),
     priority: input.priority || 'medium',
   }
+
+  const productSlug = input.product_slug?.trim()
+  if (productSlug) payload.product_slug = productSlug
 
   if (input.target_type === 'department') {
     if (input.current_department) payload.current_department = input.current_department

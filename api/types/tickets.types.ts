@@ -24,6 +24,7 @@ export interface Ticket {
   assigned_to: CompactUser | null
   subject: string
   body: string
+  product_slug: string | null
   status: TicketStatus
   priority: TicketPriority
   is_guest: boolean
@@ -154,6 +155,7 @@ export interface CreateTicketRequest {
   target_user?: number
   subject: string
   body: string
+  product_slug?: string | null
   priority?: TicketPriority
   media_ids?: string[]
 }

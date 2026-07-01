@@ -158,7 +158,7 @@ definePageMeta({
 })
 
 import { computed, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { mediaService } from '~/api/services/media.service'
 import { ticketsService } from '~/api/services/tickets.service'
 import type { TargetType, TicketDepartment, TicketPriority, TicketType } from '~/api/types/tickets.types'
@@ -180,6 +180,7 @@ import {
   TICKET_PRIORITY_OPTIONS,
 } from '~/utils/tickets'
 
+const route = useRoute()
 const router = useRouter()
 const { isStaff, isSuperuser, userPermissions } = usePermissions()
 
@@ -196,6 +197,7 @@ const targetUserId = ref<number | null>(null)
 const priority = ref<TicketPriority>('medium')
 const subject = ref('')
 const body = ref('')
+const productSlug = ref(String(route.query.product || '').trim())
 const mediaIds = ref<string[]>([])
 const uploadedFiles = ref<Array<{ id: string; name: string }>>([])
 const fileInputRef = ref<HTMLInputElement | null>(null)
@@ -341,6 +343,7 @@ async function handleSubmit() {
       target_user: targetType.value === 'user' ? targetUserId.value ?? undefined : undefined,
       subject: subject.value,
       body: body.value,
+      product_slug: productSlug.value || undefined,
       priority: priority.value,
       media_ids: mediaIds.value,
     })

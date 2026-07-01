@@ -1,0 +1,26 @@
+---
+description: After each Soft Store phase, add/update HTML changelog in Doc/ only (never .md)
+alwaysApply: true
+---
+
+# Phase changelog (mandatory)
+
+**قانون ثابت:** Changelog هر فاز فقط به صورت **HTML** داخل پوشه **`Doc/`** — نه markdown، نه پوشه `docs/`.
+
+| فاز | فایل |
+|-----|------|
+| ۰ | `Doc/changelog-phase-0.html` |
+| ۱ | `Doc/changelog-phase-1.html` |
+| N | `Doc/changelog-phase-N.html` |
+
+When a phase ships or API consumption changes:
+
+1. Add a new **section at the top** of that phase's HTML file (newest first).
+2. Include **Breaking**, **Commits** (if known), **Added/Changed/Fixed**, and **API / Integration** tables when relevant.
+3. Branch UI logic on API **`code`**, not `message`.
+4. Starting **phase N+1** → create `Doc/changelog-phase-N.html` using the same style as existing files.
+5. Link phases together in the header nav of each HTML file.
+
+**Never** create `Doc/PHASE-N.md` or markdown changelogs for phases.
+
+Do not skip the HTML changelog when shipping phase-related work.

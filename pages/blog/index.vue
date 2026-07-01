@@ -53,7 +53,12 @@ const posts = ref<BlogPost[]>([])
 const pending = ref(true)
 
 try {
-  const raw = await blogService.listPosts({ status: 'published', page_size: 20, ordering: '-published_at' })
+  const raw = await blogService.listPosts({
+    locale: locale.value,
+    status: 'published',
+    page_size: 20,
+    ordering: '-published_at',
+  })
   const parsed = parseBlogPostsListResponse(raw)
   posts.value = parsed?.posts ?? []
 } catch (error) {
