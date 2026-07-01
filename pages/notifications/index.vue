@@ -6,7 +6,7 @@
                     <div class="flex flex-wrap items-center gap-2">
                         <h1 class="text-xl font-semibold text-text-primary">اعلانات</h1>
                         <span
-                            v-if="hasPermission(PERMISSIONS.INBOX.VIEW) && !isInitialLoading && !loadError && unreadCount > 0"
+                            v-if="!isInitialLoading && !loadError && unreadCount > 0"
                             class="inline-flex items-center gap-1 rounded-full border border-secondary/30 bg-secondary-muted/25 px-2.5 py-1 text-xs font-medium tabular-nums text-secondary"
                         >
                             <span
@@ -21,20 +21,19 @@
                     </p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2">
-                    <template v-if="hasPermission(PERMISSIONS.INBOX.VIEW)">
-                        <button
-                            type="button"
-                            class="btn-muted-sm inline-flex items-center gap-1.5"
-                            :disabled="isMarkingAllRead || isFetching"
-                            @click="markAllAsRead"
-                        >
-                            <svg class="size-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 12.5L8 16l11.5-11.5" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.5L12.5 16l11.5-11.5" />
-                            </svg>
-                            {{ isMarkingAllRead ? '...' : 'خواندن همه' }}
-                        </button>
-                    </template>
+                    <button
+                        v-if="showMarkAllReadButton"
+                        type="button"
+                        class="btn-muted-sm inline-flex items-center gap-1.5"
+                        :disabled="isMarkingAllRead || isFetching"
+                        @click="markAllAsRead"
+                    >
+                        <svg class="size-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 12.5L8 16l11.5-11.5" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.5L12.5 16l11.5-11.5" />
+                        </svg>
+                        {{ isMarkingAllRead ? '...' : 'خواندن همه' }}
+                    </button>
                     <button
                         v-if="hasPermission(PERMISSIONS.INBOX.ADD)"
                         type="button"
@@ -324,6 +323,10 @@ const hasActiveFilters = computed(
         Boolean(appliedReadFilter.value) ||
         Boolean(appliedType.value) ||
         Boolean(appliedPriority.value),
+)
+
+const showMarkAllReadButton = computed(
+    () => !isInitialLoading.value && !loadError.value && items.value.length > 0,
 )
 
 const displayItems = computed(() => {

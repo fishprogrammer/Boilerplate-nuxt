@@ -136,7 +136,7 @@ export default defineNuxtConfig({
   },
 
   pwa: {
-    registerType: 'autoUpdate',
+    registerType: 'prompt',
     devOptions: {
       enabled: false,
     },
@@ -195,7 +195,7 @@ export default defineNuxtConfig({
           },
         },
       ],
-      skipWaiting: true,
+      skipWaiting: false,
       clientsClaim: true,
     },
     includeAssets: [

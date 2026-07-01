@@ -117,9 +117,9 @@ export const ROUTE_ACCESS: Partial<Record<string, RouteAccessRule>> = {
   'user-view': { anyOf: [PERMISSIONS.USERS.VIEW] },
   'user-edit': { anyOf: [PERMISSIONS.USERS.CHANGE] },
   media: { anyOf: [PERMISSIONS.MEDIA.VIEW] },
-  notifications: { anyOf: [PERMISSIONS.INBOX.VIEW] },
+  notifications: {},
   'send-notification': { anyOf: [PERMISSIONS.INBOX.ADD] },
-  'view-notification': { anyOf: [PERMISSIONS.INBOX.VIEW] },
+  'view-notification': {},
   roles: { anyOf: [PERMISSIONS.AUTH.VIEW_GROUP] },
   'create-role': { anyOf: [PERMISSIONS.AUTH.ADD_GROUP] },
   'edit-role': { anyOf: [PERMISSIONS.AUTH.CHANGE_GROUP] },
@@ -162,7 +162,7 @@ export const MENU_ACCESS: Partial<Record<string, MenuAccessRule>> = {
   users: { anyOf: [PERMISSIONS.USERS.VIEW] },
   profile: {},
   media: { anyOf: [PERMISSIONS.MEDIA.VIEW] },
-  notifications: { anyOf: [PERMISSIONS.INBOX.VIEW] },
+  notifications: {},
   roles: {
     anyOf: [
       PERMISSIONS.AUTH.VIEW_GROUP,

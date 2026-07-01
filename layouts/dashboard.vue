@@ -39,7 +39,6 @@
           <OfflineConnectionIndicator v-if="isOffline" />
 
           <button
-            v-if="hasPermission(PERMISSIONS.INBOX.VIEW)"
             type="button"
             @click="router.push('/notifications')"
             class="relative flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-lg border-0 bg-transparent text-text-secondary hover:bg-surface-hover md:size-11"
@@ -169,7 +168,6 @@ import { useAuthStore } from '~/stores/auth'
 import { hydrateUserSession } from '~/composables/useSession'
 import { useOnlineStatus } from '~/composables/useOnlineStatus'
 import { useLogout } from '~/composables/useLogout'
-import { usePermissions } from '~/composables/usePermissions'
 import { useRouter } from 'vue-router'
 import { getAccessToken } from '~/utils/auth-storage'
 import { formatWalletAmount } from '~/utils/wallet'
@@ -182,7 +180,6 @@ const route = useRoute()
 const sidebarRef = ref<InstanceType<typeof Sidebar> | null>(null)
 const authStore = useAuthStore()
 const { unreadCount } = authStore
-const { hasPermission, PERMISSIONS } = usePermissions()
 const { isOffline } = useOnlineStatus()
 const { isLoggingOut, executeLogout } = useLogout()
 
