@@ -14,6 +14,7 @@ import {
   parseRevealKeyRequestResponse,
   parseRevealKeyVerifyResponse,
 } from '~/api/utils/api-response'
+import { parseAdminLicensesSearchResponse } from '~/api/utils/finance-dashboard-response'
 import { mockDownloads, mockLicenseDetail, mockLicenses } from '~/mocks/licensing'
 
 export function useLicensing() {
@@ -89,6 +90,14 @@ export function useLicensing() {
     return parseInstallationsListResponse(raw) ?? []
   }
 
+  async function adminSearchLicenses(filters?: { search?: string; key?: string }) {
+    const params: Record<string, string> = {}
+    if (filters?.search) params.search = filters.search
+    if (filters?.key) params.key = filters.key
+    const raw = await licensingService.adminSearchLicenses(params)
+    return parseAdminLicensesSearchResponse(raw) ?? []
+  }
+
   return {
     licensingApiLive,
     fetchLicenses,
@@ -98,6 +107,7 @@ export function useLicensing() {
     requestRevealOtp,
     verifyRevealOtp,
     adminFetchInstallations,
+    adminSearchLicenses,
     listLicenses: fetchLicenses,
     getLicense: fetchLicense,
     listDownloads: fetchDownloads,

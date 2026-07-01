@@ -922,6 +922,20 @@ export function parseCatalogProductDetailResponse(response: unknown): CatalogPro
   }
 }
 
+export function parseAdminCatalogProductDetailResponse(
+  response: unknown,
+): import('~/types/catalog').AdminCatalogProductDetail | null {
+  const detail = parseCatalogProductDetailResponse(response)
+  if (!detail) return null
+  const payload = getApiPayload(response)
+  const statusRaw =
+    payload && typeof payload === 'object' ? (payload as Record<string, unknown>).status : undefined
+  return {
+    ...detail,
+    status: statusRaw === 'published' ? 'published' : 'draft',
+  }
+}
+
 export function parseAdminCatalogProductsListResponse(response: unknown): AdminCatalogProductsListResult | null {
   const parsed = parseCatalogProductsListResponse(response)
   if (!parsed) return null

@@ -123,3 +123,11 @@ export interface CreateCatalogReleaseRequest {
   release_notes: string
   released_at: number
 }
+
+export interface AdminCatalogProductDetail extends CatalogProductDetail {
+  status: CatalogProductStatus
+}
+
+export interface LicensingSecretResponse {
+  api_secret: string
+}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog فاز ۵ — Soft Store Frontend</title>
+  <style>
+    :root { color-scheme: light dark; --bg:#f4f5f6; --card:#fff; --text:#1a1a1a; --muted:#5c6670; --border:#e2e5e8; --brand:#e11d48; --added:#059669; --changed:#d97706; --api:#7c3aed; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#111418; --card:#1a1f24; --text:#e8eaed; --muted:#9aa3ad; --border:#2a3139; } }
+    body { margin:0; font-family:Tahoma,"Segoe UI",sans-serif; background:var(--bg); color:var(--text); line-height:1.7; }
+    .wrap { max-width:820px; margin:0 auto; padding:2rem 1.25rem 3rem; }
+    header { margin-bottom:2rem; padding-bottom:1.25rem; border-bottom:1px solid var(--border); }
+    h1 { margin:0 0 .35rem; font-size:1.75rem; }
+    .meta { color:var(--muted); font-size:.92rem; }
+    .badge { display:inline-block; margin-top:.75rem; padding:.2rem .65rem; border-radius:999px; background:color-mix(in srgb,var(--brand) 15%,transparent); color:var(--brand); font-size:.85rem; font-weight:600; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem 1.35rem; margin-bottom:1.25rem; }
+    h2 { margin:0 0 .35rem; font-size:1.15rem; }
+    h3 { margin:1rem 0 .5rem; font-size:1rem; color:var(--muted); }
+    ul { margin:0; padding-right:1.25rem; }
+    li { margin:.35rem 0; }
+    .tag { display:inline-block; min-width:3.2rem; text-align:center; padding:.05rem .45rem; border-radius:6px; font-size:.75rem; font-weight:700; margin-left:.35rem; }
+    .tag.added { background:color-mix(in srgb,var(--added) 18%,transparent); color:var(--added); }
+    .tag.changed { background:color-mix(in srgb,var(--changed) 18%,transparent); color:var(--changed); }
+    .tag.api { background:color-mix(in srgb,var(--api) 18%,transparent); color:var(--api); }
+    code { font-family:Consolas,monospace; font-size:.88em; background:color-mix(in srgb,var(--border) 60%,transparent); padding:.1rem .35rem; border-radius:4px; direction:ltr; }
+    table { width:100%; border-collapse:collapse; font-size:.9rem; margin-top:.5rem; }
+    th,td { border:1px solid var(--border); padding:.45rem .6rem; text-align:right; }
+    .nav-links a { margin-left:.75rem; color:var(--brand); }
+    footer { color:var(--muted); font-size:.85rem; text-align:center; margin-top:1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Soft Store — Changelog فاز ۵</h1>
+      <p class="meta">Admin store polish · Finance dashboard · MRR · export</p>
+      <span class="badge">🟢 تحویل اولیه فرانت</span>
+      <div class="nav-links">
+        <strong>فازها:</strong>
+        <a href="changelog-phase-0.html">فاز ۰</a>
+        <a href="changelog-phase-1.html">فاز ۱</a>
+        <a href="changelog-phase-2.html">فاز ۲</a>
+        <a href="changelog-phase-3.html">فاز ۳</a>
+        <a href="changelog-phase-4.html">فاز ۴</a>
+        <a href="changelog-phase-5.html">فاز ۵</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>هدف فاز ۵</h2>
+      <p class="meta">تکمیل ادمین فروشگاه: انتشار محصول، کپی پلن، کلید API، فیلتر/خروجی سفارش، کوپن دسته‌ای، جستجوی لایسنس، و داشبورد مالی با MRR.</p>
+    </section>
+
+    <section>
+      <h2>۱۴۰۴/۰۴/۱۶ <span>— تحویل اولیه فاز ۵</span></h2>
+      <p class="meta">نسخه <code>1.0.10</code> · Finance mock تا <code>NUXT_PUBLIC_FINANCE_API_LIVE=true</code></p>
+
+      <h3>Added</h3>
+      <ul>
+        <li><span class="tag added">جدید</span> <code>/admin/catalog/products/{id}</code> — publish/unpublish، کپی پلن، کلید API، release</li>
+        <li><span class="tag added">جدید</span> فیلتر سفارش + خروجی CSV</li>
+        <li><span class="tag added">جدید</span> تولید دسته‌ای کوپن (<code>bulk-generate</code>)</li>
+        <li><span class="tag added">جدید</span> <code>/admin/licensing/licenses</code> — جستجوی ادمین</li>
+        <li><span class="tag added">جدید</span> <code>/admin/finance</code> — KPI، نمودار MRR، پیش‌بینی، درآمد محصول، اثر کوپن</li>
+        <li><span class="tag added">جدید</span> <code>useFinance()</code> + <code>mocks/finance.ts</code></li>
+        <li><span class="tag added">جدید</span> دسترسی <code>finance.view_dashboard</code> و منوی «مالی»</li>
+      </ul>
+
+      <h3>Changed</h3>
+      <ul>
+        <li><span class="tag changed">تغییر</span> لیست محصولات — لینک «مدیریت» به صفحه جزئیات</li>
+        <li><span class="tag changed">تغییر</span> سفارش‌های ادمین — فیلتر status / paid_from / paid_to / user</li>
+      </ul>
+
+      <h3><span class="tag api">API</span></h3>
+      <table>
+        <thead><tr><th>Endpoint</th><th>Frontend</th></tr></thead>
+        <tbody>
+          <tr><td><code>POST .../publish|unpublish/</code></td><td>catalog product admin</td></tr>
+          <tr><td><code>POST .../duplicate-plan/</code></td><td>کپی پلن</td></tr>
+          <tr><td><code>POST .../licensing-secret/</code></td><td>کلید API یک‌بار</td></tr>
+          <tr><td><code>GET .../orders/export/</code></td><td>CSV</td></tr>
+          <tr><td><code>POST .../coupons/bulk-generate/</code></td><td>کوپن دسته‌ای</td></tr>
+          <tr><td><code>GET /api/licensing/admin/licenses/</code></td><td>جستجوی لایسنس</td></tr>
+          <tr><td><code>GET /api/finance/*</code></td><td>داشبورد مالی</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Out of scope</h3>
+      <ul>
+        <li>SEO / GSC (فاز ۶)</li>
+        <li>تمدید خودکار اشتراک</li>
+      </ul>
+    </section>
+
+    <footer>Soft Store Frontend · فاز ۵ · Doc/changelog-phase-5.html</footer>
+  </div>
+</body>
+</html>

@@ -61,3 +61,16 @@ export interface InstallationReport {
   last_seen_at: number
   license_status: string
 }
+
+export interface AdminLicenseSearchItem {
+  id: string
+  license_key_masked: string
+  owner_username: string
+  owner_email: string | null
+  product_name: string
+  product_slug: string
+  status: LicenseStatus
+  activation_count: number
+  order_id: string | null
+  created_at: number
+}

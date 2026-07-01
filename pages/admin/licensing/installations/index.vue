@@ -1,9 +1,12 @@
 <template>
   <div class="page-shell">
     <div class="page-card-fill">
-      <div class="mb-6 border-b border-border/50 pb-4">
-        <h1 class="text-xl font-semibold text-text-primary">نصب‌های فعال (ادمین)</h1>
-        <p class="mt-1 text-sm text-text-secondary">گزارش فعال‌سازی محصولات — فقط خواندنی</p>
+      <div class="mb-6 flex flex-col gap-3 border-b border-border/50 pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-xl font-semibold text-text-primary">نصب‌های فعال (ادمین)</h1>
+          <p class="mt-1 text-sm text-text-secondary">گزارش فعال‌سازی محصولات — فقط خواندنی</p>
+        </div>
+        <RouterLink :to="{ name: 'admin-licensing-licenses' }" class="btn-muted-sm">جستجوی لایسنس</RouterLink>
       </div>
 
       <div class="mb-4 grid grid-cols-1 gap-3 md:grid-cols-4">

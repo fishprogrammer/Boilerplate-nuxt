@@ -54,6 +54,7 @@
               <th class="px-3 py-2 font-medium">زبان</th>
               <th class="px-3 py-2 font-medium">وضعیت</th>
               <th class="px-3 py-2 font-medium">قیمت از</th>
+              <th class="px-3 py-2 font-medium" />
             </tr>
           </thead>
           <tbody>
@@ -67,6 +68,15 @@
                 </span>
               </td>
               <td class="px-3 py-2">{{ product.price_from ?? '—' }}</td>
+              <td class="px-3 py-2">
+                <RouterLink
+                  v-if="hasPermission(PERMISSIONS.CATALOG.CHANGE_PRODUCT)"
+                  :to="{ name: 'catalog-product-view', params: { id: product.id } }"
+                  class="text-xs text-primary"
+                >
+                  مدیریت
+                </RouterLink>
+              </td>
             </tr>
           </tbody>
         </table>

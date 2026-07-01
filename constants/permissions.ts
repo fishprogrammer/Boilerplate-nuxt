@@ -88,6 +88,9 @@ export const PERMISSIONS = {
   LICENSING: {
     VIEW_LICENSE: 'licensing.view_license',
   },
+  FINANCE: {
+    VIEW_DASHBOARD: 'finance.view_dashboard',
+  },
 } as const
 
 export const SYSTEM_VIEW_PERMISSIONS = [
@@ -173,6 +176,7 @@ export const ROUTE_ACCESS: Partial<Record<string, RouteAccessRule>> = {
   'ticket-settings': { staffOnly: true, anyOf: [PERMISSIONS.TICKETS.CHANGE] },
   'catalog-products': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_PRODUCT] },
   'catalog-categories': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_CATEGORY] },
+  'catalog-product-view': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.CHANGE_PRODUCT] },
   'panel-checkout': {},
   'panel-orders': {},
   'panel-order-view': {},
@@ -183,6 +187,8 @@ export const ROUTE_ACCESS: Partial<Record<string, RouteAccessRule>> = {
   'panel-license-view': {},
   'panel-downloads': {},
   'admin-licensing-installations': { staffOnly: true, anyOf: [PERMISSIONS.LICENSING.VIEW_LICENSE] },
+  'admin-licensing-licenses': { staffOnly: true, anyOf: [PERMISSIONS.LICENSING.VIEW_LICENSE] },
+  'admin-finance-dashboard': { staffOnly: true, anyOf: [PERMISSIONS.FINANCE.VIEW_DASHBOARD] },
 }
 
 export type MenuAccessRule = {
@@ -214,6 +220,7 @@ export const MENU_ACCESS: Partial<Record<string, MenuAccessRule>> = {
   catalog: { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_PRODUCT, PERMISSIONS.CATALOG.VIEW_CATEGORY] },
   commerce: { staffOnly: true, anyOf: [PERMISSIONS.COMMERCE.VIEW_COUPON, PERMISSIONS.COMMERCE.VIEW_ORDER] },
   licensing: { staffOnly: true, anyOf: [PERMISSIONS.LICENSING.VIEW_LICENSE] },
+  finance: { staffOnly: true, anyOf: [PERMISSIONS.FINANCE.VIEW_DASHBOARD] },
   tickets: {},
   wallet: {},
   'system-settings': { staffOnly: true, anyOf: SYSTEM_VIEW_PERMISSIONS },

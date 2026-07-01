@@ -29,6 +29,29 @@
         <button type="submit" class="btn-action-sm" :disabled="isCreating">{{ isCreating ? '...' : 'افزودن کوپن' }}</button>
       </form>
 
+      <details v-if="hasPermission(PERMISSIONS.COMMERCE.ADD_COUPON)" class="mb-4 rounded-xl border border-border/70 bg-surface-muted/20 p-3">
+        <summary class="cursor-pointer text-sm font-medium text-text-primary">تولید دسته‌ای کوپن (حداکثر ۱۰۰)</summary>
+        <form class="mt-3 grid grid-cols-1 gap-2 md:grid-cols-4" @submit.prevent="bulkGenerate">
+          <input v-model.number="bulkForm.count" type="number" min="1" max="100" placeholder="تعداد" class="rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none input-focus" />
+          <input v-model="bulkForm.prefix" type="text" placeholder="پیشوند (اختیاری)" dir="ltr" class="rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none input-focus" />
+          <select v-model="bulkForm.discount_type" class="rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none input-focus">
+            <option value="percent">درصدی</option>
+            <option value="fixed_amount">مبلغ ثابت</option>
+          </select>
+          <input v-model.number="bulkForm.discount_value" type="number" min="0" placeholder="مقدار" class="rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none input-focus" />
+          <button type="submit" class="btn-action-sm md:col-span-4 w-fit" :disabled="bulkPending">{{ bulkPending ? '...' : 'تولید کدها' }}</button>
+        </form>
+        <div v-if="generatedCodes.length" class="mt-3">
+          <div class="mb-2 flex items-center justify-between">
+            <span class="text-xs text-text-secondary">{{ generatedCodes.length }} کد تولید شد</span>
+            <button type="button" class="text-xs text-primary" @click="copyAllCodes">کپی همه</button>
+          </div>
+          <div class="max-h-40 overflow-y-auto rounded-lg border border-border bg-surface p-2 font-mono text-xs dir-ltr">
+            <div v-for="code in generatedCodes" :key="code">{{ code }}</div>
+          </div>
+        </div>
+      </details>
+
       <div v-if="loadError" class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
         {{ loadError }}
       </div>
@@ -90,16 +113,24 @@ definePageMeta({
 })
 
 const { hasPermission } = usePermissions()
-const { adminListCoupons, adminCreateCoupon, adminDeleteCoupon } = useCommerce()
+const { adminListCoupons, adminCreateCoupon, adminDeleteCoupon, adminBulkGenerateCoupons } = useCommerce()
 
 const coupons = ref<CouponAdmin[]>([])
 const pending = ref(true)
 const loadError = ref('')
 const isCreating = ref(false)
+const bulkPending = ref(false)
+const generatedCodes = ref<string[]>([])
 const form = reactive({
   code: '',
   discount_type: 'percent' as 'percent' | 'fixed_amount',
   discount_value: 10,
+})
+const bulkForm = reactive({
+  count: 10,
+  prefix: 'PROMO',
+  discount_type: 'percent' as 'percent' | 'fixed_amount',
+  discount_value: 15,
 })
 
 async function loadCoupons() {
@@ -142,6 +173,35 @@ async function removeCoupon(id: string) {
     await loadCoupons()
   } catch (error) {
     showToast({ message: getApiErrorMessage(error, 'حذف کوپن ناموفق بود'), variant: 'error' })
+  }
+}
+
+async function bulkGenerate() {
+  if (bulkPending.value || bulkForm.count < 1) return
+  bulkPending.value = true
+  try {
+    const result = await adminBulkGenerateCoupons({
+      count: Math.min(bulkForm.count, 100),
+      prefix: bulkForm.prefix.trim() || undefined,
+      discount_type: bulkForm.discount_type,
+      discount_value: bulkForm.discount_value,
+    })
+    generatedCodes.value = result?.codes ?? []
+    showToast({ message: `${generatedCodes.value.length} کد تولید شد`, variant: 'success' })
+    await loadCoupons()
+  } catch (error) {
+    showToast({ message: getApiErrorMessage(error, 'تولید دسته‌ای ناموفق بود'), variant: 'error' })
+  } finally {
+    bulkPending.value = false
+  }
+}
+
+async function copyAllCodes() {
+  try {
+    await navigator.clipboard.writeText(generatedCodes.value.join('\n'))
+    showToast({ message: 'کدها کپی شدند', variant: 'success' })
+  } catch {
+    showToast({ message: 'کپی ناموفق بود', variant: 'error' })
   }
 }
 

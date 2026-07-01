@@ -35,6 +35,10 @@ export class LicensingService extends BaseService {
   async adminListInstallations(params?: Record<string, string | number>): Promise<unknown> {
     return this.getRaw(API_ENDPOINTS.LICENSING.ADMIN.INSTALLATIONS, params)
   }
+
+  async adminSearchLicenses(params?: Record<string, string | number>): Promise<unknown> {
+    return this.getRaw(API_ENDPOINTS.LICENSING.ADMIN.LICENSES, params)
+  }
 }
 
 export const licensingService = new LicensingService()

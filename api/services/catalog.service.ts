@@ -71,6 +71,22 @@ export class CatalogService extends BaseService {
     return this.postRaw(API_ENDPOINTS.CATALOG.ADMIN.releases(id), data)
   }
 
+  async adminPublishProduct(id: string): Promise<unknown> {
+    return this.postRaw(API_ENDPOINTS.CATALOG.ADMIN.publish(id))
+  }
+
+  async adminUnpublishProduct(id: string): Promise<unknown> {
+    return this.postRaw(API_ENDPOINTS.CATALOG.ADMIN.unpublish(id))
+  }
+
+  async adminDuplicatePlan(id: string, planId: string): Promise<unknown> {
+    return this.postRaw(API_ENDPOINTS.CATALOG.ADMIN.duplicatePlan(id), { plan_id: planId })
+  }
+
+  async adminGenerateLicensingSecret(id: string): Promise<unknown> {
+    return this.postRaw(API_ENDPOINTS.CATALOG.ADMIN.licensingSecret(id))
+  }
+
   async adminListCategories(params?: Record<string, string | number | boolean>): Promise<unknown> {
     return this.getRaw(API_ENDPOINTS.CATALOG.ADMIN.CATEGORIES, params)
   }

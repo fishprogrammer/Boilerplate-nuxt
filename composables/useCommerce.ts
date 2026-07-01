@@ -1,4 +1,5 @@
 import type {
+  BulkGenerateCouponsRequest,
   CouponValidateResponse,
   CreateCouponRequest,
   CreateOrderRequest,
@@ -18,6 +19,7 @@ import {
   parseCouponValidateResponse,
   parseCreateOrderResponse,
 } from '~/api/utils/api-response'
+import { parseBulkGenerateCouponsResponse } from '~/api/utils/finance-dashboard-response'
 import { mockOrderDetail, mockOrders, validateMockCoupon } from '~/mocks/commerce'
 import { isCommerceTerminalStatus } from '~/utils/commerce'
 
@@ -151,6 +153,11 @@ export function useCommerce() {
     return parseCommerceOrderDetailResponse(raw)
   }
 
+  async function adminBulkGenerateCoupons(data: BulkGenerateCouponsRequest) {
+    const raw = await commerceService.adminBulkGenerateCoupons(data)
+    return parseBulkGenerateCouponsResponse(raw)
+  }
+
   return {
     commerceApiLive,
     validateCoupon,
@@ -167,5 +174,6 @@ export function useCommerce() {
     adminDeleteCoupon,
     adminListOrders,
     adminGetOrder,
+    adminBulkGenerateCoupons,
   }
 }

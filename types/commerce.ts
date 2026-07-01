@@ -118,6 +118,32 @@ export interface ListCommerceOrdersParams {
   ordering?: string
 }
 
+export interface ListAdminCommerceOrdersParams extends ListCommerceOrdersParams {
+  status?: OrderStatus
+  paid_from?: number
+  paid_to?: number
+  user?: string
+}
+
+export interface BulkGenerateCouponsRequest {
+  count: number
+  prefix?: string
+  discount_type: DiscountType
+  discount_value: number
+  valid_from?: number
+  valid_until?: number
+  products?: string[]
+  plans?: string[]
+  max_uses?: number | null
+  max_uses_per_user?: number
+  min_order_amount?: number | null
+  first_purchase_only?: boolean
+}
+
+export interface BulkGenerateCouponsResponse {
+  codes: string[]
+}
+
 export interface CommerceOrdersListResult {
   orders: OrderListItem[]
   pagination: import('~/api/types/auth.types').PaginationMeta

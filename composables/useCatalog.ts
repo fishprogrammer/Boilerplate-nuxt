@@ -10,11 +10,13 @@ import type { PaginationMeta } from '~/api/types/auth.types'
 import { catalogService } from '~/api/services/catalog.service'
 import {
   parseAdminCatalogProductsListResponse,
+  parseAdminCatalogProductDetailResponse,
   parseCatalogCategoriesListResponse,
   parseCatalogCategoryDetailResponse,
   parseCatalogProductDetailResponse,
   parseCatalogProductsListResponse,
 } from '~/api/utils/api-response'
+import { parseLicensingSecretResponse } from '~/api/utils/finance-dashboard-response'
 import {
   getMockCategories,
   getMockCategory,
@@ -147,7 +149,24 @@ export function useCatalog() {
 
   async function adminGetProduct(id: string) {
     const raw = await catalogService.adminGetProduct(id)
-    return parseCatalogProductDetailResponse(raw)
+    return parseAdminCatalogProductDetailResponse(raw)
+  }
+
+  async function adminPublishProduct(id: string) {
+    return catalogService.adminPublishProduct(id)
+  }
+
+  async function adminUnpublishProduct(id: string) {
+    return catalogService.adminUnpublishProduct(id)
+  }
+
+  async function adminDuplicatePlan(id: string, planId: string) {
+    await catalogService.adminDuplicatePlan(id, planId)
+  }
+
+  async function adminGenerateLicensingSecret(id: string) {
+    const raw = await catalogService.adminGenerateLicensingSecret(id)
+    return parseLicensingSecretResponse(raw)
   }
 
   async function adminCreateProduct(data: Record<string, unknown>) {
@@ -192,6 +211,10 @@ export function useCatalog() {
     getCategory,
     adminListProducts,
     adminGetProduct,
+    adminPublishProduct,
+    adminUnpublishProduct,
+    adminDuplicatePlan,
+    adminGenerateLicensingSecret,
     adminCreateProduct,
     adminUpdateProduct,
     adminDeleteProduct,

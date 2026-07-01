@@ -417,6 +417,7 @@ const MENU_ACTION_TO_ROUTE: Record<string, string> = {
   catalog: 'catalog-products',
   commerce: 'admin-commerce-coupons',
   licensing: 'admin-licensing-installations',
+  finance: 'admin-finance-dashboard',
   roles: 'roles',
   'system-settings': 'system-settings',
   'system-health': 'system-health',
@@ -525,6 +526,13 @@ const menuItems: MenuItem[] = [
     iconBg: 'bg-violet-100 group-hover:bg-violet-200 dark:bg-violet-950 dark:group-hover:bg-violet-900',
     iconColor: 'text-violet-700 group-hover:text-violet-800 dark:text-violet-400 dark:group-hover:text-violet-300',
     action: 'licensing',
+  },
+  {
+    label: 'مالی',
+    icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+    iconBg: 'bg-rose-100 group-hover:bg-rose-200 dark:bg-rose-950 dark:group-hover:bg-rose-900',
+    iconColor: 'text-rose-700 group-hover:text-rose-800 dark:text-rose-400 dark:group-hover:text-rose-300',
+    action: 'finance',
   },
 ]
 
@@ -828,13 +836,16 @@ const isActive = (item: MenuItem) => {
     return isBlogSectionRoute()
   }
   if (item.action === 'catalog') {
-    return name === 'catalog-products' || name === 'catalog-categories'
+    return name === 'catalog-products' || name === 'catalog-categories' || name === 'catalog-product-view'
   }
   if (item.action === 'commerce') {
     return name === 'admin-commerce-coupons' || name === 'admin-commerce-orders'
   }
   if (item.action === 'licensing') {
-    return name === 'admin-licensing-installations'
+    return name === 'admin-licensing-installations' || name === 'admin-licensing-licenses'
+  }
+  if (item.action === 'finance') {
+    return name === 'admin-finance-dashboard'
   }
   if (item.action === 'system-settings') return name === 'system-settings'
   if (item.action === 'system-health') return name === 'system-health'

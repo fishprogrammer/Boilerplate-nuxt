@@ -84,6 +84,7 @@ export default defineNuxtConfig({
       catalogApiLive: process.env.NUXT_PUBLIC_CATALOG_API_LIVE || 'false',
       commerceApiLive: process.env.NUXT_PUBLIC_COMMERCE_API_LIVE || 'false',
       licensingApiLive: process.env.NUXT_PUBLIC_LICENSING_API_LIVE || 'false',
+      financeApiLive: process.env.NUXT_PUBLIC_FINANCE_API_LIVE || 'false',
     },
     revalidateSecret: process.env.NUXT_REVALIDATE_SECRET || 'change-me-in-production',
   },

@@ -84,6 +84,11 @@ export const API_ENDPOINTS = {
     MANUAL_PAYMENTS: '/api/finance/manual-payments/',
     MY_SALE_ORDERS: '/api/finance/my-sale-orders/',
     mySaleOrderById: (id: string) => `/api/finance/my-sale-orders/${id}/`,
+    DASHBOARD: '/api/finance/dashboard/',
+    MRR: '/api/finance/mrr/',
+    FORECAST: '/api/finance/forecast/',
+    REVENUE_BY_PRODUCT: '/api/finance/revenue-by-product/',
+    COUPONS_IMPACT: '/api/finance/coupons-impact/',
   },
   CATALOG: {
     PRODUCTS: '/api/catalog/products/',
@@ -97,6 +102,10 @@ export const API_ENDPOINTS = {
       CATEGORIES: '/api/catalog/admin/categories/',
       categoryById: (id: string) => `/api/catalog/admin/categories/${id}/`,
       releases: (id: string) => `/api/catalog/admin/products/${id}/releases/`,
+      publish: (id: string) => `/api/catalog/admin/products/${id}/publish/`,
+      unpublish: (id: string) => `/api/catalog/admin/products/${id}/unpublish/`,
+      duplicatePlan: (id: string) => `/api/catalog/admin/products/${id}/duplicate-plan/`,
+      licensingSecret: (id: string) => `/api/catalog/admin/products/${id}/licensing-secret/`,
     },
   },
   COMMERCE: {
@@ -107,7 +116,9 @@ export const API_ENDPOINTS = {
       COUPONS: '/api/commerce/admin/coupons/',
       couponById: (id: string) => `/api/commerce/admin/coupons/${id}/`,
       ORDERS: '/api/commerce/admin/orders/',
+      ORDERS_EXPORT: '/api/commerce/admin/orders/export/',
       orderById: (id: string) => `/api/commerce/admin/orders/${id}/`,
+      BULK_GENERATE_COUPONS: '/api/commerce/admin/coupons/bulk-generate/',
     },
   },
   LICENSING: {
@@ -119,6 +130,7 @@ export const API_ENDPOINTS = {
     downloadByToken: '/api/licensing/download/',
     ADMIN: {
       INSTALLATIONS: '/api/licensing/admin/installations/',
+      LICENSES: '/api/licensing/admin/licenses/',
     },
   },
   TICKETS: {

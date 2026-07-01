@@ -2,6 +2,7 @@ import { apiClient } from '../client'
 import { BaseService } from '../base.service'
 import { API_ENDPOINTS } from '../endpoints'
 import type {
+  BulkGenerateCouponsRequest,
   CreateCouponRequest,
   CreateOrderRequest,
   ListCommerceOrdersParams,
@@ -58,6 +59,17 @@ export class CommerceService extends BaseService {
 
   async adminGetOrder(id: string): Promise<unknown> {
     return this.getRaw(API_ENDPOINTS.COMMERCE.ADMIN.orderById(id))
+  }
+
+  async adminExportOrders(params?: Record<string, string | number | boolean>) {
+    return apiClient.get(API_ENDPOINTS.COMMERCE.ADMIN.ORDERS_EXPORT, {
+      params,
+      responseType: 'blob',
+    })
+  }
+
+  async adminBulkGenerateCoupons(data: BulkGenerateCouponsRequest): Promise<unknown> {
+    return this.postRaw(API_ENDPOINTS.COMMERCE.ADMIN.BULK_GENERATE_COUPONS, data)
   }
 }
 
