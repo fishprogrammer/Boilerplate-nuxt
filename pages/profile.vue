@@ -264,6 +264,7 @@ definePageMeta({
 })
 
     import { computed, onMounted, watch, ref, reactive } from 'vue'
+    import { storeToRefs } from 'pinia'
     import { useAuthStore } from '~/stores/auth'
     import { hydrateUserSession } from '~/composables/useSession'
     import { buildUpdateMePayload } from '~/api/utils/api-response'
@@ -274,10 +275,12 @@ definePageMeta({
     import { formatWalletAmount } from '~/utils/wallet'
     import { formatNationalIdDisplay, getNationalIdValidationError, normalizeNationalIdInput } from '~/utils/national-id'
 
-    const { user, userEmail, userPhone, unreadCount, isLoading, updateCurrentUser } = useAuthStore()
+    const authStore = useAuthStore()
+    const { updateCurrentUser } = authStore
+    const { user, userEmail, userPhone, unreadCount, isLoading } = storeToRefs(authStore)
 
     const profileTitle = computed(() => {
-        const u = (user as any)?.value
+        const u = user.value
         if (!u) return 'کاربر'
 
         const fullName = [u.first_name, u.last_name].filter(Boolean).join(' ').trim()
@@ -293,18 +296,18 @@ definePageMeta({
     const fieldClassLtr = `${fieldClass} text-right`
 
     const displayedGender = computed(() => {
-        const gender = (user as any)?.value?.gender as Gender | undefined
+        const gender = user.value?.gender as Gender | undefined
         if (gender === 'male') return 'مرد'
         if (gender === 'female') return 'زن'
         return '—'
     })
 
     const displayedBirthDate = computed(() => {
-        return formatBirthDateForDisplay((user as any)?.value?.birth_date)
+        return formatBirthDateForDisplay(user.value?.birth_date)
     })
 
     const accountFields = computed(() => {
-        const u = (user as any)?.value
+        const u = user.value
         const empty = '—'
 
         return [
@@ -319,14 +322,14 @@ definePageMeta({
     })
 
     const walletBalance = computed(() => {
-        const u = (user as any)?.value
+        const u = user.value
         if (!u) return '0'
         const raw = u.wallet?.balance ?? u.wallet_balance ?? 0
         return formatWalletAmount(raw)
     })
 
     const walletActive = computed(() => {
-        const u = (user as any)?.value
+        const u = user.value
         if (!u) return false
         return Boolean(u.wallet?.is_active ?? u.wallet_is_active)
     })
@@ -342,14 +345,14 @@ definePageMeta({
     })
 
     function startEdit() {
-        const u = (user as any)?.value || {}
-        form.email = u.email ?? ''
-        form.first_name = u.first_name ?? ''
-        form.last_name = u.last_name ?? ''
-        form.phone_number = u.phone_number ?? ''
-        form.national_id = u.national_id ?? ''
-        form.birth_date = birthDateToPickerValue(u.birth_date)
-        form.gender = u.gender === 'male' || u.gender === 'female' ? u.gender : ''
+        const u = user.value
+        form.email = u?.email ?? ''
+        form.first_name = u?.first_name ?? ''
+        form.last_name = u?.last_name ?? ''
+        form.phone_number = u?.phone_number ?? ''
+        form.national_id = u?.national_id ?? ''
+        form.birth_date = birthDateToPickerValue(u?.birth_date)
+        form.gender = u?.gender === 'male' || u?.gender === 'female' ? u.gender : ''
         saveError.value = null
         nationalIdError.value = null
         isEditing.value = true
@@ -404,13 +407,13 @@ definePageMeta({
         // Prevent duplicate requests when parent layout already fetches /me.
         if (!getAccessToken()) return
 
-        const existing = (user as any)?.value
+        const existing = user.value
         if (existing) return
 
         // If another component (e.g. DashboardLayout) is already fetching, wait for it to finish
-        if ((isLoading as any)?.value) {
+        if (isLoading.value) {
             await new Promise<void>((resolve) => {
-                const stop = watch(() => (isLoading as any).value, (val) => {
+                const stop = watch(isLoading, (val) => {
                     if (!val) {
                         stop()
                         resolve()

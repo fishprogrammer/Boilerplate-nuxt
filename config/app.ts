@@ -26,11 +26,12 @@ function resolveApiBaseUrl(): string {
   const fromEnv = String(import.meta.env.NUXT_PUBLIC_API_BASE_URL || '').trim()
   if (fromEnv) return fromEnv.replace(/\/+$/, '')
 
-  const fallback = String(
-    import.meta.env.NUXT_PUBLIC_API_PROXY_TARGET || PRODUCTION_API_BASE_URL,
-  ).trim()
+  // Local dev: same-origin /api → Nitro devProxy (avoids browser CORS).
+  if (import.meta.dev) {
+    return ''
+  }
 
-  return fallback.replace(/\/+$/, '')
+  return PRODUCTION_API_BASE_URL.replace(/\/+$/, '')
 }
 
 export const appConfig = {

@@ -96,8 +96,10 @@ yarn dev
 
 ### API در development
 
-- اگر `NUXT_PUBLIC_API_BASE_URL` خالی باشد، درخواست‌ها از `config/app.ts` به `api.store.a4j.ir` می‌روند.
-- Nitro در dev می‌تواند `/api` را به `NUXT_PUBLIC_API_PROXY_TARGET` پروکسی کند (تنظیم در `nuxt.config.ts`).
+- اگر `NUXT_PUBLIC_API_BASE_URL` خالی باشد، در dev درخواست‌ها به `/api/...` روی همان `localhost` می‌روند (بدون CORS).
+- پروکسی dev در `server/routes/api/[...].ts` — مسیر کامل `/api/...` را به `NUXT_PUBLIC_API_PROXY_TARGET` فوروارد می‌کند.
+- بعد از تغییر config یا route سرور، **حتماً dev server را restart کنید** (`Ctrl+C` → `yarn dev`).
+- در production درخواست‌ها مستقیم به `https://api.store.a4j.ir/api/...` می‌روند.
 
 ## ساختار پروژه (Nuxt)
 
