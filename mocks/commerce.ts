@@ -1,5 +1,4 @@
 import type { CouponValidateResponse, OrderDetail, OrderListItem } from '~/types/commerce'
-import type { LicenseSummary } from '~/types/licensing'
 
 export const mockCouponValid: CouponValidateResponse = {
   valid: true,
@@ -15,35 +14,43 @@ export const mockOrders: OrderListItem[] = [
   {
     id: 'ord-mock-1',
     status: 'paid',
-    amount: 2_990_000,
-    created_at: Math.floor(Date.now() / 1000) - 86_400,
+    subtotal_amount: 2_990_000,
+    discount_amount: 0,
+    final_amount: 2_990_000,
+    currency: 'IRR',
     product_name: 'Woo Sync Pro',
-    plan_name: 'پلن سالانه',
+    product_slug: 'woo-sync-pro',
+    paid_at: Math.floor(Date.now() / 1000) - 86_400,
+    created_at: Math.floor(Date.now() / 1000) - 86_400,
   },
 ]
 
 export const mockOrderDetail: OrderDetail = {
-  ...mockOrders[0]!,
-  line_items: [
+  id: 'ord-mock-1',
+  status: 'paid',
+  subtotal_amount: 2_990_000,
+  discount_amount: 0,
+  final_amount: 2_990_000,
+  currency: 'IRR',
+  coupon_code: null,
+  failure_reason: null,
+  paid_at: Math.floor(Date.now() / 1000) - 86_400,
+  created_at: Math.floor(Date.now() / 1000) - 86_400,
+  lines: [
     {
       product_name: 'Woo Sync Pro',
+      product_slug: 'woo-sync-pro',
       plan_name: 'پلن سالانه',
-      quantity: 1,
+      license_type: 'per_domain',
+      pricing_model: 'subscription',
       unit_price: 2_990_000,
+      quantity: 1,
     },
   ],
-  license_ids: ['lic-mock-1'],
+  licenses: [],
 }
 
-export const mockOrderLicenses: LicenseSummary[] = [
-  {
-    id: 'lic-mock-1',
-    license_key_masked: 'XXXX-XXXX-XXXX-1234',
-    product_name: 'Woo Sync Pro',
-  },
-]
-
-export function validateMockCoupon(code: string, planId: string): CouponValidateResponse {
+export function validateMockCoupon(code: string, _planId: string): CouponValidateResponse {
   if (code.toUpperCase() === 'LAUNCH20') {
     return { ...mockCouponValid, code: code.toUpperCase() }
   }

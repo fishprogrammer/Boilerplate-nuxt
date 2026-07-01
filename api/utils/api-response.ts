@@ -38,6 +38,17 @@ import type {
   CatalogProductsListResult,
 } from '~/types/catalog'
 import type {
+  CommerceCouponsListResult,
+  CommerceOrdersListResult,
+  CouponAdmin,
+  CouponValidateResponse,
+  CreateOrderResponse,
+  OrderDetail,
+  OrderLineItem,
+  OrderListItem,
+  OrderStatus,
+} from '~/types/commerce'
+import type {
   Wallet,
   WalletTransaction,
   WalletTransactionStatus,
@@ -2635,6 +2646,159 @@ export function buildAddTicketMessagePayload(body: string, mediaIds: string[] = 
     body: body.trim(),
     media_ids: mediaIds,
   }
+}
+
+function normalizeOrderStatus(value: unknown): OrderStatus {
+  const status = String(value || 'pending_payment')
+  if (status === 'paid' || status === 'failed' || status === 'refunded' || status === 'pending_payment') {
+    return status
+  }
+  return 'pending_payment'
+}
+
+export function parseCouponValidateResponse(response: unknown): CouponValidateResponse | null {
+  if (!isApiSuccess(response)) return null
+  const payload = getApiPayload(response)
+  if (!payload || typeof payload !== 'object') return null
+  const raw = payload as Record<string, unknown>
+  return {
+    valid: raw.valid === true,
+    code: String(raw.code || ''),
+    discount_type: raw.discount_type === 'fixed_amount' ? 'fixed_amount' : 'percent',
+    discount_value: Number(raw.discount_value) || 0,
+    discount_amount: Number(raw.discount_amount) || 0,
+    final_amount: Number(raw.final_amount) || 0,
+    message: String(raw.message || ''),
+  }
+}
+
+export function parseCreateOrderResponse(response: unknown): CreateOrderResponse | null {
+  if (!isApiSuccess(response)) return null
+  const payload = getApiPayload(response)
+  if (!payload || typeof payload !== 'object') return null
+  const raw = payload as Record<string, unknown>
+  const licenses = Array.isArray(raw.licenses) ? raw.licenses : []
+  return {
+    order_id: String(raw.order_id || raw.id || ''),
+    status: normalizeOrderStatus(raw.status),
+    amount: Number(raw.amount ?? raw.final_amount) || 0,
+    payment: normalizePaymentRedirect(raw.payment),
+    licenses,
+  }
+}
+
+function normalizeOrderListItem(raw: Record<string, unknown>): OrderListItem {
+  return {
+    id: String(raw.id || ''),
+    status: normalizeOrderStatus(raw.status),
+    subtotal_amount: Number(raw.subtotal_amount) || 0,
+    discount_amount: Number(raw.discount_amount) || 0,
+    final_amount: Number(raw.final_amount ?? raw.amount) || 0,
+    currency: 'IRR',
+    product_name: String(raw.product_name || ''),
+    product_slug: String(raw.product_slug || ''),
+    paid_at: raw.paid_at === null || raw.paid_at === undefined ? null : Number(raw.paid_at) || 0,
+    created_at: Number(raw.created_at) || 0,
+  }
+}
+
+function extractCommerceOrders(root: Record<string, unknown>): unknown[] | null {
+  const data = root.data
+  if (Array.isArray(data)) return data
+  if (data && typeof data === 'object' && !Array.isArray(data)) {
+    const inner = (data as Record<string, unknown>).data
+    if (Array.isArray(inner)) return inner
+  }
+  return null
+}
+
+export function parseCommerceOrdersListResponse(response: unknown): CommerceOrdersListResult | null {
+  if (!isApiSuccess(response)) return null
+  const root = (response && typeof response === 'object' ? response : {}) as Record<string, unknown>
+  const rawItems = extractCommerceOrders(root)
+  if (!rawItems) return null
+  const orders = rawItems
+    .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+    .map((item) => normalizeOrderListItem(item))
+  const pagination = extractPagination(root, orders.length)
+  return { orders, pagination }
+}
+
+function normalizeOrderLineItem(raw: Record<string, unknown>): OrderLineItem {
+  return {
+    product_name: String(raw.product_name || ''),
+    product_slug: String(raw.product_slug || ''),
+    plan_name: String(raw.plan_name || ''),
+    license_type: String(raw.license_type || ''),
+    pricing_model: String(raw.pricing_model || ''),
+    unit_price: Number(raw.unit_price) || 0,
+    quantity: Number(raw.quantity) || 1,
+  }
+}
+
+export function parseCommerceOrderDetailResponse(response: unknown): OrderDetail | null {
+  if (!isApiSuccess(response)) return null
+  const payload = getApiPayload(response)
+  if (!payload || typeof payload !== 'object') return null
+  const raw = payload as Record<string, unknown>
+  const linesRaw = raw.lines ?? raw.line_items
+  const lines = Array.isArray(linesRaw)
+    ? linesRaw
+        .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+        .map((item) => normalizeOrderLineItem(item))
+    : []
+  const base = normalizeOrderListItem(raw)
+  return {
+    ...base,
+    coupon_code: raw.coupon_code ? String(raw.coupon_code) : null,
+    failure_reason: raw.failure_reason ? String(raw.failure_reason) : null,
+    lines,
+    licenses: Array.isArray(raw.licenses) ? raw.licenses : [],
+  }
+}
+
+function normalizeCouponAdmin(raw: Record<string, unknown>): CouponAdmin {
+  const productsRaw = raw.products
+  const plansRaw = raw.plans
+  return {
+    id: String(raw.id || ''),
+    code: String(raw.code || ''),
+    discount_type: raw.discount_type === 'fixed_amount' ? 'fixed_amount' : 'percent',
+    discount_value: Number(raw.discount_value) || 0,
+    products: Array.isArray(productsRaw) ? productsRaw.map((item) => String(item)) : [],
+    plans: Array.isArray(plansRaw) ? plansRaw.map((item) => String(item)) : [],
+    max_uses: raw.max_uses === null || raw.max_uses === undefined ? null : Number(raw.max_uses),
+    max_uses_per_user: Number(raw.max_uses_per_user) || 0,
+    used_count: Number(raw.used_count) || 0,
+    valid_from: Number(raw.valid_from) || 0,
+    valid_until: Number(raw.valid_until) || 0,
+    is_active: raw.is_active !== false,
+    min_order_amount:
+      raw.min_order_amount === null || raw.min_order_amount === undefined
+        ? null
+        : Number(raw.min_order_amount),
+    first_purchase_only: raw.first_purchase_only === true,
+  }
+}
+
+export function parseCommerceCouponsListResponse(response: unknown): CommerceCouponsListResult | null {
+  if (!isApiSuccess(response)) return null
+  const root = (response && typeof response === 'object' ? response : {}) as Record<string, unknown>
+  const data = root.data
+  const rawItems = Array.isArray(data) ? data : null
+  if (!rawItems) return null
+  const coupons = rawItems
+    .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+    .map((item) => normalizeCouponAdmin(item))
+  const pagination = extractPagination(root, coupons.length)
+  return { coupons, pagination }
+}
+
+export function parseCommerceCouponDetailResponse(response: unknown): CouponAdmin | null {
+  if (!isApiSuccess(response)) return null
+  const payload = getApiPayload(response)
+  if (!payload || typeof payload !== 'object') return null
+  return normalizeCouponAdmin(payload as Record<string, unknown>)
 }
 
 export {

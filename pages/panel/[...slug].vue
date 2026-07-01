@@ -12,7 +12,7 @@ const PANEL_REDIRECTS: Record<string, string> = {
   inbox: '/notifications',
   notifications: '/notifications',
   profile: '/profile',
-  orders: '/finance/my-invoices',
+  orders: '/panel/orders',
   licenses: '/finance/my-invoices',
   downloads: '/finance/my-invoices',
   checkout: '/panel/checkout',

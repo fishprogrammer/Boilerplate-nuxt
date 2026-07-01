@@ -106,6 +106,8 @@ export const API_ENDPOINTS = {
     ADMIN: {
       COUPONS: '/api/commerce/admin/coupons/',
       couponById: (id: string) => `/api/commerce/admin/coupons/${id}/`,
+      ORDERS: '/api/commerce/admin/orders/',
+      orderById: (id: string) => `/api/commerce/admin/orders/${id}/`,
     },
   },
   LICENSING: {

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog فاز ۳ — Soft Store Frontend</title>
+  <style>
+    :root { color-scheme: light dark; --bg:#f4f5f6; --card:#fff; --text:#1a1a1a; --muted:#5c6670; --border:#e2e5e8; --brand:#059669; --added:#059669; --changed:#d97706; --api:#7c3aed; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#111418; --card:#1a1f24; --text:#e8eaed; --muted:#9aa3ad; --border:#2a3139; } }
+    body { margin:0; font-family:Tahoma,"Segoe UI",sans-serif; background:var(--bg); color:var(--text); line-height:1.7; }
+    .wrap { max-width:820px; margin:0 auto; padding:2rem 1.25rem 3rem; }
+    header { margin-bottom:2rem; padding-bottom:1.25rem; border-bottom:1px solid var(--border); }
+    h1 { margin:0 0 .35rem; font-size:1.75rem; }
+    .meta { color:var(--muted); font-size:.92rem; }
+    .badge { display:inline-block; margin-top:.75rem; margin-left:.35rem; padding:.2rem .65rem; border-radius:999px; background:color-mix(in srgb,var(--brand) 15%,transparent); color:var(--brand); font-size:.85rem; font-weight:600; }
+    .badge.progress { background:color-mix(in srgb,var(--changed) 15%,transparent); color:var(--changed); }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem 1.35rem; margin-bottom:1.25rem; }
+    h2 { margin:0 0 .35rem; font-size:1.15rem; }
+    h3 { margin:1rem 0 .5rem; font-size:1rem; color:var(--muted); }
+    ul { margin:0; padding-right:1.25rem; }
+  li { margin:.35rem 0; }
+    .tag { display:inline-block; min-width:3.2rem; text-align:center; padding:.05rem .45rem; border-radius:6px; font-size:.75rem; font-weight:700; margin-left:.35rem; }
+    .tag.added { background:color-mix(in srgb,var(--added) 18%,transparent); color:var(--added); }
+    .tag.changed { background:color-mix(in srgb,var(--changed) 18%,transparent); color:var(--changed); }
+    .tag.api { background:color-mix(in srgb,var(--api) 18%,transparent); color:var(--api); }
+    code { font-family:Consolas,monospace; font-size:.88em; background:color-mix(in srgb,var(--border) 60%,transparent); padding:.1rem .35rem; border-radius:4px; direction:ltr; }
+    table { width:100%; border-collapse:collapse; font-size:.9rem; margin-top:.5rem; }
+    th,td { border:1px solid var(--border); padding:.45rem .6rem; text-align:right; }
+    .nav-links a { margin-left:.75rem; color:var(--brand); }
+    footer { color:var(--muted); font-size:.85rem; text-align:center; margin-top:1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Soft Store — Changelog فاز ۳</h1>
+      <p class="meta">Commerce · checkout · کوپن · تاریخچه سفارش</p>
+      <span class="badge progress">🟡 تحویل اولیه فرانت</span>
+      <div class="nav-links">
+        <strong>فازها:</strong>
+        <a href="changelog-phase-0.html">فاز ۰</a>
+        <a href="changelog-phase-1.html">فاز ۱</a>
+        <a href="changelog-phase-2.html">فاز ۲</a>
+        <a href="changelog-phase-3.html">فاز ۳</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>هدف فاز ۳</h2>
+      <p class="meta">تسویه واقعی از <code>/api/commerce/*</code> — کیف پول، درگاه، رایگان — بدون licensing (فاز ۴).</p>
+    </section>
+
+    <section>
+      <h2>۱۴۰۴/۰۴/۱۴ <span>— تحویل اولیه فاز ۳</span></h2>
+      <p class="meta">نسخه <code>1.0.8</code> · Mock تا <code>NUXT_PUBLIC_COMMERCE_API_LIVE=true</code></p>
+
+      <h3>Added</h3>
+      <ul>
+        <li><span class="tag added">جدید</span> <code>commerce.service.ts</code> + parsers</li>
+        <li><span class="tag added">جدید</span> <code>useCommerce</code>: validate، create، poll، admin</li>
+        <li><span class="tag added">جدید</span> Checkout: <code>CouponField</code>، <code>PlanSummary</code>، <code>PaymentMethodPicker</code></li>
+        <li><span class="tag added">جدید</span> <code>/panel/checkout</code> کامل (wallet / gateway / free)</li>
+        <li><span class="tag added">جدید</span> <code>/panel/orders</code> + جزئیات با poll پس از بانک</li>
+        <li><span class="tag added">جدید</span> Admin: <code>/admin/commerce/coupons</code>، <code>/admin/commerce/orders</code></li>
+        <li><span class="tag added">جدید</span> منوی «سفارش‌های من» در زیرمنوی کیف پول</li>
+      </ul>
+
+      <h3>Changed</h3>
+      <ul>
+        <li><span class="tag changed">تغییر</span> CTA خرید محصول → <code>/panel/checkout?plan=&amp;product=</code></li>
+        <li><span class="tag changed">تغییر</span> Poll سفارش commerce (نه payment order) پس از redirect بانک</li>
+        <li><span class="tag changed">تغییر</span> <code>licenses[]</code> خالی — placeholder تا فاز ۴</li>
+        <li><span class="tag changed">تغییر</span> <code>/panel/orders</code> alias از redirect قدیمی فاکتور</li>
+      </ul>
+
+      <h3><span class="tag api">API</span></h3>
+      <table>
+        <thead><tr><th>Endpoint</th><th>Frontend</th></tr></thead>
+        <tbody>
+          <tr><td><code>POST /api/commerce/coupons/validate/</code></td><td>checkout</td></tr>
+          <tr><td><code>POST /api/commerce/orders/</code></td><td>checkout flows</td></tr>
+          <tr><td><code>GET /api/commerce/orders/</code></td><td>panel orders</td></tr>
+          <tr><td><code>GET /api/commerce/admin/*</code></td><td>admin commerce</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Out of scope</h3>
+      <ul>
+        <li><code>/api/licensing/*</code> — فاز ۴</li>
+        <li>نمایش کلید لایسنس</li>
+      </ul>
+    </section>
+
+    <footer>Soft Store Frontend · فاز ۳ · Doc/changelog-phase-3.html</footer>
+  </div>
+</body>
+</html>

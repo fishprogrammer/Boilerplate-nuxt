@@ -1,12 +1,47 @@
 import type {
   CouponValidateResponse,
+  CreateCouponRequest,
   CreateOrderRequest,
   CreateOrderResponse,
+  ListCommerceOrdersParams,
   OrderDetail,
-  OrderListItem,
+  UpdateCouponRequest,
 } from '~/types/commerce'
 import type { PaginatedResult } from '~/types/api'
+import type { PaginationMeta } from '~/api/types/auth.types'
+import { commerceService } from '~/api/services/commerce.service'
+import {
+  parseCommerceCouponDetailResponse,
+  parseCommerceCouponsListResponse,
+  parseCommerceOrderDetailResponse,
+  parseCommerceOrdersListResponse,
+  parseCouponValidateResponse,
+  parseCreateOrderResponse,
+} from '~/api/utils/api-response'
 import { mockOrderDetail, mockOrders, validateMockCoupon } from '~/mocks/commerce'
+import { isCommerceTerminalStatus } from '~/utils/commerce'
+
+function mapPagination(pagination: PaginationMeta): import('~/types/api').PaginationMeta {
+  return {
+    page: pagination.page,
+    page_size: pagination.page_size,
+    total_pages: pagination.total_pages,
+    total_count: pagination.total_items,
+    has_next: Boolean(pagination.next),
+    has_previous: Boolean(pagination.previous),
+  }
+}
+
+function emptyPagination(total: number): import('~/types/api').PaginationMeta {
+  return {
+    page: 1,
+    page_size: total,
+    total_pages: 1,
+    total_count: total,
+    has_next: false,
+    has_previous: false,
+  }
+}
 
 export function useCommerce() {
   const config = useRuntimeConfig()
@@ -20,11 +55,8 @@ export function useCommerce() {
       return validateMockCoupon(code, planId)
     }
 
-    const { api } = useApi()
-    return api<CouponValidateResponse>('/api/commerce/coupons/validate/', {
-      method: 'POST',
-      data: { code, plan_id: planId },
-    })
+    const raw = await commerceService.validateCoupon(code, planId)
+    return parseCouponValidateResponse(raw) ?? validateMockCoupon(code, planId)
   }
 
   async function createOrder(payload: CreateOrderRequest): Promise<CreateOrderResponse> {
@@ -32,57 +64,108 @@ export function useCommerce() {
       throw new Error('Commerce API is not live yet. Enable NUXT_PUBLIC_COMMERCE_API_LIVE.')
     }
 
-    const { api } = useApi()
-    return api<CreateOrderResponse>('/api/commerce/orders/', {
-      method: 'POST',
-      data: payload,
-    })
+    const raw = await commerceService.createOrder(payload)
+    const parsed = parseCreateOrderResponse(raw)
+    if (!parsed?.order_id) {
+      throw new Error('Invalid create order response')
+    }
+    return parsed
   }
 
-  async function listOrders(): Promise<PaginatedResult<OrderListItem>> {
+  async function fetchOrders(
+    params?: ListCommerceOrdersParams,
+  ): Promise<PaginatedResult<import('~/types/commerce').OrderListItem>> {
     if (!commerceApiLive.value) {
-      return {
-        items: mockOrders,
-        pagination: {
-          page: 1,
-          page_size: 10,
-          total_pages: 1,
-          total_count: mockOrders.length,
-          has_next: false,
-          has_previous: false,
-        },
-      }
+      return { items: mockOrders, pagination: emptyPagination(mockOrders.length) }
     }
 
-    const { api } = useApi()
-    const items = await api<OrderListItem[]>('/api/commerce/orders/')
+    const raw = await commerceService.listOrders(params)
+    const parsed = parseCommerceOrdersListResponse(raw)
     return {
-      items,
-      pagination: {
-        page: 1,
-        page_size: items.length,
-        total_pages: 1,
-        total_count: items.length,
-        has_next: false,
-        has_previous: false,
-      },
+      items: parsed?.orders ?? [],
+      pagination: parsed?.pagination ? mapPagination(parsed.pagination) : emptyPagination(0),
     }
   }
 
-  async function getOrder(id: string): Promise<OrderDetail> {
+  async function fetchOrder(id: string): Promise<OrderDetail | null> {
     if (!commerceApiLive.value) {
-      return mockOrderDetail
+      return id === mockOrderDetail.id ? mockOrderDetail : null
     }
 
-    const { api } = useApi()
-    return api<OrderDetail>(`/api/commerce/orders/${id}/`)
+    try {
+      const raw = await commerceService.getOrder(id)
+      return parseCommerceOrderDetailResponse(raw)
+    } catch {
+      return null
+    }
+  }
+
+  async function pollOrderUntilSettled(
+    id: string,
+    opts: { intervalMs?: number; timeoutMs?: number } = {},
+  ): Promise<OrderDetail | null> {
+    const intervalMs = opts.intervalMs ?? 2000
+    const timeoutMs = opts.timeoutMs ?? 60_000
+    const started = Date.now()
+
+    while (Date.now() - started < timeoutMs) {
+      const order = await fetchOrder(id)
+      if (order && isCommerceTerminalStatus(order.status)) {
+        return order
+      }
+      await new Promise((resolve) => setTimeout(resolve, intervalMs))
+    }
+
+    return fetchOrder(id)
+  }
+
+  async function adminListCoupons(params?: Record<string, string | number | boolean>) {
+    const raw = await commerceService.adminListCoupons(params)
+    return parseCommerceCouponsListResponse(raw)
+  }
+
+  async function adminGetCoupon(id: string) {
+    const raw = await commerceService.adminGetCoupon(id)
+    return parseCommerceCouponDetailResponse(raw)
+  }
+
+  async function adminCreateCoupon(data: CreateCouponRequest) {
+    return commerceService.adminCreateCoupon(data)
+  }
+
+  async function adminUpdateCoupon(id: string, data: UpdateCouponRequest) {
+    return commerceService.adminUpdateCoupon(id, data)
+  }
+
+  async function adminDeleteCoupon(id: string) {
+    return commerceService.adminDeleteCoupon(id)
+  }
+
+  async function adminListOrders(params?: Record<string, string | number | boolean>) {
+    const raw = await commerceService.adminListOrders(params)
+    return parseCommerceOrdersListResponse(raw)
+  }
+
+  async function adminGetOrder(id: string) {
+    const raw = await commerceService.adminGetOrder(id)
+    return parseCommerceOrderDetailResponse(raw)
   }
 
   return {
     commerceApiLive,
     validateCoupon,
     createOrder,
-    listOrders,
-    getOrder,
+    fetchOrders,
+    fetchOrder,
+    pollOrderUntilSettled,
+    listOrders: fetchOrders,
+    getOrder: fetchOrder,
+    adminListCoupons,
+    adminGetCoupon,
+    adminCreateCoupon,
+    adminUpdateCoupon,
+    adminDeleteCoupon,
+    adminListOrders,
+    adminGetOrder,
   }
 }

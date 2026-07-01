@@ -2,6 +2,8 @@
 export const API_ERROR_CODES = {
   MEDIA_STORAGE_ERROR: 'media_storage_error',
   SMS_UNAVAILABLE: 'sms_unavailable',
+  COUPON_INVALID: 'coupon_invalid',
+  CHECKOUT_FAILED: 'checkout_failed',
 } as const
 
 export type ApiErrorCode = (typeof API_ERROR_CODES)[keyof typeof API_ERROR_CODES]
@@ -12,6 +14,8 @@ export const API_ERROR_UI_MESSAGES: Record<string, string> = {
     'فضای ذخیره‌سازی فایل در دسترس نیست. لطفاً کمی بعد دوباره تلاش کنید یا با پشتیبانی تماس بگیرید.',
   [API_ERROR_CODES.SMS_UNAVAILABLE]:
     'ارسال پیامک در حال حاضر فعال نیست. لطفاً با پشتیبانی تماس بگیرید.',
+  [API_ERROR_CODES.COUPON_INVALID]: 'کد تخفیف نامعتبر یا منقضی است.',
+  [API_ERROR_CODES.CHECKOUT_FAILED]: 'تکمیل خرید ناموفق بود. موجودی یا درگاه را بررسی کنید.',
 }
 
 export function getKnownApiErrorMessage(code: string): string | null {

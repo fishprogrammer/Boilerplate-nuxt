@@ -41,7 +41,7 @@
 
       <section class="mt-10">
         <h2 class="mb-4 text-2xl font-semibold">{{ plansTitle }}</h2>
-        <ShopPricingTable :plans="product.plans" :locale="locale" />
+            <ShopPricingTable :plans="product.plans" :locale="locale" :product-slug="product.slug" />
       </section>
 
       <section v-if="product.changelog_summary" class="mt-10 rounded-2xl border border-border bg-surface p-5">
@@ -128,7 +128,8 @@ const ctaLabel = computed(() => {
 const buyUrl = computed(() => {
   const planId = defaultPlan.value?.id
   if (!planId) return localePath(locale.value, '/shop')
-  return `/panel/checkout?plan=${encodeURIComponent(planId)}`
+  const params = new URLSearchParams({ plan: planId, product: slug.value })
+  return `/panel/checkout?${params.toString()}`
 })
 
 const supportUrl = computed(

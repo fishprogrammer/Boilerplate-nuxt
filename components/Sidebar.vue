@@ -415,6 +415,7 @@ const MENU_ACTION_TO_ROUTE: Record<string, string> = {
   wallet: 'wallet',
   blog: 'blog',
   catalog: 'catalog-products',
+  commerce: 'admin-commerce-coupons',
   roles: 'roles',
   'system-settings': 'system-settings',
   'system-health': 'system-health',
@@ -509,6 +510,13 @@ const menuItems: MenuItem[] = [
     iconBg: 'bg-amber-100 group-hover:bg-amber-200 dark:bg-amber-950 dark:group-hover:bg-amber-900',
     iconColor: 'text-amber-700 group-hover:text-amber-800 dark:text-amber-400 dark:group-hover:text-amber-300',
     action: 'catalog',
+  },
+  {
+    label: 'تجارت',
+    icon: 'M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z',
+    iconBg: 'bg-emerald-100 group-hover:bg-emerald-200 dark:bg-emerald-950 dark:group-hover:bg-emerald-900',
+    iconColor: 'text-emerald-700 group-hover:text-emerald-800 dark:text-emerald-400 dark:group-hover:text-emerald-300',
+    action: 'commerce',
   },
 ]
 
@@ -684,6 +692,8 @@ function isWalletSectionRoute(): boolean {
   return (
     name === 'wallet' ||
     name === 'wallet-deposit' ||
+    name === 'panel-orders' ||
+    name === 'panel-order-view' ||
     name === 'wallet-deposit-result' ||
     name === 'wallet-deposit-success' ||
     name === 'wallet-deposit-failure' ||
@@ -808,6 +818,9 @@ const isActive = (item: MenuItem) => {
   }
   if (item.action === 'catalog') {
     return name === 'catalog-products' || name === 'catalog-categories'
+  }
+  if (item.action === 'commerce') {
+    return name === 'admin-commerce-coupons' || name === 'admin-commerce-orders'
   }
   if (item.action === 'system-settings') return name === 'system-settings'
   if (item.action === 'system-health') return name === 'system-health'

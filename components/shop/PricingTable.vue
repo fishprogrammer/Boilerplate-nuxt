@@ -40,6 +40,7 @@ import { formatIRR, type AppLocale } from '~/utils/locale'
 const props = defineProps<{
   plans: PricingPlan[]
   locale: AppLocale
+  productSlug?: string
 }>()
 
 function formatPlanPrice(plan: PricingPlan): string {
@@ -63,6 +64,8 @@ function ctaLabel(plan: PricingPlan): string {
 }
 
 function checkoutUrl(planId: string): string {
-  return `/panel/checkout?plan=${planId}`
+  const params = new URLSearchParams({ plan: planId })
+  if (props.productSlug) params.set('product', props.productSlug)
+  return `/panel/checkout?${params.toString()}`
 }
 </script>

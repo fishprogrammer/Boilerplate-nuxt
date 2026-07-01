@@ -78,6 +78,13 @@ export const PERMISSIONS = {
     CHANGE_CATEGORY: 'catalog.change_category',
     DELETE_CATEGORY: 'catalog.delete_category',
   },
+  COMMERCE: {
+    VIEW_COUPON: 'commerce.view_coupon',
+    ADD_COUPON: 'commerce.add_coupon',
+    CHANGE_COUPON: 'commerce.change_coupon',
+    DELETE_COUPON: 'commerce.delete_coupon',
+    VIEW_ORDER: 'commerce.view_order',
+  },
 } as const
 
 export const SYSTEM_VIEW_PERMISSIONS = [
@@ -163,6 +170,12 @@ export const ROUTE_ACCESS: Partial<Record<string, RouteAccessRule>> = {
   'ticket-settings': { staffOnly: true, anyOf: [PERMISSIONS.TICKETS.CHANGE] },
   'catalog-products': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_PRODUCT] },
   'catalog-categories': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_CATEGORY] },
+  'panel-checkout': {},
+  'panel-orders': {},
+  'panel-order-view': {},
+  'admin-commerce-coupons': { staffOnly: true, anyOf: [PERMISSIONS.COMMERCE.VIEW_COUPON] },
+  'admin-commerce-orders': { staffOnly: true, anyOf: [PERMISSIONS.COMMERCE.VIEW_ORDER] },
+  'admin-commerce-order-view': { staffOnly: true, anyOf: [PERMISSIONS.COMMERCE.VIEW_ORDER] },
 }
 
 export type MenuAccessRule = {
@@ -192,6 +205,7 @@ export const MENU_ACCESS: Partial<Record<string, MenuAccessRule>> = {
     ],
   },
   catalog: { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_PRODUCT, PERMISSIONS.CATALOG.VIEW_CATEGORY] },
+  commerce: { staffOnly: true, anyOf: [PERMISSIONS.COMMERCE.VIEW_COUPON, PERMISSIONS.COMMERCE.VIEW_ORDER] },
   tickets: {},
   wallet: {},
   'system-settings': { staffOnly: true, anyOf: SYSTEM_VIEW_PERMISSIONS },
@@ -247,6 +261,7 @@ export const ROLES_SUBMENU_ACCESS: Array<{ route: RolesSubmenuRouteName; label: 
 export type WalletSubmenuRouteName =
   | 'wallet'
   | 'wallet-deposit'
+  | 'panel-orders'
   | 'my-sale-orders'
   | 'wallet-manage'
   | 'payment-settings'
@@ -259,6 +274,7 @@ export const WALLET_SUBMENU_ACCESS: Array<{
 }> = [
   { route: 'wallet', label: 'کیف پول من' },
   { route: 'wallet-deposit', label: 'شارژ کیف پول' },
+  { route: 'panel-orders', label: 'سفارش‌های من' },
   { route: 'my-sale-orders', label: 'فاکتورهای من' },
   { route: 'wallet-manage', label: 'مدیریت کیف پول‌ها' },
   { route: 'payment-settings', label: 'تنظیمات پرداخت' },
