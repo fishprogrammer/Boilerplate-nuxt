@@ -78,6 +78,35 @@
                     <p v-if="fieldErrors.slug" class="mt-1 text-xs text-red-600 dark:text-red-400">{{ fieldErrors.slug }}</p>
                 </div>
 
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div>
+                        <label for="blog-locale" class="mb-1 block text-xs font-medium text-text-primary">زبان</label>
+                        <select id="blog-locale" v-model="postLocale" :class="inputClass('locale')" @change="onLocaleChange">
+                            <option value="fa">فارسی</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="blog-category" class="mb-1 block text-xs font-medium text-text-primary">دسته‌بندی</label>
+                        <select id="blog-category" v-model="categoryId" :class="inputClass('category')">
+                            <option value="">انتخاب کنید</option>
+                            <option v-for="item in categories" :key="item.id" :value="item.id">{{ item.name }}</option>
+                        </select>
+                        <p v-if="fieldErrors.category" class="mt-1 text-xs text-red-600 dark:text-red-400">{{ fieldErrors.category }}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div>
+                        <label for="blog-meta-title" class="mb-1 block text-xs font-medium text-text-primary">meta_title</label>
+                        <input id="blog-meta-title" v-model="metaTitle" type="text" :class="inputClass('meta_title')" />
+                    </div>
+                    <div>
+                        <label for="blog-meta-description" class="mb-1 block text-xs font-medium text-text-primary">meta_description</label>
+                        <input id="blog-meta-description" v-model="metaDescription" type="text" :class="inputClass('meta_description')" />
+                    </div>
+                </div>
+
                 <div>
                     <label class="mb-1 block text-xs font-medium text-text-primary">متن</label>
                     <HtmlEditor
@@ -140,15 +169,17 @@ definePageMeta({
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { blogService } from '~/api/services/blog.service'
-import type { BlogPostStatus } from '~/api/types/blog.types'
+import type { BlogCategory, BlogPostStatus } from '~/api/types/blog.types'
 import {
     buildUpdateBlogPostPayload,
+    parseBlogCategoriesListResponse,
     parseBlogPostDetailResponse,
     parseUpdateBlogPostResponse,
 } from '~/api/utils/api-response'
 import HtmlEditor from '~/components/HtmlEditor.vue'
 import BlogPostFormSkeleton from '~/components/skeleton/BlogPostFormSkeleton.vue'
 import { showToast } from '~/composables/useToast'
+import type { AppLocale } from '~/utils/locale'
 import { API_FIELD_LABELS, extractApiFieldErrors, getApiErrorMessage, getApiResponseMessage } from '~/utils/api-error'
 import { BLOG_POST_STATUS_OPTIONS, normalizeBlogSlug, openBlogPreview, validateBlogSlug } from '~/utils/blog'
 import { isHtmlContentEmpty } from '~/utils/html'
@@ -164,6 +195,11 @@ const title = ref('')
 const slug = ref('')
 const body = ref('')
 const status = ref<BlogPostStatus>('draft')
+const postLocale = ref<AppLocale>('fa')
+const categoryId = ref('')
+const metaTitle = ref('')
+const metaDescription = ref('')
+const categories = ref<BlogCategory[]>([])
 const previousStatus = ref<BlogPostStatus>('draft')
 const previousPublishedAt = ref(0)
 const editorKey = ref(0)
@@ -227,14 +263,39 @@ function populateForm(data: {
     body: string
     status: BlogPostStatus
     published_at: number
+    locale: AppLocale
+    category: { id: string } | null
+    meta_title: string
+    meta_description: string
 }) {
     title.value = data.title
     slug.value = data.slug.trim()
     body.value = data.body
     status.value = data.status
+    postLocale.value = data.locale
+    categoryId.value = data.category?.id || ''
+    metaTitle.value = data.meta_title
+    metaDescription.value = data.meta_description
     previousStatus.value = data.status
     previousPublishedAt.value = data.published_at
     editorKey.value += 1
+}
+
+async function loadCategories() {
+    try {
+        const response = await blogService.listCategories({
+            locale: postLocale.value,
+            page_size: 100,
+            ordering: 'sort_order',
+        })
+        categories.value = parseBlogCategoriesListResponse(response)?.categories ?? []
+    } catch {
+        categories.value = []
+    }
+}
+
+function onLocaleChange() {
+    void loadCategories()
 }
 
 async function fetchPost() {
@@ -289,6 +350,12 @@ async function submitUpdate() {
         return
     }
 
+    if (!categoryId.value) {
+        fieldErrors.category = 'دسته‌بندی الزامی است.'
+        saveError.value = 'دسته‌بندی الزامی است.'
+        return
+    }
+
     isSaving.value = true
 
     try {
@@ -297,6 +364,10 @@ async function submitUpdate() {
             slug: slug.value,
             body: body.value,
             status: status.value,
+            locale: postLocale.value,
+            category: categoryId.value,
+            meta_title: metaTitle.value,
+            meta_description: metaDescription.value,
             previousStatus: previousStatus.value,
             previousPublishedAt: previousPublishedAt.value,
         })
@@ -329,7 +400,10 @@ async function submitUpdate() {
     }
 }
 
-onMounted(fetchPost)
+onMounted(async () => {
+    await loadCategories()
+    await fetchPost()
+})
 
 watch(postId, (nextId, prevId) => {
     if (nextId && nextId !== prevId) {

@@ -2,11 +2,14 @@
 import { BaseService } from '../base.service'
 import { API_ENDPOINTS } from '../endpoints'
 import type {
+  CreateBlogCategoryRequest,
   CreateBlogCommentRequest,
   CreateBlogPostRequest,
+  ListBlogCategoriesParams,
   ListBlogCommentsParams,
   ListBlogPostsParams,
   ReplyBlogCommentRequest,
+  UpdateBlogCategoryRequest,
   UpdateBlogCommentRequest,
   UpdateBlogPostRequest,
 } from '../types/blog.types'
@@ -20,6 +23,7 @@ export class BlogService extends BaseService {
     if (params?.page_size) query.page_size = params.page_size
     if (params?.search) query.search = params.search
     if (params?.slug) query.slug = params.slug
+    if (params?.category_slug) query.category_slug = params.category_slug
     if (params?.locale) query.locale = params.locale
     if (params?.status) query.status = params.status
     if (params?.ordering) query.ordering = params.ordering
@@ -57,6 +61,29 @@ export class BlogService extends BaseService {
 
   async deletePost(id: string): Promise<void> {
     await apiClient.delete(API_ENDPOINTS.BLOG.postById(id))
+  }
+
+  async listCategories(params?: ListBlogCategoriesParams): Promise<unknown> {
+    const query: Record<string, string | number | boolean> = {}
+    if (params?.page) query.page = params.page
+    if (params?.page_size) query.page_size = params.page_size
+    if (params?.search) query.search = params.search
+    if (params?.locale) query.locale = params.locale
+    if (params?.is_active !== undefined) query.is_active = params.is_active
+    if (params?.ordering) query.ordering = params.ordering
+    return this.getRaw(API_ENDPOINTS.BLOG.CATEGORIES, query)
+  }
+
+  async createCategory(data: CreateBlogCategoryRequest): Promise<unknown> {
+    return this.postRaw(API_ENDPOINTS.BLOG.CATEGORIES, data)
+  }
+
+  async updateCategory(id: string, data: UpdateBlogCategoryRequest): Promise<unknown> {
+    return this.putRaw(API_ENDPOINTS.BLOG.categoryById(id), data)
+  }
+
+  async deleteCategory(id: string): Promise<void> {
+    await apiClient.delete(API_ENDPOINTS.BLOG.categoryById(id))
   }
 
   async listComments(params?: ListBlogCommentsParams): Promise<unknown> {

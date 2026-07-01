@@ -55,6 +55,7 @@ const ROUTE_BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
   blog: [home, { label: 'پست‌ها' }],
   'create-blog': [home, blogPosts, { label: 'پست جدید' }],
   'edit-blog': [home, blogPosts, { label: 'ویرایش پست' }],
+  'blog-categories': [home, blogPosts, { label: 'دسته‌های بلاگ' }],
   'blog-comments': [home, { label: 'نظرات' }],
   'view-blog-comment': [home, blogComments, { label: 'مشاهده نظر' }],
 
@@ -103,6 +104,7 @@ const ROUTE_LABELS: Record<string, string> = {
   'view-blog-comment': 'مشاهده نظر',
   'create-blog': 'پست جدید',
   'edit-blog': 'ویرایش پست',
+  'blog-categories': 'دسته‌های بلاگ',
   tickets: 'تیکت‌ها',
   'create-ticket': 'تیکت جدید',
   'view-ticket': 'جزئیات تیکت',

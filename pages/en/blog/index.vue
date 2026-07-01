@@ -1,9 +1,11 @@
 <template>
   <div class="page-shell py-10">
-    <header class="mb-8">
+    <header class="mb-4">
       <h1 class="text-3xl font-bold text-text-primary">{{ title }}</h1>
       <p class="mt-2 text-text-secondary">{{ subtitle }}</p>
     </header>
+
+    <BlogCategoryNav locale="en" />
 
     <div v-if="pending" class="text-sm text-text-secondary">{{ loadingLabel }}</div>
     <div v-else-if="loadError" class="text-sm text-red-600">{{ loadError }}</div>
@@ -29,6 +31,7 @@
 import { blogService } from '~/api/services/blog.service'
 import { parseBlogPostsListResponse } from '~/api/utils/api-response'
 import type { BlogPost } from '~/api/types/blog.types'
+import BlogCategoryNav from '~/components/blog/BlogCategoryNav.vue'
 import { formatEpochSeconds } from '~/utils/locale'
 import { absoluteSiteUrl, localeHreflang } from '~/utils/locale-path'
 

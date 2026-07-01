@@ -335,6 +335,7 @@ import MediaGridSkeleton from '~/components/skeleton/MediaGridSkeleton.vue'
 import { usePermissions } from '~/composables/usePermissions'
 import { showToast } from '~/composables/useToast'
 import { getApiErrorMessage } from '~/utils/api-error'
+import { handleMediaUploadFailure } from '~/utils/media-upload'
 import {
     formatMediaFileMeta,
     formatMediaFileType,
@@ -575,7 +576,7 @@ async function uploadFiles(files: FileList | File[]) {
                 successCount += 1
                 uploadPercent.value = Math.round(((index + 1) / list.length) * 100)
             } catch (err: unknown) {
-                uploadError.value = getApiErrorMessage(err, 'خطا در آپلود فایل')
+                uploadError.value = handleMediaUploadFailure(err, { toast: true })
                 break
             }
         }

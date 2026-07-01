@@ -8,6 +8,7 @@ const route = useRoute()
 const PANEL_REDIRECTS: Record<string, string> = {
   wallet: '/wallet',
   tickets: '/tickets',
+  'tickets/new': '/tickets/create',
   inbox: '/notifications',
   notifications: '/notifications',
   profile: '/profile',

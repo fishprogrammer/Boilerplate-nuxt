@@ -316,6 +316,7 @@ import AmountInput from '~/components/AmountInput.vue'
 import WalletDepositFormSkeleton from '~/components/skeleton/WalletDepositFormSkeleton.vue'
 import { showToast } from '~/composables/useToast'
 import { getApiErrorCode, getApiErrorMessage } from '~/utils/api-error'
+import { handleMediaUploadFailure } from '~/utils/media-upload'
 import { getFinanceErrorMessage } from '~/utils/finance'
 import { getMediaFullUrl, getMediaPreviewUrl } from '~/utils/media'
 import {
@@ -489,7 +490,7 @@ async function uploadReceiptFile(file: File) {
       setReceiptPreviewFromMedia(parsed)
     }
   } catch (err: unknown) {
-    receiptError.value = getApiErrorMessage(err, 'خطا در آپلود فیش')
+    receiptError.value = handleMediaUploadFailure(err, { fallback: 'خطا در آپلود فیش' })
     clearReceiptPreview()
   } finally {
     isUploadingReceipt.value = false

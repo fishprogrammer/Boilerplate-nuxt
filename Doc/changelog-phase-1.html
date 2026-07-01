@@ -160,6 +160,33 @@
     </section>
 
     <section>
+      <h2>۱۴۰۴/۰۴/۱۲ <span>— PHASE1-001 تحویل فرانت</span></h2>
+      <p class="entry-meta">Breaking: نرم (category الزامی روی post create)</p>
+
+      <h3>Added</h3>
+      <ul>
+        <li><span class="tag added">جدید</span> Blog categories API + admin CRUD + nav عمومی</li>
+        <li><span class="tag added">جدید</span> مسیر <code>/blog/category/{slug}</code> (fa/en)</li>
+        <li><span class="tag added">جدید</span> فرم پست: locale، category، meta_title، meta_description</li>
+        <li><span class="tag added">جدید</span> badge <code>product_slug</code> روی جزئیات تیکت</li>
+        <li><span class="tag added">جدید</span> alias <code>/panel/tickets/new</code> → create ticket</li>
+        <li><span class="tag added">جدید</span> <code>handleMediaUploadFailure</code> برای <code>media_storage_error</code></li>
+      </ul>
+
+      <h3><span class="tag api">API</span> Integration</h3>
+      <table>
+        <thead><tr><th>Endpoint</th><th>Frontend</th></tr></thead>
+        <tbody>
+          <tr><td><code>GET /api/blog/categories/</code></td><td>nav + admin + select در فرم post</td></tr>
+          <tr><td><code>?category_slug=</code></td><td>فیلتر لیست پست‌ها</td></tr>
+          <tr><td><code>POST /api/media/</code></td><td>503 <code>media_storage_error</code> + toast</td></tr>
+          <tr><td><code>POST /api/tickets/</code></td><td><code>product_slug</code> + <code>?product=</code></td></tr>
+          <tr><td>Payment settings URLs</td><td>قبلاً در admin payments</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
       <h2>۱۴۰۴/۰۴/۱۱ <span>— Blog locale + SEO (فرانت)</span></h2>
       <p class="entry-meta">Breaking: خیر · FE-P1 · مصرف API BE-P1S1</p>
 

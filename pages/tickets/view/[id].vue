@@ -38,6 +38,13 @@
               {{ formatTargetType(ticket.target_type) }}
             </span>
             <span
+              v-if="ticket.product_slug"
+              class="rounded-md bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-800 dark:bg-violet-950/40 dark:text-violet-200 dir-ltr"
+              :title="ticket.product_slug"
+            >
+              محصول: {{ ticket.product_slug }}
+            </span>
+            <span
               v-if="ticket.tracking_code"
               class="mr-auto truncate text-xs font-medium text-text-secondary dir-ltr"
               v-tooltip="ticket.tracking_code"
@@ -252,6 +259,7 @@ import { usePermissions } from '~/composables/usePermissions'
 import { showToast } from '~/composables/useToast'
 import { useAuthStore } from '~/stores/auth'
 import { getApiErrorMessage } from '~/utils/api-error'
+import { handleMediaUploadFailure } from '~/utils/media-upload'
 import {
   buildTicketThread,
   canShowEscalateAction,
@@ -409,7 +417,7 @@ async function onReplyFilesSelected(event: Event) {
           replyFiles.value.push({ id: record.id, name: record.original_name || file.name })
         }
       } catch (err: unknown) {
-        replyError.value = getApiErrorMessage(err, 'خطا در آپلود فایل')
+        replyError.value = handleMediaUploadFailure(err)
       }
     }
   } finally {

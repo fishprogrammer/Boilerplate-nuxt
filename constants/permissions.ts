@@ -127,6 +127,7 @@ export const ROUTE_ACCESS: Partial<Record<string, RouteAccessRule>> = {
   blog: { anyOf: [PERMISSIONS.BLOG.VIEW] },
   'create-blog': { anyOf: [PERMISSIONS.BLOG.ADD] },
   'edit-blog': { anyOf: [PERMISSIONS.BLOG.CHANGE] },
+  'blog-categories': { anyOf: [PERMISSIONS.BLOG.CHANGE] },
   'blog-comments': {
     anyOf: [
       PERMISSIONS.BLOG.VIEW_COMMENT,
@@ -206,10 +207,11 @@ export const TICKETS_SUBMENU_ACCESS: Array<{
   { route: 'ticket-settings', label: 'تنظیمات تیکت', staffOnly: true, anyOf: [PERMISSIONS.TICKETS.CHANGE] },
 ]
 
-export type BlogSubmenuRouteName = 'blog' | 'blog-comments'
+export type BlogSubmenuRouteName = 'blog' | 'blog-categories' | 'blog-comments'
 
 export const BLOG_SUBMENU_ACCESS: Array<{ route: BlogSubmenuRouteName; label: string; anyOf: readonly string[] }> = [
   { route: 'blog', label: 'پست‌ها', anyOf: [PERMISSIONS.BLOG.VIEW] },
+  { route: 'blog-categories', label: 'دسته‌ها', anyOf: [PERMISSIONS.BLOG.CHANGE] },
   {
     route: 'blog-comments',
     label: 'نظرات',

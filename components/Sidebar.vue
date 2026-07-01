@@ -640,6 +640,7 @@ function isBlogSectionRoute(): boolean {
     name === 'blog' ||
     name === 'create-blog' ||
     name === 'edit-blog' ||
+    name === 'blog-categories' ||
     name === 'blog-comments' ||
     name === 'view-blog-comment' ||
     isAdminBlogRoute(route.path)

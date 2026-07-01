@@ -70,6 +70,9 @@
 
         <div>
           <label for="subject" class="mb-1 block text-xs font-medium text-text-primary">عنوان</label>
+          <p v-if="productSlug" class="mb-1 text-xs text-violet-700 dark:text-violet-300">
+            محصول مرتبط: <span class="dir-ltr font-medium">{{ productSlug }}</span>
+          </p>
           <input
             id="subject"
             v-model="subject"
@@ -173,6 +176,7 @@ import {
 import RecipientPicker from '~/components/tickets/RecipientPicker.vue'
 import { usePermissions } from '~/composables/usePermissions'
 import { extractApiFieldErrors, getApiErrorMessage } from '~/utils/api-error'
+import { handleMediaUploadFailure } from '~/utils/media-upload'
 import {
   canSearchPersonalRecipients,
   canShowPersonalTicketTarget,
@@ -297,7 +301,7 @@ async function onFilesSelected(event: Event) {
           uploadedFiles.value.push({ id: record.id, name: record.original_name || file.name })
         }
       } catch (err: unknown) {
-        submitError.value = getApiErrorMessage(err, 'خطا در آپلود فایل')
+        submitError.value = handleMediaUploadFailure(err)
       }
     }
   } finally {

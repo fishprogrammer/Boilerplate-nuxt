@@ -76,6 +76,7 @@ export const ROUTES = {
   BLOG_EDIT: '/blog/:id/edit',
   BLOG_COMMENTS: '/blog/comments',
   BLOG_COMMENT_VIEW: '/blog/comments/view/:id',
+  BLOG_CATEGORIES: '/blog/categories',
 } as const
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES]
@@ -133,5 +134,6 @@ export const ROUTE_NAMES = {
   BLOG_EDIT: 'edit-blog',
   BLOG_COMMENTS: 'blog-comments',
   BLOG_COMMENT_VIEW: 'view-blog-comment',
+  BLOG_CATEGORIES: 'blog-categories',
 } as const
 

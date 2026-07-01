@@ -4,6 +4,21 @@ import type { AppLocale } from '~/utils/locale'
 
 export type BlogPostStatus = 'draft' | 'published'
 
+export interface BlogCategoryBrief {
+  id: string
+  name: string
+  slug: string
+  locale: AppLocale
+}
+
+export interface BlogCategory extends BlogCategoryBrief {
+  description: string
+  is_active: boolean
+  sort_order: number
+  created_at: number
+  updated_at: number
+}
+
 export interface BlogPost {
   id: string
   title: string
@@ -11,6 +26,7 @@ export interface BlogPost {
   body: string
   status: BlogPostStatus
   locale: AppLocale
+  category: BlogCategoryBrief | null
   meta_title: string
   meta_description: string
   og_image: string | null
@@ -26,6 +42,7 @@ export interface ListBlogPostsParams {
   page_size?: number
   search?: string
   slug?: string
+  category_slug?: string
   locale?: AppLocale | ''
   status?: BlogPostStatus | ''
   ordering?: string
@@ -36,12 +53,42 @@ export interface BlogPostsListResult {
   pagination: PaginationMeta
 }
 
+export interface ListBlogCategoriesParams {
+  page?: number
+  page_size?: number
+  locale?: AppLocale | ''
+  search?: string
+  is_active?: boolean
+  ordering?: string
+}
+
+export interface BlogCategoriesListResult {
+  categories: BlogCategory[]
+  pagination: PaginationMeta
+}
+
+export interface CreateBlogCategoryRequest {
+  name: string
+  slug: string
+  locale: AppLocale
+  description?: string
+  is_active?: boolean
+  sort_order?: number
+}
+
+export interface UpdateBlogCategoryRequest extends CreateBlogCategoryRequest {}
+
 export interface CreateBlogPostRequest {
   title: string
   slug?: string
   body: string
   status?: BlogPostStatus
   published_at?: number
+  locale?: AppLocale
+  category: string
+  meta_title?: string
+  meta_description?: string
+  og_image?: string | null
 }
 
 export type CreateBlogPostInput = CreateBlogPostRequest
@@ -57,6 +104,11 @@ export interface UpdateBlogPostRequest {
   body: string
   status: BlogPostStatus
   published_at: number
+  locale: AppLocale
+  category: string
+  meta_title: string
+  meta_description: string
+  og_image: string | null
 }
 
 export type BlogCommentStatus = 'pending' | 'approved' | 'rejected' | 'spam'

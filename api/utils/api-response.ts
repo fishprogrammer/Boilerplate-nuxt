@@ -27,7 +27,7 @@ import type {
   SendNotificationInput,
   SendNotificationRequest,
 } from '../types/inbox.types'
-import type { BlogComment, BlogCommentStatus, BlogCommentsListResult, BlogPost, BlogPostStatus, BlogPostsListResult, CreateBlogPostInput, CreateBlogPostRequest, UpdateBlogPostInput, UpdateBlogPostRequest } from '../types/blog.types'
+import type { BlogCategory, BlogCategoryBrief, BlogCategoriesListResult, BlogComment, BlogCommentStatus, BlogCommentsListResult, BlogPost, BlogPostStatus, BlogPostsListResult, CreateBlogPostInput, CreateBlogPostRequest, UpdateBlogPostInput, UpdateBlogPostRequest } from '../types/blog.types'
 import type {
   Wallet,
   WalletTransaction,
@@ -637,6 +637,75 @@ function isBlogPostLike(value: unknown): value is Record<string, unknown> {
   return typeof item.id === 'string' && typeof item.title === 'string'
 }
 
+function normalizeBlogCategoryBrief(raw: unknown): BlogCategoryBrief | null {
+  if (!raw || typeof raw !== 'object') return null
+  const item = raw as Record<string, unknown>
+  if (!item.id) return null
+  const localeRaw = String(item.locale || 'fa')
+  return {
+    id: String(item.id),
+    name: String(item.name || ''),
+    slug: String(item.slug || ''),
+    locale: localeRaw === 'en' ? 'en' : 'fa',
+  }
+}
+
+function isBlogCategoryLike(value: unknown): value is Record<string, unknown> {
+  if (!value || typeof value !== 'object') return false
+  const item = value as Record<string, unknown>
+  return typeof item.id === 'string' && typeof item.name === 'string'
+}
+
+function normalizeBlogCategory(raw: Record<string, unknown>): BlogCategory {
+  const brief = normalizeBlogCategoryBrief(raw)!
+  return {
+    ...brief,
+    description: String(raw.description || ''),
+    is_active: raw.is_active !== false,
+    sort_order: Number(raw.sort_order) || 0,
+    created_at: Number(raw.created_at) || 0,
+    updated_at: Number(raw.updated_at) || 0,
+  }
+}
+
+function extractBlogCategories(root: Record<string, unknown>): unknown[] | null {
+  const data = root.data
+  if (Array.isArray(data)) {
+    if (data.length === 0) return []
+    if (isBlogCategoryLike(data[0])) return data
+    const first = data[0]
+    if (first && typeof first === 'object' && !Array.isArray(first)) {
+      const nested = (first as Record<string, unknown>).data
+      if (Array.isArray(nested)) return nested
+    }
+    return data
+  }
+  if (data && typeof data === 'object' && !Array.isArray(data)) {
+    const inner = (data as Record<string, unknown>).data
+    if (Array.isArray(inner)) return inner
+  }
+  return null
+}
+
+export function parseBlogCategoriesListResponse(response: unknown): BlogCategoriesListResult | null {
+  if (!isApiSuccess(response)) return null
+  const root = (response && typeof response === 'object' ? response : {}) as Record<string, unknown>
+  const rawItems = extractBlogCategories(root)
+  if (!rawItems) return null
+  const categories = rawItems
+    .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+    .map((item) => normalizeBlogCategory(item))
+  const pagination = extractPagination(root, categories.length)
+  return { categories, pagination }
+}
+
+export function parseBlogCategoryDetailResponse(response: unknown): BlogCategory | null {
+  if (!isApiSuccess(response)) return null
+  const payload = getApiPayload(response)
+  if (!isBlogCategoryLike(payload)) return null
+  return normalizeBlogCategory(payload)
+}
+
 function normalizeSeoPayload(raw: unknown): import('~/types/seo').SeoPayload | null {
   if (!raw || typeof raw !== 'object') return null
   const item = raw as Record<string, unknown>
@@ -684,6 +753,7 @@ function normalizeBlogPost(raw: Record<string, unknown>): BlogPost {
     body: String(raw.body || ''),
     status,
     locale,
+    category: normalizeBlogCategoryBrief(raw.category),
     meta_title: String(raw.meta_title || ''),
     meta_description: String(raw.meta_description || ''),
     og_image:
@@ -841,6 +911,11 @@ export function buildCreateBlogPostPayload(fields: CreateBlogPostInput): CreateB
     slug: normalizeEnglishSlug(fields.slug || ''),
     body: ensureVisualHtmlBody(fields.body),
     status,
+    locale: fields.locale ?? 'fa',
+    category: fields.category,
+    meta_title: fields.meta_title?.trim() || '',
+    meta_description: fields.meta_description?.trim() || '',
+    og_image: fields.og_image ?? null,
   }
 
   if (status === 'published') {
@@ -871,6 +946,11 @@ export function buildUpdateBlogPostPayload(fields: UpdateBlogPostInput): UpdateB
     body: ensureVisualHtmlBody(fields.body),
     status,
     published_at,
+    locale: fields.locale ?? 'fa',
+    category: fields.category,
+    meta_title: fields.meta_title?.trim() || '',
+    meta_description: fields.meta_description?.trim() || '',
+    og_image: fields.og_image ?? null,
   }
 }
 
