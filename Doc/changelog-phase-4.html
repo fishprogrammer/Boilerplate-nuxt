@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog فاز ۴ — Soft Store Frontend</title>
+  <style>
+    :root { color-scheme: light dark; --bg:#f4f5f6; --card:#fff; --text:#1a1a1a; --muted:#5c6670; --border:#e2e5e8; --brand:#7c3aed; --added:#059669; --changed:#d97706; --api:#7c3aed; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#111418; --card:#1a1f24; --text:#e8eaed; --muted:#9aa3ad; --border:#2a3139; } }
+    body { margin:0; font-family:Tahoma,"Segoe UI",sans-serif; background:var(--bg); color:var(--text); line-height:1.7; }
+    .wrap { max-width:820px; margin:0 auto; padding:2rem 1.25rem 3rem; }
+    header { margin-bottom:2rem; padding-bottom:1.25rem; border-bottom:1px solid var(--border); }
+    h1 { margin:0 0 .35rem; font-size:1.75rem; }
+    .meta { color:var(--muted); font-size:.92rem; }
+    .badge { display:inline-block; margin-top:.75rem; margin-left:.35rem; padding:.2rem .65rem; border-radius:999px; background:color-mix(in srgb,var(--brand) 15%,transparent); color:var(--brand); font-size:.85rem; font-weight:600; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem 1.35rem; margin-bottom:1.25rem; }
+    h2 { margin:0 0 .35rem; font-size:1.15rem; }
+    h3 { margin:1rem 0 .5rem; font-size:1rem; color:var(--muted); }
+    ul { margin:0; padding-right:1.25rem; }
+    li { margin:.35rem 0; }
+    .tag { display:inline-block; min-width:3.2rem; text-align:center; padding:.05rem .45rem; border-radius:6px; font-size:.75rem; font-weight:700; margin-left:.35rem; }
+    .tag.added { background:color-mix(in srgb,var(--added) 18%,transparent); color:var(--added); }
+    .tag.changed { background:color-mix(in srgb,var(--changed) 18%,transparent); color:var(--changed); }
+    .tag.api { background:color-mix(in srgb,var(--api) 18%,transparent); color:var(--api); }
+    code { font-family:Consolas,monospace; font-size:.88em; background:color-mix(in srgb,var(--border) 60%,transparent); padding:.1rem .35rem; border-radius:4px; direction:ltr; }
+    table { width:100%; border-collapse:collapse; font-size:.9rem; margin-top:.5rem; }
+    th,td { border:1px solid var(--border); padding:.45rem .6rem; text-align:right; }
+    .nav-links a { margin-left:.75rem; color:var(--brand); }
+    footer { color:var(--muted); font-size:.85rem; text-align:center; margin-top:1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Soft Store — Changelog فاز ۴</h1>
+      <p class="meta">Licensing · کلید · فعال‌سازی · دانلود · یکپارچه‌سازی commerce</p>
+      <span class="badge">🟢 تحویل اولیه فرانت</span>
+      <div class="nav-links">
+        <strong>فازها:</strong>
+        <a href="changelog-phase-0.html">فاز ۰</a>
+        <a href="changelog-phase-1.html">فاز ۱</a>
+        <a href="changelog-phase-2.html">فاز ۲</a>
+        <a href="changelog-phase-3.html">فاز ۳</a>
+        <a href="changelog-phase-4.html">فاز ۴</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>هدف فاز ۴</h2>
+      <p class="meta">مدیریت لایسنس مشتری از <code>/api/licensing/*</code> — نمایش کلید ماسک‌شده، OTP reveal، مرکز دانلود، و <code>licenses[]</code> در سفارش commerce.</p>
+    </section>
+
+    <section>
+      <h2>۱۴۰۴/۰۴/۱۵ <span>— تحویل اولیه فاز ۴</span></h2>
+      <p class="meta">نسخه <code>1.0.9</code> · Mock تا <code>NUXT_PUBLIC_LICENSING_API_LIVE=true</code></p>
+
+      <h3>Added</h3>
+      <ul>
+        <li><span class="tag added">جدید</span> <code>licensing.service.ts</code> + parsers در <code>api-response.ts</code></li>
+        <li><span class="tag added">جدید</span> <code>useLicensing</code>: لیست، جزئیات، deactivate، reveal OTP، downloads، admin installations</li>
+        <li><span class="tag added">جدید</span> <code>/panel/licenses</code> + <code>/panel/licenses/{id}</code></li>
+        <li><span class="tag added">جدید</span> <code>/panel/downloads</code> — مرکز دانلود با URL امضاشده</li>
+        <li><span class="tag added">جدید</span> <code>LicenseRevealModal</code> — OTP دو مرحله‌ای برای نمایش کلید کامل</li>
+        <li><span class="tag added">جدید</span> <code>OrderLicensesCard</code> — لایسنس‌های صادرشده در جزئیات سفارش</li>
+        <li><span class="tag added">جدید</span> Admin: <code>/admin/licensing/installations</code> (فقط خواندنی)</li>
+        <li><span class="tag added">جدید</span> منوی «لایسنس‌های من» و «مرکز دانلود» در زیرمنوی کیف پول</li>
+      </ul>
+
+      <h3>Changed</h3>
+      <ul>
+        <li><span class="tag changed">تغییر</span> <code>commerce orders → licenses[]</code> دیگر خالی نیست — پارس و نمایش در جزئیات سفارش</li>
+        <li><span class="tag changed">تغییر</span> پس از checkout موفق → redirect به سفارش با لینک لایسنس</li>
+        <li><span class="tag changed">تغییر</span> redirect قدیمی <code>/panel/licenses</code> و <code>/panel/downloads</code> از فاکتور به مسیر واقعی</li>
+      </ul>
+
+      <h3><span class="tag api">API</span></h3>
+      <table>
+        <thead><tr><th>Endpoint</th><th>Frontend</th></tr></thead>
+        <tbody>
+          <tr><td><code>GET /api/licensing/licenses/</code></td><td>panel licenses list</td></tr>
+          <tr><td><code>GET /api/licensing/licenses/{id}/</code></td><td>license detail + activations</td></tr>
+          <tr><td><code>POST .../deactivate/</code></td><td>deactivate activation</td></tr>
+          <tr><td><code>POST .../reveal-key/</code></td><td>OTP reveal modal</td></tr>
+          <tr><td><code>GET /api/licensing/downloads/</code></td><td>download center</td></tr>
+          <tr><td><code>GET /api/licensing/admin/installations/</code></td><td>admin table</td></tr>
+          <tr><td><code>commerce orders licenses[]</code></td><td>order detail card</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Out of scope</h3>
+      <ul>
+        <li>activate / validate / heartbeat پلاگین (سرور مشتری)</li>
+        <li>تمدید اشتراک و admin product secret (فاز ۵)</li>
+      </ul>
+    </section>
+
+    <footer>Soft Store Frontend · فاز ۴ · Doc/changelog-phase-4.html</footer>
+  </div>
+</body>
+</html>

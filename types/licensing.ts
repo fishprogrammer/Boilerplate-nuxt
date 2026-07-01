@@ -6,6 +6,16 @@ export interface LicenseSummary {
   product_name: string
 }
 
+export interface RevealKeyRequestResponse {
+  reveal_id: string
+  expires_at: number
+  debug_code?: string
+}
+
+export interface RevealKeyVerifyResponse {
+  license_key: string
+}
+
 export interface License {
   id: string
   license_key_masked: string

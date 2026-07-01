@@ -1,5 +1,8 @@
+import type { LicenseSummary } from './licensing'
+
 export type OrderStatus = 'pending_payment' | 'paid' | 'failed' | 'refunded'
 export type DiscountType = 'percent' | 'fixed_amount'
+export type CommerceOrderLicense = LicenseSummary
 
 export interface PaymentRedirect {
   action: string
@@ -19,7 +22,7 @@ export interface CreateOrderResponse {
   status: OrderStatus
   amount: number
   payment: PaymentRedirect | null
-  licenses: unknown[]
+  licenses: CommerceOrderLicense[]
 }
 
 export interface CouponValidateRequest {
@@ -106,7 +109,7 @@ export interface OrderDetail {
   paid_at: number | null
   created_at: number
   lines: OrderLineItem[]
-  licenses: unknown[]
+  licenses: CommerceOrderLicense[]
 }
 
 export interface ListCommerceOrdersParams {

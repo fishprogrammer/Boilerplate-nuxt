@@ -85,6 +85,9 @@ export const PERMISSIONS = {
     DELETE_COUPON: 'commerce.delete_coupon',
     VIEW_ORDER: 'commerce.view_order',
   },
+  LICENSING: {
+    VIEW_LICENSE: 'licensing.view_license',
+  },
 } as const
 
 export const SYSTEM_VIEW_PERMISSIONS = [
@@ -176,6 +179,10 @@ export const ROUTE_ACCESS: Partial<Record<string, RouteAccessRule>> = {
   'admin-commerce-coupons': { staffOnly: true, anyOf: [PERMISSIONS.COMMERCE.VIEW_COUPON] },
   'admin-commerce-orders': { staffOnly: true, anyOf: [PERMISSIONS.COMMERCE.VIEW_ORDER] },
   'admin-commerce-order-view': { staffOnly: true, anyOf: [PERMISSIONS.COMMERCE.VIEW_ORDER] },
+  'panel-licenses': {},
+  'panel-license-view': {},
+  'panel-downloads': {},
+  'admin-licensing-installations': { staffOnly: true, anyOf: [PERMISSIONS.LICENSING.VIEW_LICENSE] },
 }
 
 export type MenuAccessRule = {
@@ -206,6 +213,7 @@ export const MENU_ACCESS: Partial<Record<string, MenuAccessRule>> = {
   },
   catalog: { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_PRODUCT, PERMISSIONS.CATALOG.VIEW_CATEGORY] },
   commerce: { staffOnly: true, anyOf: [PERMISSIONS.COMMERCE.VIEW_COUPON, PERMISSIONS.COMMERCE.VIEW_ORDER] },
+  licensing: { staffOnly: true, anyOf: [PERMISSIONS.LICENSING.VIEW_LICENSE] },
   tickets: {},
   wallet: {},
   'system-settings': { staffOnly: true, anyOf: SYSTEM_VIEW_PERMISSIONS },
@@ -262,6 +270,8 @@ export type WalletSubmenuRouteName =
   | 'wallet'
   | 'wallet-deposit'
   | 'panel-orders'
+  | 'panel-licenses'
+  | 'panel-downloads'
   | 'my-sale-orders'
   | 'wallet-manage'
   | 'payment-settings'
@@ -275,6 +285,8 @@ export const WALLET_SUBMENU_ACCESS: Array<{
   { route: 'wallet', label: 'کیف پول من' },
   { route: 'wallet-deposit', label: 'شارژ کیف پول' },
   { route: 'panel-orders', label: 'سفارش‌های من' },
+  { route: 'panel-licenses', label: 'لایسنس‌های من' },
+  { route: 'panel-downloads', label: 'مرکز دانلود' },
   { route: 'my-sale-orders', label: 'فاکتورهای من' },
   { route: 'wallet-manage', label: 'مدیریت کیف پول‌ها' },
   { route: 'payment-settings', label: 'تنظیمات پرداخت' },

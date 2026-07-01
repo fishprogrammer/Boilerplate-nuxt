@@ -50,8 +50,12 @@
           </ul>
         </div>
 
-        <div class="rounded-xl border border-dashed border-border bg-surface-muted/30 p-4 text-sm text-text-secondary">
-          لایسنس‌ها پس از فعال‌سازی فاز ۴ در اینجا نمایش داده می‌شوند.
+        <OrderLicensesCard v-if="order.licenses.length" :licenses="order.licenses" />
+        <div
+          v-else-if="order.status === 'paid'"
+          class="rounded-xl border border-dashed border-border bg-surface-muted/30 p-4 text-sm text-text-secondary"
+        >
+          لایسنس پس از صدور در اینجا نمایش داده می‌شود.
         </div>
 
         <div class="flex flex-wrap gap-2">

@@ -1,4 +1,19 @@
-import type { DownloadItem, License, LicenseDetail } from '~/types/licensing'
+import type {
+  DownloadItem,
+  License,
+  LicenseDetail,
+  RevealKeyRequestResponse,
+  RevealKeyVerifyResponse,
+} from '~/types/licensing'
+import { licensingService } from '~/api/services/licensing.service'
+import {
+  parseDownloadsListResponse,
+  parseInstallationsListResponse,
+  parseLicenseDetailResponse,
+  parseLicensesListResponse,
+  parseRevealKeyRequestResponse,
+  parseRevealKeyVerifyResponse,
+} from '~/api/utils/api-response'
 import { mockDownloads, mockLicenseDetail, mockLicenses } from '~/mocks/licensing'
 
 export function useLicensing() {
@@ -8,50 +23,83 @@ export function useLicensing() {
     () => String(config.public.licensingApiLive).toLowerCase() === 'true',
   )
 
-  async function listLicenses(): Promise<License[]> {
+  async function fetchLicenses(): Promise<License[]> {
     if (!licensingApiLive.value) {
       return mockLicenses
     }
 
-    const { api } = useApi()
-    return api<License[]>('/api/licensing/licenses/')
+    const raw = await licensingService.listLicenses()
+    return parseLicensesListResponse(raw) ?? []
   }
 
-  async function getLicense(id: string): Promise<LicenseDetail> {
+  async function fetchLicense(id: string): Promise<LicenseDetail | null> {
     if (!licensingApiLive.value) {
-      return mockLicenseDetail
+      return id === mockLicenseDetail.id ? mockLicenseDetail : null
     }
 
-    const { api } = useApi()
-    return api<LicenseDetail>(`/api/licensing/licenses/${id}/`)
+    try {
+      const raw = await licensingService.getLicense(id)
+      return parseLicenseDetailResponse(raw)
+    } catch {
+      return null
+    }
   }
 
-  async function listDownloads(): Promise<DownloadItem[]> {
+  async function fetchDownloads(): Promise<DownloadItem[]> {
     if (!licensingApiLive.value) {
       return mockDownloads
     }
 
-    const { api } = useApi()
-    return api<DownloadItem[]>('/api/licensing/downloads/')
+    const raw = await licensingService.listDownloads()
+    return parseDownloadsListResponse(raw) ?? []
   }
 
   async function deactivateActivation(licenseId: string, activationId: string): Promise<void> {
+    if (!licensingApiLive.value) return
+    await licensingService.deactivateActivation(licenseId, activationId)
+  }
+
+  async function requestRevealOtp(licenseId: string): Promise<RevealKeyRequestResponse | null> {
     if (!licensingApiLive.value) {
-      return
+      return { reveal_id: 'mock-reveal', expires_at: Math.floor(Date.now() / 1000) + 300, debug_code: '123456' }
     }
 
-    const { api } = useApi()
-    await api<null>(`/api/licensing/licenses/${licenseId}/deactivate/`, {
-      method: 'POST',
-      data: { activation_id: activationId },
-    })
+    const raw = await licensingService.revealKeyRequest(licenseId)
+    return parseRevealKeyRequestResponse(raw)
+  }
+
+  async function verifyRevealOtp(
+    licenseId: string,
+    revealId: string,
+    code: string,
+  ): Promise<RevealKeyVerifyResponse | null> {
+    if (!licensingApiLive.value) {
+      return code === '123456' ? { license_key: 'MOCK-KEY-ABCD-EFGH' } : null
+    }
+
+    const raw = await licensingService.revealKeyVerify(licenseId, revealId, code)
+    return parseRevealKeyVerifyResponse(raw)
+  }
+
+  async function adminFetchInstallations(filters?: { product?: string; version?: string }) {
+    const params: Record<string, string> = {}
+    if (filters?.product) params.product = filters.product
+    if (filters?.version) params.version = filters.version
+    const raw = await licensingService.adminListInstallations(params)
+    return parseInstallationsListResponse(raw) ?? []
   }
 
   return {
     licensingApiLive,
-    listLicenses,
-    getLicense,
-    listDownloads,
+    fetchLicenses,
+    fetchLicense,
+    fetchDownloads,
     deactivateActivation,
+    requestRevealOtp,
+    verifyRevealOtp,
+    adminFetchInstallations,
+    listLicenses: fetchLicenses,
+    getLicense: fetchLicense,
+    listDownloads: fetchDownloads,
   }
 }

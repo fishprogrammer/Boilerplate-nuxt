@@ -40,6 +40,7 @@ import type {
 import type {
   CommerceCouponsListResult,
   CommerceOrdersListResult,
+  CommerceOrderLicense,
   CouponAdmin,
   CouponValidateResponse,
   CreateOrderResponse,
@@ -48,6 +49,16 @@ import type {
   OrderListItem,
   OrderStatus,
 } from '~/types/commerce'
+import type {
+  Activation,
+  DownloadItem,
+  InstallationReport,
+  License,
+  LicenseDetail,
+  LicenseStatus,
+  RevealKeyRequestResponse,
+  RevealKeyVerifyResponse,
+} from '~/types/licensing'
 import type {
   Wallet,
   WalletTransaction,
@@ -2677,7 +2688,7 @@ export function parseCreateOrderResponse(response: unknown): CreateOrderResponse
   const payload = getApiPayload(response)
   if (!payload || typeof payload !== 'object') return null
   const raw = payload as Record<string, unknown>
-  const licenses = Array.isArray(raw.licenses) ? raw.licenses : []
+  const licenses = normalizeCommerceOrderLicenses(raw.licenses)
   return {
     order_id: String(raw.order_id || raw.id || ''),
     status: normalizeOrderStatus(raw.status),
@@ -2753,7 +2764,7 @@ export function parseCommerceOrderDetailResponse(response: unknown): OrderDetail
     coupon_code: raw.coupon_code ? String(raw.coupon_code) : null,
     failure_reason: raw.failure_reason ? String(raw.failure_reason) : null,
     lines,
-    licenses: Array.isArray(raw.licenses) ? raw.licenses : [],
+    licenses: normalizeCommerceOrderLicenses(raw.licenses),
   }
 }
 
@@ -2799,6 +2810,163 @@ export function parseCommerceCouponDetailResponse(response: unknown): CouponAdmi
   const payload = getApiPayload(response)
   if (!payload || typeof payload !== 'object') return null
   return normalizeCouponAdmin(payload as Record<string, unknown>)
+}
+
+function normalizeCommerceOrderLicense(raw: unknown): CommerceOrderLicense | null {
+  if (!raw || typeof raw !== 'object') return null
+  const item = raw as Record<string, unknown>
+  if (!item.id) return null
+  let productName = String(item.product_name || '')
+  if (!productName && item.product && typeof item.product === 'object') {
+    productName = String((item.product as Record<string, unknown>).name || '')
+  }
+  return {
+    id: String(item.id),
+    license_key_masked: String(item.license_key_masked || ''),
+    product_name: productName,
+  }
+}
+
+function normalizeCommerceOrderLicenses(raw: unknown): CommerceOrderLicense[] {
+  if (!Array.isArray(raw)) return []
+  return raw
+    .map((item) => normalizeCommerceOrderLicense(item))
+    .filter((item): item is CommerceOrderLicense => item !== null)
+}
+
+function normalizeLicenseStatus(value: unknown): LicenseStatus {
+  const status = String(value || 'active')
+  if (status === 'expired' || status === 'suspended' || status === 'revoked' || status === 'active') {
+    return status
+  }
+  return 'active'
+}
+
+function normalizeLicense(raw: Record<string, unknown>): License {
+  const productRaw = raw.product
+  const planRaw = raw.plan
+  let product = { slug: '', name: '' }
+  let plan = { name: '', license_type: '' }
+  if (productRaw && typeof productRaw === 'object') {
+    const p = productRaw as Record<string, unknown>
+    product = { slug: String(p.slug || ''), name: String(p.name || '') }
+  }
+  if (planRaw && typeof planRaw === 'object') {
+    const p = planRaw as Record<string, unknown>
+    plan = { name: String(p.name || ''), license_type: String(p.license_type || '') }
+  }
+  return {
+    id: String(raw.id || ''),
+    license_key_masked: String(raw.license_key_masked || ''),
+    product,
+    plan,
+    status: normalizeLicenseStatus(raw.status),
+    expires_at: raw.expires_at === null || raw.expires_at === undefined ? null : Number(raw.expires_at) || 0,
+    max_activations: Number(raw.max_activations) || 0,
+    activation_count: Number(raw.activation_count) || 0,
+    created_at: Number(raw.created_at) || 0,
+  }
+}
+
+function normalizeActivation(raw: Record<string, unknown>): Activation {
+  return {
+    id: String(raw.id || ''),
+    label: String(raw.label || ''),
+    identifier: String(raw.identifier || ''),
+    status: raw.status === 'deactivated' ? 'deactivated' : 'active',
+    activated_at: Number(raw.activated_at) || 0,
+    last_seen_at: raw.last_seen_at === null || raw.last_seen_at === undefined ? null : Number(raw.last_seen_at) || 0,
+    product_version: raw.product_version ? String(raw.product_version) : null,
+  }
+}
+
+export function parseLicensesListResponse(response: unknown): License[] | null {
+  if (!isApiSuccess(response)) return null
+  const root = (response && typeof response === 'object' ? response : {}) as Record<string, unknown>
+  const data = root.data
+  const rawItems = Array.isArray(data) ? data : null
+  if (!rawItems) return null
+  return rawItems
+    .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+    .map((item) => normalizeLicense(item))
+}
+
+export function parseLicenseDetailResponse(response: unknown): LicenseDetail | null {
+  if (!isApiSuccess(response)) return null
+  const payload = getApiPayload(response)
+  if (!payload || typeof payload !== 'object') return null
+  const raw = payload as Record<string, unknown>
+  const activationsRaw = raw.activations
+  const activations = Array.isArray(activationsRaw)
+    ? activationsRaw
+        .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+        .map((item) => normalizeActivation(item))
+    : []
+  return { ...normalizeLicense(raw), activations }
+}
+
+function normalizeDownloadItem(raw: Record<string, unknown>): DownloadItem {
+  return {
+    license_id: String(raw.license_id || ''),
+    product_slug: String(raw.product_slug || ''),
+    product_name: String(raw.product_name || ''),
+    version: String(raw.version || ''),
+    filename: String(raw.filename || ''),
+    download_url: String(raw.download_url || ''),
+    released_at: Number(raw.released_at) || 0,
+    changelog: String(raw.changelog || ''),
+  }
+}
+
+export function parseDownloadsListResponse(response: unknown): DownloadItem[] | null {
+  if (!isApiSuccess(response)) return null
+  const root = (response && typeof response === 'object' ? response : {}) as Record<string, unknown>
+  const data = root.data
+  const rawItems = Array.isArray(data) ? data : null
+  if (!rawItems) return null
+  return rawItems
+    .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+    .map((item) => normalizeDownloadItem(item))
+}
+
+export function parseRevealKeyRequestResponse(response: unknown): RevealKeyRequestResponse | null {
+  if (!isApiSuccess(response)) return null
+  const payload = getApiPayload(response)
+  if (!payload || typeof payload !== 'object') return null
+  const raw = payload as Record<string, unknown>
+  return {
+    reveal_id: String(raw.reveal_id || ''),
+    expires_at: Number(raw.expires_at) || 0,
+    debug_code: raw.debug_code ? String(raw.debug_code) : undefined,
+  }
+}
+
+export function parseRevealKeyVerifyResponse(response: unknown): RevealKeyVerifyResponse | null {
+  if (!isApiSuccess(response)) return null
+  const payload = getApiPayload(response)
+  if (!payload || typeof payload !== 'object') return null
+  const raw = payload as Record<string, unknown>
+  const key = String(raw.license_key || '')
+  if (!key) return null
+  return { license_key: key }
+}
+
+export function parseInstallationsListResponse(response: unknown): InstallationReport[] | null {
+  if (!isApiSuccess(response)) return null
+  const root = (response && typeof response === 'object' ? response : {}) as Record<string, unknown>
+  const data = root.data
+  const rawItems = Array.isArray(data) ? data : null
+  if (!rawItems) return null
+  return rawItems
+    .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+    .map((item) => ({
+      activation_id: String(item.activation_id || item.id || ''),
+      product_slug: String(item.product_slug || ''),
+      domain_or_server: String(item.domain_or_server || item.identifier || ''),
+      version: String(item.version || item.product_version || ''),
+      last_seen_at: Number(item.last_seen_at) || 0,
+      license_status: String(item.license_status || item.status || ''),
+    }))
 }
 
 export {

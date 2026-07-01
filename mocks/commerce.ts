@@ -47,7 +47,13 @@ export const mockOrderDetail: OrderDetail = {
       quantity: 1,
     },
   ],
-  licenses: [],
+  licenses: [
+    {
+      id: 'lic-mock-1',
+      license_key_masked: 'WSP-****-****-7A3F',
+      product_name: 'Woo Sync Pro',
+    },
+  ],
 }
 
 export function validateMockCoupon(code: string, _planId: string): CouponValidateResponse {

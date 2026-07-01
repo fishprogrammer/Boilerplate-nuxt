@@ -116,6 +116,7 @@ export const API_ENDPOINTS = {
     deactivate: (id: string) => `/api/licensing/licenses/${id}/deactivate/`,
     revealKey: (id: string) => `/api/licensing/licenses/${id}/reveal-key/`,
     DOWNLOADS: '/api/licensing/downloads/',
+    downloadByToken: '/api/licensing/download/',
     ADMIN: {
       INSTALLATIONS: '/api/licensing/admin/installations/',
     },

@@ -416,6 +416,7 @@ const MENU_ACTION_TO_ROUTE: Record<string, string> = {
   blog: 'blog',
   catalog: 'catalog-products',
   commerce: 'admin-commerce-coupons',
+  licensing: 'admin-licensing-installations',
   roles: 'roles',
   'system-settings': 'system-settings',
   'system-health': 'system-health',
@@ -517,6 +518,13 @@ const menuItems: MenuItem[] = [
     iconBg: 'bg-emerald-100 group-hover:bg-emerald-200 dark:bg-emerald-950 dark:group-hover:bg-emerald-900',
     iconColor: 'text-emerald-700 group-hover:text-emerald-800 dark:text-emerald-400 dark:group-hover:text-emerald-300',
     action: 'commerce',
+  },
+  {
+    label: 'لایسنس',
+    icon: 'M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z',
+    iconBg: 'bg-violet-100 group-hover:bg-violet-200 dark:bg-violet-950 dark:group-hover:bg-violet-900',
+    iconColor: 'text-violet-700 group-hover:text-violet-800 dark:text-violet-400 dark:group-hover:text-violet-300',
+    action: 'licensing',
   },
 ]
 
@@ -694,6 +702,9 @@ function isWalletSectionRoute(): boolean {
     name === 'wallet-deposit' ||
     name === 'panel-orders' ||
     name === 'panel-order-view' ||
+    name === 'panel-licenses' ||
+    name === 'panel-license-view' ||
+    name === 'panel-downloads' ||
     name === 'wallet-deposit-result' ||
     name === 'wallet-deposit-success' ||
     name === 'wallet-deposit-failure' ||
@@ -821,6 +832,9 @@ const isActive = (item: MenuItem) => {
   }
   if (item.action === 'commerce') {
     return name === 'admin-commerce-coupons' || name === 'admin-commerce-orders'
+  }
+  if (item.action === 'licensing') {
+    return name === 'admin-licensing-installations'
   }
   if (item.action === 'system-settings') return name === 'system-settings'
   if (item.action === 'system-health') return name === 'system-health'
