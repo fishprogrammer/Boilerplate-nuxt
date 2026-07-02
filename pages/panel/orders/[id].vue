@@ -67,7 +67,7 @@
           >
             مشاهده محصول
           </NuxtLink>
-          <NuxtLink v-if="order.status === 'failed'" :to="{ name: 'panel-checkout', query: { plan: route.query.plan } }" class="btn-muted-sm">
+          <NuxtLink v-if="order.status === 'failed'" :to="{ name: 'checkout', query: { plan: route.query.plan } }" class="btn-muted-sm">
             تلاش مجدد
           </NuxtLink>
         </div>

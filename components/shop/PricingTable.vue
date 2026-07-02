@@ -66,6 +66,6 @@ function ctaLabel(plan: PricingPlan): string {
 function checkoutUrl(planId: string): string {
   const params = new URLSearchParams({ plan: planId })
   if (props.productSlug) params.set('product', props.productSlug)
-  return `/panel/checkout?${params.toString()}`
+  return `/checkout?${params.toString()}`
 }
 </script>

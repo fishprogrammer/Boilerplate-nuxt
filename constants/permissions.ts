@@ -178,6 +178,7 @@ export const ROUTE_ACCESS: Partial<Record<string, RouteAccessRule>> = {
   'catalog-product-create': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.ADD_PRODUCT] },
   'catalog-categories': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_CATEGORY] },
   'catalog-product-view': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.CHANGE_PRODUCT] },
+  checkout: {},
   'panel-checkout': {},
   'panel-orders': {},
   'panel-order-view': {},

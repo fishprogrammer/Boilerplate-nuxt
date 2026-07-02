@@ -129,7 +129,7 @@ const buyUrl = computed(() => {
   const planId = defaultPlan.value?.id
   if (!planId) return localePath(locale.value, '/shop')
   const params = new URLSearchParams({ plan: planId, product: slug.value })
-  return `/panel/checkout?${params.toString()}`
+  return `/checkout?${params.toString()}`
 })
 
 const supportUrl = computed(
