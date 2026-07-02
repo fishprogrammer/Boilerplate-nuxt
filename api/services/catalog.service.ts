@@ -3,6 +3,7 @@ import { BaseService } from '../base.service'
 import { API_ENDPOINTS } from '../endpoints'
 import type {
   AdminCatalogCategory,
+  CreateAdminCatalogProductRequest,
   CreateCatalogReleaseRequest,
   ListCatalogProductsParams,
 } from '~/types/catalog'
@@ -55,7 +56,7 @@ export class CatalogService extends BaseService {
     return this.getRaw(API_ENDPOINTS.CATALOG.ADMIN.productById(id))
   }
 
-  async adminCreateProduct(data: Record<string, unknown>): Promise<unknown> {
+  async adminCreateProduct(data: CreateAdminCatalogProductRequest): Promise<unknown> {
     return this.postRaw(API_ENDPOINTS.CATALOG.ADMIN.PRODUCTS, data)
   }
 

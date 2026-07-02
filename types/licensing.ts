@@ -74,3 +74,9 @@ export interface AdminLicenseSearchItem {
   order_id: string | null
   created_at: number
 }
+
+export interface AdminLicenseDetail extends LicenseDetail {
+  username: string
+  user_id: string
+  order_id: string | null
+}

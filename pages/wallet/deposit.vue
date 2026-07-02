@@ -298,7 +298,6 @@ definePageMeta({
 })
 
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { financeService } from '~/api/services/finance.service'
 import { mediaService } from '~/api/services/media.service'
 import { paymentsService } from '~/api/services/payments.service'
 import { walletService } from '~/api/services/wallet.service'
@@ -317,7 +316,6 @@ import WalletDepositFormSkeleton from '~/components/skeleton/WalletDepositFormSk
 import { showToast } from '~/composables/useToast'
 import { getApiErrorCode, getApiErrorMessage } from '~/utils/api-error'
 import { handleMediaUploadFailure } from '~/utils/media-upload'
-import { getFinanceErrorMessage } from '~/utils/finance'
 import { getMediaFullUrl, getMediaPreviewUrl } from '~/utils/media'
 import {
   buildGatewayAmountHint,
@@ -512,30 +510,8 @@ async function submitWalletDepositReceipt() {
     return
   }
 
-  const payload: Parameters<typeof financeService.submitManualPayment>[0] = {
-    purpose: 'wallet_deposit',
-    receipt_media_id: receiptMediaId.value,
-  }
-  const amount = receiptAmount.value
-  if (amount != null && amount > 0) payload.amount = amount
-
-  isSubmittingReceipt.value = true
-  receiptError.value = ''
-  try {
-    const response = await financeService.submitManualPayment(payload)
-    if (!isApiSuccess(response)) {
-      const code = getApiErrorCode(response)
-      receiptError.value = getFinanceErrorMessage(code, getApiErrorMessage(response, 'ارسال فیش ناموفق بود.'))
-      return
-    }
-    showToast({ message: 'فیش ارسال شد و در انتظار تأیید حسابدار است.', variant: 'success' })
-    resetReceiptForm({ clearAmount: true })
-  } catch (err: unknown) {
-    const code = getApiErrorCode(err)
-    receiptError.value = getFinanceErrorMessage(code, getApiErrorMessage(err, 'ارسال فیش ناموفق بود.'))
-  } finally {
-    isSubmittingReceipt.value = false
-  }
+  receiptError.value =
+    'ارسال فیش کارت‌به‌کارت در API فعلی پشتیبانی نمی‌شود. از درگاه آنلاین استفاده کنید یا با پشتیبانی تماس بگیرید.'
 }
 
 async function fetchPageData() {

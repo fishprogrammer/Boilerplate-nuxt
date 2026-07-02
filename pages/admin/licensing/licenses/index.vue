@@ -44,9 +44,15 @@
               <td class="px-3 py-2">{{ row.activation_count }}</td>
               <td class="px-3 py-2">
                 <RouterLink
+                  :to="{ name: 'admin-licensing-license-view', params: { id: row.id } }"
+                  class="text-xs text-primary"
+                >
+                  جزئیات
+                </RouterLink>
+                <RouterLink
                   v-if="row.order_id"
                   :to="{ name: 'admin-commerce-order-view', params: { id: row.order_id } }"
-                  class="text-xs text-primary"
+                  class="ms-2 text-xs text-primary"
                 >
                   سفارش
                 </RouterLink>

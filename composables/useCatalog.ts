@@ -2,6 +2,7 @@ import type {
   AdminCatalogCategory,
   CatalogCategory,
   CatalogProductDetail,
+  CreateAdminCatalogProductRequest,
   CreateCatalogReleaseRequest,
   ListCatalogProductsParams,
 } from '~/types/catalog'
@@ -169,8 +170,9 @@ export function useCatalog() {
     return parseLicensingSecretResponse(raw)
   }
 
-  async function adminCreateProduct(data: Record<string, unknown>) {
-    return catalogService.adminCreateProduct(data)
+  async function adminCreateProduct(data: CreateAdminCatalogProductRequest) {
+    const raw = await catalogService.adminCreateProduct(data)
+    return parseAdminCatalogProductDetailResponse(raw)
   }
 
   async function adminUpdateProduct(id: string, data: Record<string, unknown>) {

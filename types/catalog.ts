@@ -128,6 +128,34 @@ export interface AdminCatalogProductDetail extends CatalogProductDetail {
   status: CatalogProductStatus
 }
 
+export interface CreateAdminCatalogProductPlanInput {
+  name: string
+  pricing_model: PricingModel
+  license_type: LicenseType
+  price: number
+  billing_interval?: 'month' | 'year' | null
+  max_activations: number
+  features?: string[]
+  is_default: boolean
+  is_active: boolean
+  sort_order: number
+}
+
+export interface CreateAdminCatalogProductRequest {
+  name: string
+  slug: string
+  category: string
+  locale: AppLocale
+  product_type: ProductType
+  short_description: string
+  description_html?: string
+  status?: CatalogProductStatus
+  is_featured?: boolean
+  meta_title?: string
+  meta_description?: string
+  plans: CreateAdminCatalogProductPlanInput[]
+}
+
 export interface LicensingSecretResponse {
   api_secret: string
 }

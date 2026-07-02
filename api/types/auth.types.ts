@@ -202,6 +202,11 @@ export interface CreateRoleRequest {
   permissions: number[]
 }
 
+/** PUT /api/auth/roles/{id}/assign-permissions/ */
+export interface AssignRolePermissionsRequest {
+  permissions: number[]
+}
+
 /** GET /api/auth/me/ — authenticated user profile */
 export interface UserProfile {
   id: number | string

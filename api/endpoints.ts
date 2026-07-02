@@ -3,12 +3,11 @@ export const API_ENDPOINTS = {
   // Auth endpoints
   AUTH: {
     CAPTCHA: '/api/auth/captcha/',
+    captchaImage: (id: string) => `/api/auth/captcha/${id}/image/`,
     LOGIN: '/api/auth/login/',
     LOGIN_VERIFY: '/api/auth/login/verify/',
-    LOGIN_RESEND: '/api/auth/login/resend/',
     REGISTER: '/api/auth/register/',
     REGISTER_VERIFY: '/api/auth/register/verify/',
-    REGISTER_RESEND: '/api/auth/register/resend/',
     LOGOUT: '/api/auth/logout/',
     ME: '/api/auth/me/',
     USERS: '/api/auth/users/',
@@ -16,10 +15,12 @@ export const API_ENDPOINTS = {
     userById: (id: string | number) => `/api/auth/users/${id}/`,
     assignRolesByUserId: (id: string | number) => `/api/auth/users/${id}/assign-roles/`,
     PERMISSIONS: '/api/auth/permissions/',
+    permissionById: (id: string | number) => `/api/auth/permissions/${id}/`,
     ROLES: '/api/auth/roles/',
     roleById: (id: string | number) => `/api/auth/roles/${id}/`,
+    assignPermissionsByRoleId: (id: string | number) =>
+      `/api/auth/roles/${id}/assign-permissions/`,
     REFRESH: '/api/auth/refresh/',
-    VERIFY: '/api/auth/verify',
   },
   MEDIA: {
     LIST: '/api/media/',
@@ -72,6 +73,7 @@ export const API_ENDPOINTS = {
     DEPOSIT: '/api/payments/deposit/',
     ORDERS: '/api/payments/orders/',
     orderById: (id: string) => `/api/payments/orders/${id}/`,
+    callback: (orderId: string, token: string) => `/api/payments/callback/${orderId}/${token}/`,
     ADMIN: {
       SETTINGS: '/api/payments/admin/settings/',
       GATEWAYS: '/api/payments/admin/gateways/',
@@ -82,9 +84,6 @@ export const API_ENDPOINTS = {
     },
   },
   FINANCE: {
-    MANUAL_PAYMENTS: '/api/finance/manual-payments/',
-    MY_SALE_ORDERS: '/api/finance/my-sale-orders/',
-    mySaleOrderById: (id: string) => `/api/finance/my-sale-orders/${id}/`,
     DASHBOARD: '/api/finance/dashboard/',
     MRR: '/api/finance/mrr/',
     FORECAST: '/api/finance/forecast/',
@@ -123,6 +122,9 @@ export const API_ENDPOINTS = {
     },
   },
   LICENSING: {
+    ACTIVATE: '/api/licensing/activate/',
+    HEARTBEAT: '/api/licensing/heartbeat/',
+    VALIDATE: '/api/licensing/validate/',
     LICENSES: '/api/licensing/licenses/',
     licenseById: (id: string) => `/api/licensing/licenses/${id}/`,
     deactivate: (id: string) => `/api/licensing/licenses/${id}/deactivate/`,
@@ -132,6 +134,7 @@ export const API_ENDPOINTS = {
     ADMIN: {
       INSTALLATIONS: '/api/licensing/admin/installations/',
       LICENSES: '/api/licensing/admin/licenses/',
+      licenseById: (id: string) => `/api/licensing/admin/licenses/${id}/`,
     },
   },
   TICKETS: {
@@ -184,6 +187,9 @@ export const API_ENDPOINTS = {
       INDEXING_ISSUES: '/api/seo/gsc/indexing-issues/',
       SUBMIT_SITEMAP: '/api/seo/gsc/submit-sitemap/',
     },
+  },
+  INTERNAL: {
+    REVALIDATE: '/api/internal/revalidate/',
   },
 } as const
 

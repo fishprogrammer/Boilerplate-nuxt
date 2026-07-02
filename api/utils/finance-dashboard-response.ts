@@ -5,7 +5,7 @@ import type {
   MrrDataPoint,
   RevenueByProductRow,
 } from '~/types/finance'
-import type { AdminLicenseSearchItem } from '~/types/licensing'
+import type { AdminLicenseSearchItem, AdminLicenseDetail } from '~/types/licensing'
 import type { BulkGenerateCouponsResponse } from '~/types/commerce'
 import type { LicensingSecretResponse } from '~/types/catalog'
 import { isApiSuccess, getApiPayload } from './api-response'
@@ -132,4 +132,55 @@ export function parseAdminLicensesSearchResponse(response: unknown): AdminLicens
   return items
     .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
     .map((item) => normalizeAdminLicenseSearchItem(item))
+}
+
+export function parseAdminLicenseDetailResponse(response: unknown): AdminLicenseDetail | null {
+  if (!isApiSuccess(response)) return null
+  const payload = getApiPayload(response)
+  if (!payload || typeof payload !== 'object') return null
+  const raw = payload as Record<string, unknown>
+  const base = normalizeAdminLicenseSearchItem({
+    ...raw,
+    owner_username: raw.username ?? raw.owner_username,
+  })
+  const activationsRaw = raw.activations
+  const activations = Array.isArray(activationsRaw)
+    ? activationsRaw
+        .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+        .map((item) => ({
+          id: String(item.id || ''),
+          label: String(item.label || ''),
+          identifier: String(item.identifier || ''),
+          status: item.status === 'deactivated' ? 'deactivated' as const : 'active' as const,
+          activated_at: Number(item.activated_at) || 0,
+          last_seen_at:
+            item.last_seen_at === null || item.last_seen_at === undefined
+              ? null
+              : Number(item.last_seen_at) || 0,
+          product_version: item.product_version ? String(item.product_version) : null,
+        }))
+    : []
+  return {
+    id: base.id,
+    license_key_masked: base.license_key_masked,
+    product: {
+      slug: base.product_slug,
+      name: base.product_name,
+    },
+    plan: {
+      name: String(raw.plan_name || (raw.plan as Record<string, unknown> | undefined)?.name || ''),
+      license_type: String(
+        raw.license_type || (raw.plan as Record<string, unknown> | undefined)?.license_type || '',
+      ),
+    },
+    status: base.status,
+    expires_at: raw.expires_at === null || raw.expires_at === undefined ? null : Number(raw.expires_at) || 0,
+    max_activations: Number(raw.max_activations) || 0,
+    activation_count: base.activation_count,
+    created_at: base.created_at,
+    activations,
+    username: base.owner_username,
+    user_id: String(raw.user_id || ''),
+    order_id: base.order_id,
+  }
 }

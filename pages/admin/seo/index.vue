@@ -53,6 +53,16 @@
             <p v-if="settings?.nuxt_revalidate_secret_masked" class="mb-1 text-xs text-text-muted">فعلی: {{ settings.nuxt_revalidate_secret_masked }}</p>
             <input v-model="form.nuxt_revalidate_secret" type="password" dir="ltr" placeholder="خالی = بدون تغییر" class="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none input-focus" />
           </div>
+          <div class="md:col-span-2">
+            <button
+              type="button"
+              class="btn-muted-sm"
+              :disabled="revalidating"
+              @click="runStorefrontRevalidate"
+            >
+              {{ revalidating ? 'در حال revalidate...' : 'Revalidate فروشگاه (/fa/shop, /en/shop)' }}
+            </button>
+          </div>
 
           <div class="md:col-span-2 mt-2">
             <h3 class="mb-2 text-xs font-medium text-text-muted">Google Search Console OAuth</h3>
@@ -196,6 +206,7 @@ const route = useRoute()
 const settingsSection = ref<HTMLElement | null>(null)
 
 const { fetchSettings, patchSettings } = useSeoSettings()
+const { triggerStorefrontRevalidate } = useInternal()
 const {
   fetchStatus,
   connect,
@@ -213,6 +224,7 @@ const gscStatus = ref<GscStatus | null>(null)
 const gscLoading = ref(false)
 const connecting = ref(false)
 const submittingSitemap = ref(false)
+const revalidating = ref(false)
 const analyticsRows = ref<GscAnalyticsRow[]>([])
 const queryRows = ref<GscQueryRow[]>([])
 const pageRows = ref<GscPageRow[]>([])
@@ -296,6 +308,18 @@ async function saveSettings() {
     showToast({ message: getApiErrorMessage(error, 'ذخیره تنظیمات ناموفق بود'), variant: 'error' })
   } finally {
     savingSettings.value = false
+  }
+}
+
+async function runStorefrontRevalidate() {
+  revalidating.value = true
+  try {
+    await triggerStorefrontRevalidate(['/', '/fa/shop', '/en/shop', '/blog'])
+    showToast({ message: 'درخواست revalidate به بک‌اند ارسال شد', variant: 'success' })
+  } catch (error) {
+    showToast({ message: getApiErrorMessage(error, 'Revalidate ناموفق بود'), variant: 'error' })
+  } finally {
+    revalidating.value = false
   }
 }
 

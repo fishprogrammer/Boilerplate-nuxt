@@ -229,27 +229,7 @@ const goBack = async () => {
 
 const resendOtp = async () => {
   if (!loginId.value || isResending.value) return
-
-  isResending.value = true
-  try {
-    await authService.resendOtp(loginId.value)
-    authError.value = null
-    verifyError.value = ''
-    otpDigits.value = ['', '', '', '', '', '']
-
-    resendTimer.value = 60
-    const timer = setInterval(() => {
-      resendTimer.value--
-      if (resendTimer.value <= 0) clearInterval(timer)
-    }, 1000)
-
-    otpInputs.value[0]?.focus()
-  } catch (err: unknown) {
-    authError.value = getApiErrorMessage(err, 'خطا در ارسال دوباره کد')
-    console.error('Resend error:', err)
-  } finally {
-    isResending.value = false
-  }
+  await router.push({ name: 'Login', query: { resend: '1' } })
 }
 
 onMounted(() => {

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog Gap API — Soft Store Frontend</title>
+  <style>
+    :root { color-scheme: light dark; --bg:#f4f5f6; --card:#fff; --text:#1a1a1a; --muted:#5c6670; --border:#e2e5e8; --brand:#7c3aed; --added:#059669; --changed:#d97706; --fixed:#2563eb; --removed:#dc2626; --api:#7c3aed; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#111418; --card:#1a1f24; --text:#e8eaed; --muted:#9aa3ad; --border:#2a3139; } }
+    body { margin:0; font-family:Tahoma,"Segoe UI",sans-serif; background:var(--bg); color:var(--text); line-height:1.7; }
+    .wrap { max-width:820px; margin:0 auto; padding:2rem 1.25rem 3rem; }
+    header { margin-bottom:2rem; padding-bottom:1.25rem; border-bottom:1px solid var(--border); }
+    h1 { margin:0 0 .35rem; font-size:1.75rem; }
+    .meta { color:var(--muted); font-size:.92rem; }
+    .badge { display:inline-block; margin-top:.75rem; padding:.2rem .65rem; border-radius:999px; background:color-mix(in srgb,var(--brand) 15%,transparent); color:var(--brand); font-size:.85rem; font-weight:600; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem 1.35rem; margin-bottom:1.25rem; }
+    h2 { margin:0 0 .35rem; font-size:1.15rem; }
+    h3 { margin:1rem 0 .5rem; font-size:1rem; color:var(--muted); }
+    ul { margin:0; padding-right:1.25rem; }
+    li { margin:.35rem 0; }
+    .tag { display:inline-block; min-width:3.2rem; text-align:center; padding:.05rem .45rem; border-radius:6px; font-size:.75rem; font-weight:700; margin-left:.35rem; }
+    .tag.added { background:color-mix(in srgb,var(--added) 18%,transparent); color:var(--added); }
+    .tag.changed { background:color-mix(in srgb,var(--changed) 18%,transparent); color:var(--changed); }
+    .tag.fixed { background:color-mix(in srgb,var(--fixed) 18%,transparent); color:var(--fixed); }
+    .tag.removed { background:color-mix(in srgb,var(--removed) 18%,transparent); color:var(--removed); }
+    .tag.api { background:color-mix(in srgb,var(--api) 18%,transparent); color:var(--api); }
+    code { font-family:Consolas,monospace; font-size:.88em; background:color-mix(in srgb,var(--border) 60%,transparent); padding:.1rem .35rem; border-radius:4px; direction:ltr; }
+    table { width:100%; border-collapse:collapse; font-size:.9rem; margin-top:.5rem; }
+    th,td { border:1px solid var(--border); padding:.45rem .6rem; text-align:right; }
+    .nav-links a { margin-left:.75rem; color:var(--brand); }
+    footer { color:var(--muted); font-size:.85rem; text-align:center; margin-top:1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Soft Store — Changelog Gap API</h1>
+      <p class="meta">تطبیق Swagger با فرانت · حذف endpointهای مرده · لایسنس ادمین · revalidate</p>
+      <span class="badge">🟣 تطبیق OpenAPI</span>
+      <div class="nav-links">
+        <strong>فازها:</strong>
+        <a href="changelog-phase-0.html">فاز ۰</a>
+        <a href="changelog-phase-6.html">فاز ۶</a>
+        <a href="changelog-gap-p0.html">Gap P0</a>
+        <a href="changelog-gap-api.html">Gap API</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>هدف</h2>
+      <p class="meta">مقایسه <code>GET /api/schema/</code> (۱۴۷ مسیر) با <code>api/endpoints.ts</code> و پیاده‌سازی endpointهای جاافتاده؛ حذف مسیرهایی که روی API زنده 404 می‌دهند.</p>
+      <p class="meta">مرجع: <a href="https://api.store.a4j.ir/swagger" dir="ltr">api.store.a4j.ir/swagger</a></p>
+    </section>
+
+    <section>
+      <h2>۱۴۰۵/۰۴/۰۶ <span>— تحویل Gap API</span></h2>
+      <p class="meta">نسخه <code>1.0.13</code></p>
+
+      <h3>Added</h3>
+      <ul>
+        <li><span class="tag added">جدید</span> <code>authService.getPermission</code> · <code>assignRolePermissions</code> · <code>captchaImage</code></li>
+        <li><span class="tag added">جدید</span> <code>internalService.triggerRevalidate</code> + <code>useInternal()</code> + دکمه در <code>/admin/seo</code></li>
+        <li><span class="tag added">جدید</span> <code>licensingService.adminGetLicense</code> · <code>downloadRelease</code> · plugin (activate/heartbeat/validate)</li>
+        <li><span class="tag added">جدید</span> <code>paymentsService.buildGatewayCallbackUrl</code></li>
+        <li><span class="tag added">جدید</span> صفحه <code>/admin/licensing/licenses/[id]</code> — جزئیات لایسنس ادمین</li>
+        <li><span class="tag added">جدید</span> <code>scripts/compare-swagger.mjs</code> — ابزار diff اسکیما با endpoints</li>
+      </ul>
+
+      <h3>Changed</h3>
+      <ul>
+        <li><span class="tag changed">تغییر</span> Resend OTP در <code>/verify</code> → بازگشت به <code>/login</code> (resend جدا در API نیست)</li>
+        <li><span class="tag changed">تغییر</span> <code>/finance/my-invoices</code> → redirect به <code>panel-orders</code> (commerce)</li>
+        <li><span class="tag changed">تغییر</span> ارسال فیش کیف پول — غیرفعال تا endpoint بک‌اند اضافه شود</li>
+      </ul>
+
+      <h3>Removed</h3>
+      <ul>
+        <li><span class="tag removed">حذف</span> <code>/api/auth/login/resend/</code> · <code>register/resend/</code> · <code>/api/auth/verify</code></li>
+        <li><span class="tag removed">حذف</span> <code>/api/finance/manual-payments/</code> · <code>my-sale-orders/</code> (404 روی API زنده)</li>
+      </ul>
+
+      <h3><span class="tag api">API</span> پوشش جدید</h3>
+      <table>
+        <thead><tr><th>Endpoint</th><th>Frontend</th></tr></thead>
+        <tbody>
+          <tr><td><code>GET /api/auth/permissions/{id}/</code></td><td>auth.service</td></tr>
+          <tr><td><code>PUT .../roles/{id}/assign-permissions/</code></td><td>auth.service</td></tr>
+          <tr><td><code>POST /api/internal/revalidate/</code></td><td>internal.service + admin SEO</td></tr>
+          <tr><td><code>GET /api/licensing/admin/licenses/{id}/</code></td><td>admin license detail</td></tr>
+          <tr><td><code>GET /api/licensing/download/?token=</code></td><td>licensing.service</td></tr>
+          <tr><td><code>POST /api/licensing/activate|heartbeat|validate</code></td><td>licensing.service (plugin HMAC)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Out of scope (عمدی)</h3>
+      <ul>
+        <li><code>GET /api/payments/callback/{order_id}/{token}/</code> — بانک → API مستقیم</li>
+        <li><code>GET /api/seo/gsc/callback/</code> — OAuth redirect سمت بک‌اند</li>
+        <li>UI افزونه وردپرس برای licensing plugin — فقط لایه سرویس</li>
+      </ul>
+    </section>
+
+    <footer>Soft Store Frontend · Gap API · Doc/changelog-gap-api.html</footer>
+  </div>
+</body>
+</html>

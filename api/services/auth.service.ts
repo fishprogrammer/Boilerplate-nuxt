@@ -7,8 +7,6 @@ import type {
   LoginRequest,
   VerifyOtpRequest,
   VerifyRegisterRequest,
-  ResendOtpRequest,
-  ResendRegisterRequest,
   LogoutRequest,
   CaptchaResponse,
   CaptchaRequest,
@@ -18,6 +16,7 @@ import type {
   CreateRoleRequest,
   UpdateUserRequest,
   AssignRolesRequest,
+  AssignRolePermissionsRequest,
   ListPermissionsParams,
   ListRolesParams,
   ListUsersParams,
@@ -34,10 +33,9 @@ export class AuthService extends BaseService {
     return this.postRaw(API_ENDPOINTS.AUTH.LOGIN_VERIFY, data)
   }
 
-  async resendOtp(loginId: string): Promise<any> {
-    const payload: ResendOtpRequest = { login_id: loginId }
-    const response = await this.postRaw<any>(API_ENDPOINTS.AUTH.LOGIN_RESEND, payload)
-    return response
+  /** Re-request OTP by restarting the login flow (no dedicated resend endpoint in API). */
+  async resendOtp(data: LoginRequest): Promise<any> {
+    return this.postRaw(API_ENDPOINTS.AUTH.LOGIN, data)
   }
 
   async getCaptcha(purpose: string = 'login') {
@@ -54,7 +52,7 @@ export class AuthService extends BaseService {
   }
 
   async getCaptchaImage(id: string): Promise<Blob> {
-    const response = await apiClient.get<Blob>(`${API_ENDPOINTS.AUTH.CAPTCHA}${id}/image/`, {
+    const response = await apiClient.get<Blob>(API_ENDPOINTS.AUTH.captchaImage(id), {
       responseType: 'blob',
     })
     return response.data
@@ -68,9 +66,9 @@ export class AuthService extends BaseService {
     return this.postRaw(API_ENDPOINTS.AUTH.REGISTER_VERIFY, data)
   }
 
-  async resendRegisterOtp(registerId: string): Promise<any> {
-    const payload: ResendRegisterRequest = { register_id: registerId }
-    return this.postRaw(API_ENDPOINTS.AUTH.REGISTER_RESEND, payload)
+  /** Re-request registration OTP by restarting the register flow. */
+  async resendRegisterOtp(data: RegisterRequest): Promise<any> {
+    return this.postRaw(API_ENDPOINTS.AUTH.REGISTER, data)
   }
 
   async getMe(): Promise<unknown> {
@@ -96,6 +94,10 @@ export class AuthService extends BaseService {
     return this.getRaw(API_ENDPOINTS.AUTH.PERMISSIONS, params as Record<string, unknown>)
   }
 
+  async getPermission(id: string | number): Promise<unknown> {
+    return this.getRaw(API_ENDPOINTS.AUTH.permissionById(id))
+  }
+
   async listRoles(params?: ListRolesParams): Promise<unknown> {
     return this.getRaw(API_ENDPOINTS.AUTH.ROLES, params as Record<string, unknown>)
   }
@@ -110,6 +112,13 @@ export class AuthService extends BaseService {
 
   async updateRole(id: string | number, data: CreateRoleRequest): Promise<unknown> {
     return this.putRaw(API_ENDPOINTS.AUTH.roleById(id), data)
+  }
+
+  async assignRolePermissions(
+    id: string | number,
+    data: AssignRolePermissionsRequest,
+  ): Promise<unknown> {
+    return this.putRaw(API_ENDPOINTS.AUTH.assignPermissionsByRoleId(id), data)
   }
 
   async deleteRole(id: string | number): Promise<unknown> {

@@ -856,7 +856,7 @@ const isActive = (item: MenuItem) => {
     return isBlogSectionRoute()
   }
   if (item.action === 'catalog') {
-    return name === 'catalog-products' || name === 'catalog-categories' || name === 'catalog-product-view'
+    return name === 'catalog-products' || name === 'catalog-categories' || name === 'catalog-product-view' || name === 'catalog-product-create'
   }
   if (item.action === 'commerce') {
     return name === 'admin-commerce-coupons' || name === 'admin-commerce-orders'

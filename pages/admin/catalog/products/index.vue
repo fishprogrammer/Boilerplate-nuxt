@@ -8,6 +8,13 @@
         </div>
         <div class="flex flex-wrap gap-2">
           <RouterLink
+            v-if="hasPermission(PERMISSIONS.CATALOG.ADD_PRODUCT)"
+            :to="{ name: 'catalog-product-create' }"
+            class="btn-action-sm"
+          >
+            محصول جدید
+          </RouterLink>
+          <RouterLink
             v-if="hasPermission(PERMISSIONS.CATALOG.VIEW_CATEGORY)"
             :to="{ name: 'catalog-categories' }"
             class="btn-muted-sm"

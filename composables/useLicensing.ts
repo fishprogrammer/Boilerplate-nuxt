@@ -4,6 +4,7 @@ import type {
   LicenseDetail,
   RevealKeyRequestResponse,
   RevealKeyVerifyResponse,
+  AdminLicenseDetail,
 } from '~/types/licensing'
 import { licensingService } from '~/api/services/licensing.service'
 import {
@@ -14,7 +15,7 @@ import {
   parseRevealKeyRequestResponse,
   parseRevealKeyVerifyResponse,
 } from '~/api/utils/api-response'
-import { parseAdminLicensesSearchResponse } from '~/api/utils/finance-dashboard-response'
+import { parseAdminLicenseDetailResponse, parseAdminLicensesSearchResponse } from '~/api/utils/finance-dashboard-response'
 import { mockDownloads, mockLicenseDetail, mockLicenses } from '~/mocks/licensing'
 
 export function useLicensing() {
@@ -98,6 +99,26 @@ export function useLicensing() {
     return parseAdminLicensesSearchResponse(raw) ?? []
   }
 
+  async function adminFetchLicense(id: string): Promise<AdminLicenseDetail | null> {
+    if (!licensingApiLive.value) return null
+    try {
+      const raw = await licensingService.adminGetLicense(id)
+      return parseAdminLicenseDetailResponse(raw)
+    } catch {
+      return null
+    }
+  }
+
+  async function downloadRelease(token: string, filename: string) {
+    const blob = await licensingService.downloadRelease(token)
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = filename || 'download'
+    anchor.click()
+    URL.revokeObjectURL(url)
+  }
+
   return {
     licensingApiLive,
     fetchLicenses,
@@ -108,6 +129,8 @@ export function useLicensing() {
     verifyRevealOtp,
     adminFetchInstallations,
     adminSearchLicenses,
+    adminFetchLicense,
+    downloadRelease,
     listLicenses: fetchLicenses,
     getLicense: fetchLicense,
     listDownloads: fetchDownloads,

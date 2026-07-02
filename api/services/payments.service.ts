@@ -36,6 +36,10 @@ export class PaymentsService extends BaseService {
     return this.getRaw(API_ENDPOINTS.PAYMENTS.orderById(id))
   }
 
+  buildGatewayCallbackUrl(orderId: string, token: string): string {
+    return API_ENDPOINTS.PAYMENTS.callback(orderId, token)
+  }
+
   async getAdminSettings(): Promise<unknown> {
     return this.getRaw(API_ENDPOINTS.PAYMENTS.ADMIN.SETTINGS)
   }

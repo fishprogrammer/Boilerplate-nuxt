@@ -175,6 +175,7 @@ export const ROUTE_ACCESS: Partial<Record<string, RouteAccessRule>> = {
   'ticket-departments': { staffOnly: true, anyOf: [PERMISSIONS.TICKETS.CHANGE] },
   'ticket-settings': { staffOnly: true, anyOf: [PERMISSIONS.TICKETS.CHANGE] },
   'catalog-products': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_PRODUCT] },
+  'catalog-product-create': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.ADD_PRODUCT] },
   'catalog-categories': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.VIEW_CATEGORY] },
   'catalog-product-view': { staffOnly: true, anyOf: [PERMISSIONS.CATALOG.CHANGE_PRODUCT] },
   'panel-checkout': {},
