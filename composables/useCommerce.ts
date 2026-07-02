@@ -20,8 +20,9 @@ import {
   parseCreateOrderResponse,
 } from '~/api/utils/api-response'
 import { parseBulkGenerateCouponsResponse } from '~/api/utils/finance-dashboard-response'
-import { mockOrderDetail, mockOrders, validateMockCoupon } from '~/mocks/commerce'
+import { isApiModuleLive } from '~/utils/api-module-live'
 import { isCommerceTerminalStatus } from '~/utils/commerce'
+import { mockOrderDetail, mockOrders, validateMockCoupon } from '~/mocks/commerce'
 
 function mapPagination(pagination: PaginationMeta): import('~/types/api').PaginationMeta {
   return {
@@ -48,8 +49,8 @@ function emptyPagination(total: number): import('~/types/api').PaginationMeta {
 export function useCommerce() {
   const config = useRuntimeConfig()
 
-  const commerceApiLive = computed(
-    () => String(config.public.commerceApiLive).toLowerCase() === 'true',
+  const commerceApiLive = computed(() =>
+    isApiModuleLive(config.public.commerceApiLive, String(config.public.apiBaseUrl)),
   )
 
   async function validateCoupon(code: string, planId: string): Promise<CouponValidateResponse> {
@@ -62,10 +63,6 @@ export function useCommerce() {
   }
 
   async function createOrder(payload: CreateOrderRequest): Promise<CreateOrderResponse> {
-    if (!commerceApiLive.value) {
-      throw new Error('Commerce API is not live yet. Enable NUXT_PUBLIC_COMMERCE_API_LIVE.')
-    }
-
     const raw = await commerceService.createOrder(payload)
     const parsed = parseCreateOrderResponse(raw)
     if (!parsed?.order_id) {

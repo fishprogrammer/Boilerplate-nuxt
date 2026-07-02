@@ -16,13 +16,14 @@ import {
   parseRevealKeyVerifyResponse,
 } from '~/api/utils/api-response'
 import { parseAdminLicenseDetailResponse, parseAdminLicensesSearchResponse } from '~/api/utils/finance-dashboard-response'
+import { isApiModuleLive } from '~/utils/api-module-live'
 import { mockDownloads, mockLicenseDetail, mockLicenses } from '~/mocks/licensing'
 
 export function useLicensing() {
   const config = useRuntimeConfig()
 
-  const licensingApiLive = computed(
-    () => String(config.public.licensingApiLive).toLowerCase() === 'true',
+  const licensingApiLive = computed(() =>
+    isApiModuleLive(config.public.licensingApiLive, String(config.public.apiBaseUrl)),
   )
 
   async function fetchLicenses(): Promise<License[]> {

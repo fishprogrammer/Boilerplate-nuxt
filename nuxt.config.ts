@@ -3,6 +3,10 @@ import { readAppVersion } from './config/read-app-version'
 import { writeVersionJson } from './config/write-version-json'
 
 const appVersion = readAppVersion()
+const apiBaseUrl =
+  process.env.NUXT_PUBLIC_API_BASE_URL ||
+  process.env.NUXT_PUBLIC_API_BASE ||
+  '/api'
 const apiProxyTarget = (process.env.NUXT_PUBLIC_API_PROXY_TARGET || 'https://api.store.a4j.ir').replace(
   /\/+$/,
   '',
@@ -97,10 +101,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBaseUrl:
-        process.env.NUXT_PUBLIC_API_BASE_URL ||
-        process.env.NUXT_PUBLIC_API_BASE ||
-        '/api',
+      apiBaseUrl,
       apiProxyTarget,
       apiTimeout: process.env.NUXT_PUBLIC_API_TIMEOUT || '30000',
       appTitle,
@@ -113,10 +114,10 @@ export default defineNuxtConfig({
       guestTicketTypeId: process.env.NUXT_PUBLIC_GUEST_TICKET_TYPE_ID || '',
       guestDepartmentId: process.env.NUXT_PUBLIC_GUEST_DEPARTMENT_ID || '',
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://boilerplate-store.liara.run',
-      catalogApiLive: process.env.NUXT_PUBLIC_CATALOG_API_LIVE || 'false',
-      commerceApiLive: process.env.NUXT_PUBLIC_COMMERCE_API_LIVE || 'false',
-      licensingApiLive: process.env.NUXT_PUBLIC_LICENSING_API_LIVE || 'false',
-      financeApiLive: process.env.NUXT_PUBLIC_FINANCE_API_LIVE || 'false',
+      catalogApiLive: process.env.NUXT_PUBLIC_CATALOG_API_LIVE || 'true',
+      commerceApiLive: process.env.NUXT_PUBLIC_COMMERCE_API_LIVE || 'true',
+      licensingApiLive: process.env.NUXT_PUBLIC_LICENSING_API_LIVE || 'true',
+      financeApiLive: process.env.NUXT_PUBLIC_FINANCE_API_LIVE || 'true',
       ga4Id: process.env.NUXT_PUBLIC_GA4_ID || '',
     },
     revalidateSecret: process.env.NUXT_REVALIDATE_SECRET || 'change-me-in-production',

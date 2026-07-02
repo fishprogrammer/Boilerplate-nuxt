@@ -313,6 +313,7 @@
 <script setup lang="ts">
 import { appConfig } from '~/config/app'
 import type { CatalogProductListItem } from '~/types/catalog'
+import { isApiModuleLive } from '~/utils/api-module-live'
 import type { AppLocale } from '~/utils/locale'
 import { absoluteSiteUrl, localeHreflang, localePath } from '~/utils/locale-path'
 import { parseBlogPostsListResponse } from '~/api/utils/api-response'
@@ -622,7 +623,7 @@ function isCrmProduct(p: CatalogProductListItem) {
 }
 
 const { listProducts } = useCatalog()
-const catalogLive = String(config.public.catalogApiLive).toLowerCase() === 'true'
+const catalogLive = isApiModuleLive(config.public.catalogApiLive, String(config.public.apiBaseUrl))
 const { data: productsData, pending } = await useAsyncData(
   () => `home-products-${props.locale}`,
   () =>

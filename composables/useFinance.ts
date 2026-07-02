@@ -14,6 +14,7 @@ import {
   parseMrrSeriesResponse,
   parseRevenueByProductResponse,
 } from '~/api/utils/finance-dashboard-response'
+import { isApiModuleLive } from '~/utils/api-module-live'
 import {
   getMockForecastSeries,
   getMockMrrSeries,
@@ -25,8 +26,8 @@ import {
 export function useFinance() {
   const config = useRuntimeConfig()
 
-  const financeApiLive = computed(
-    () => String(config.public.financeApiLive).toLowerCase() === 'true',
+  const financeApiLive = computed(() =>
+    isApiModuleLive(config.public.financeApiLive, String(config.public.apiBaseUrl)),
   )
 
   async function fetchDashboard(): Promise<FinanceDashboard> {

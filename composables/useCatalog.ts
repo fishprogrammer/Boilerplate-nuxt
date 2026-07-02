@@ -18,6 +18,7 @@ import {
   parseCatalogProductsListResponse,
 } from '~/api/utils/api-response'
 import { parseLicensingSecretResponse } from '~/api/utils/finance-dashboard-response'
+import { isApiModuleLive } from '~/utils/api-module-live'
 import {
   getMockCategories,
   getMockCategory,
@@ -67,8 +68,8 @@ function filterMockProducts(locale: string, params?: ListCatalogProductsParams) 
 export function useCatalog() {
   const config = useRuntimeConfig()
 
-  const catalogApiLive = computed(
-    () => String(config.public.catalogApiLive).toLowerCase() === 'true',
+  const catalogApiLive = computed(() =>
+    isApiModuleLive(config.public.catalogApiLive, String(config.public.apiBaseUrl)),
   )
 
   async function listProducts(

@@ -118,10 +118,6 @@ watch(planId, () => {
 
 async function submitCheckout() {
   if (!planId.value || isSubmitting.value) return
-  if (!commerceApiLive.value) {
-    showToast({ message: 'API تجارت هنوز فعال نیست.', variant: 'error' })
-    return
-  }
 
   isSubmitting.value = true
   try {
@@ -198,7 +194,7 @@ useHead({
     </div>
 
     <p v-if="!commerceApiLive" class="mb-4 text-xs text-amber-600">
-      API تجارت غیرفعال است — فقط اعتبارسنجی کوپن از mock اجرا می‌شود.
+      حالت نمایشی — سفارش واقعی ثبت نمی‌شود.
     </p>
 
     <div v-if="pageLoading" class="text-sm text-text-secondary">در حال بارگذاری...</div>

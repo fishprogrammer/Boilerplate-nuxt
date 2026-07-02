@@ -176,6 +176,7 @@ import {
 import RecipientPicker from '~/components/tickets/RecipientPicker.vue'
 import { usePermissions } from '~/composables/usePermissions'
 import { extractApiFieldErrors, getApiErrorMessage } from '~/utils/api-error'
+import { isApiModuleLive } from '~/utils/api-module-live'
 import { handleMediaUploadFailure } from '~/utils/media-upload'
 import {
   canSearchPersonalRecipients,
@@ -314,7 +315,7 @@ async function onFilesSelected(event: Event) {
 async function resolveProductFromQuery() {
   if (!productSlug.value) return
   const config = useRuntimeConfig()
-  if (String(config.public.catalogApiLive).toLowerCase() !== 'true') return
+  if (!isApiModuleLive(config.public.catalogApiLive, String(config.public.apiBaseUrl))) return
   try {
     const { getProduct } = useCatalog()
     const product = await getProduct(productSlug.value, 'fa')
